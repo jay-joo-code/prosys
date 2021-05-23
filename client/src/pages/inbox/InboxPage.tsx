@@ -13,6 +13,7 @@ const InboxPage = () => {
     <FlexRow justifyCenter>
       <Container>
         <FlexColumn alignCenter>
+          <Space padding='1rem 0' />
           <CreateTaskTextField
             isListDisabled={isListDisabled}
             setIsListDisabled={setIsListDisabled}
