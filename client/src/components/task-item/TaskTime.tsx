@@ -33,8 +33,9 @@ const TaskTime = ({ task, isFocused, setIsListDisabled }: TaskTimeProps) => {
     })
   }
 
-  useKeypress(['t', 'ㅅ'], () => {
+  useKeypress(['t', 'ㅅ'], (event) => {
     if (isFocused) {
+      event.preventDefault()
       setIsListDisabled(true)
       setIsEditMode(true)
       setIsStartTimeFocused(true)
@@ -49,93 +50,113 @@ const TaskTime = ({ task, isFocused, setIsListDisabled }: TaskTimeProps) => {
     }
   })
 
-  useKeypress(['ArrowLeft', 'ArrowRight', 'Tab'], (event) => {
+  useKeypress('Tab', (event) => {
     if (isEditMode) {
       event.preventDefault()
       setIsStartTimeFocused(!isStartTimeFocused)
     }
   })
 
-  const incrementTime = (timeStamp: string): string => {
-    if (timeStamp === '2330') {
-      return '0000'
-    } else if (timeStamp[2] === '3') {
-      return `0${(Number(timeStamp.slice(0, 2)) + 1).toString()}00`.slice(-4)
-    } else {
-      return `${timeStamp[0]}${timeStamp[1]}30`
-    }
-  }
+  /* increment / decrement time with arrow keys */
+  // const incrementTime = (timeStamp: string): string => {
+  //   if (timeStamp === '2330') {
+  //     return '0000'
+  //   } else if (timeStamp[2] === '3') {
+  //     return `0${(Number(timeStamp.slice(0, 2)) + 1).toString()}00`.slice(-4)
+  //   } else {
+  //     return `${timeStamp[0]}${timeStamp[1]}30`
+  //   }
+  // }
 
-  useKeypress('ArrowUp', (event) => {
-    if (isEditMode) {
-      event.preventDefault()
-      if (isStartTimeFocused) {
-        const newStartTime = incrementTime(localStartTime)
-        setLocalStartTime(newStartTime)
+  // useKeypress('ArrowUp', (event) => {
+  //   if (isEditMode) {
+  //     event.preventDefault()
+  //     if (isStartTimeFocused) {
+  //       const newStartTime = incrementTime(localStartTime)
+  //       setLocalStartTime(newStartTime)
 
-        if (Number(newStartTime) > Number(localEndTime)) {
-          setLocalEndTime(newStartTime)
-        }
-      } else {
-        setLocalEndTime(incrementTime(localEndTime))
-      }
-    }
-  })
+  //       if (Number(newStartTime) > Number(localEndTime)) {
+  //         setLocalEndTime(newStartTime)
+  //       }
+  //     } else {
+  //       setLocalEndTime(incrementTime(localEndTime))
+  //     }
+  //   }
+  // })
 
-  const decrementTime = (timeStamp: string): string => {
-    if (timeStamp === '0000') {
-      return '2330'
-    } else if (timeStamp[2] === '3') {
-      return `${timeStamp[0]}${timeStamp[1]}00`
-    } else {
-      return `0${(Number(timeStamp.slice(0, 2)) - 1).toString()}30`.slice(-4)
-    }
-  }
+  // const decrementTime = (timeStamp: string): string => {
+  //   if (timeStamp === '0000') {
+  //     return '2330'
+  //   } else if (timeStamp[2] === '3') {
+  //     return `${timeStamp[0]}${timeStamp[1]}00`
+  //   } else {
+  //     return `0${(Number(timeStamp.slice(0, 2)) - 1).toString()}30`.slice(-4)
+  //   }
+  // }
 
-  useKeypress('ArrowDown', (event) => {
-    if (isEditMode) {
-      event.preventDefault()
-      if (isStartTimeFocused) {
-        const newStartTime = decrementTime(localStartTime)
-        setLocalStartTime(newStartTime)
+  // useKeypress('ArrowDown', (event) => {
+  //   if (isEditMode) {
+  //     event.preventDefault()
+  //     if (isStartTimeFocused) {
+  //       const newStartTime = decrementTime(localStartTime)
+  //       setLocalStartTime(newStartTime)
 
-        if (Number(newStartTime) > Number(localEndTime)) {
-          setLocalEndTime(newStartTime)
-        }
-      } else {
-        setLocalEndTime(decrementTime(localEndTime))
-      }
-    }
-  })
+  //       if (Number(newStartTime) > Number(localEndTime)) {
+  //         setLocalEndTime(newStartTime)
+  //       }
+  //     } else {
+  //       setLocalEndTime(decrementTime(localEndTime))
+  //     }
+  //   }
+  // })
 
   return (
     <div>
       {(isTaskTimeSet(task) || isEditMode)
         ? (
           <FlexRow alignCenter>
-            <TimeStamp isFocused={isEditMode && isStartTimeFocused}>
-              <Text
-                variant='p'
-                nowrap
-                color={theme.text.light}
-              >{localStartTime}
-              </Text>
-            </TimeStamp>
-            {/* <RemoveIcon size='small' /> */}
+            {(isEditMode && isStartTimeFocused)
+              ? <TimeStampInput
+                  autoFocus
+                  value={localStartTime}
+                  onChange={(e) => setLocalStartTime(e.target.value)}
+                  onFocus={() => setLocalStartTime('')}
+                />
+              : (
+                <TimeStamp>
+                  <Text
+                    variant='p'
+                    nowrap
+                    color={theme.text.light}
+                  >{localStartTime}
+                  </Text>
+                </TimeStamp>
+              )
+            }
             <Text
               variant='p'
               nowrap
               color={theme.text.light}
             >-
             </Text>
-            <TimeStamp isFocused={isEditMode && !isStartTimeFocused}>
-              <Text
-                variant='p'
-                nowrap
-                color={theme.text.light}
-              >{localEndTime}
-              </Text>
-            </TimeStamp>
+            {(isEditMode && !isStartTimeFocused)
+              ? <TimeStampInput
+                  autoFocus
+                  value={localEndTime}
+                  onChange={(e) => setLocalEndTime(e.target.value)}
+                  onFocus={() => setLocalEndTime('')}
+                />
+              : (
+                <TimeStamp>
+                  <Text
+                    variant='p'
+                    nowrap
+                    color={theme.text.light}
+                  >{localEndTime}
+                  </Text>
+                </TimeStamp>
+              )
+            }
           </FlexRow>
           )
         : null
@@ -144,16 +165,15 @@ const TaskTime = ({ task, isFocused, setIsListDisabled }: TaskTimeProps) => {
   )
 }
 
-interface TimeStampProps {
-  isFocused: boolean
-}
+const TimeStampInput = styled.input`
+  width: 40px;
+  font-size: 16px;
+  color: ${props => props.theme.text.light};
+`
 
-const TimeStamp = styled.div<TimeStampProps>`
+const TimeStamp = styled.div`
   padding: 0 .2rem;
   border-radius: 6px;
-
-  // isFocused
-  background: ${props => props.isFocused && props.theme.brand[50]};
 `
 
 export default TaskTime
