@@ -27,7 +27,7 @@ const TaskNotes = ({ isFocused, task, setIsListDisabled }: TaskNotesProps) => {
   })
 
   useKeypress(['Enter', 'Escape'], (event) => {
-    if (isEditMode && (event.metaKey || event.ctrlKey)) {
+    if (isEditMode && (event.key === 'Escape' || (event.metaKey || event.ctrlKey))) {
       event.preventDefault()
       setIsEditMode(false)
       setIsListDisabled(false)
