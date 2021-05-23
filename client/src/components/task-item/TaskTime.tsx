@@ -57,6 +57,13 @@ const TaskTime = ({ task, isFocused, setIsListDisabled }: TaskTimeProps) => {
     }
   })
 
+  const incrementTimeStamp = (timeStamp: string) => {
+    if (Number(timeStamp)) {
+      return `0${(Number(timeStamp) + 100).toString()}`.slice(-4)
+    }
+    return ''
+  }
+
   /* increment / decrement time with arrow keys */
   // const incrementTime = (timeStamp: string): string => {
   //   if (timeStamp === '2330') {
@@ -144,7 +151,7 @@ const TaskTime = ({ task, isFocused, setIsListDisabled }: TaskTimeProps) => {
                   autoFocus
                   value={localEndTime}
                   onChange={(e) => setLocalEndTime(e.target.value)}
-                  onFocus={() => setLocalEndTime('')}
+                  onFocus={() => setLocalEndTime(incrementTimeStamp(localStartTime))}
                 />
               : (
                 <TimeStamp>
