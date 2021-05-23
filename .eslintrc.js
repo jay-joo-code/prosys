@@ -35,6 +35,6 @@ module.exports = {
     quotes: ['warn', 'single'],
     'jsx-quotes': ['warn', 'prefer-single'],
     indent: 'off',
-    '@typescript-eslint/indent': ['warn', 2],
+    // '@typescript-eslint/indent': ['warn', 2],
   },
 }

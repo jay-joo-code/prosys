@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { FlexColumn } from 'src/components/layout/Flex'
+import { FlexColumn, FlexRow } from 'src/components/layout/Flex'
 import Space from 'src/components/layout/Space'
 import styled from 'styled-components'
 import CreateTaskTextField from './CreateTaskTextField'
@@ -10,28 +10,35 @@ const InboxPage = () => {
   const [focusIdx, setFocusIdx] = useState<number>(0)
 
   return (
-    <Padding>
-      <FlexColumn>
-        <CreateTaskTextField
-          isListDisabled={isListDisabled}
-          setIsListDisabled={setIsListDisabled}
-          focusIdx={focusIdx}
-          setFocusIdx={setFocusIdx}
-        />
-        <Space padding='.5rem 0' />
-        <TaskList
-          isListDisabled={isListDisabled}
-          setIsListDisabled={setIsListDisabled}
-          focusIdx={focusIdx}
-          setFocusIdx={setFocusIdx}
-        />
-      </FlexColumn>
-    </Padding>
+    <FlexRow justifyCenter>
+      <Container>
+        <FlexColumn alignCenter>
+          <CreateTaskTextField
+            isListDisabled={isListDisabled}
+            setIsListDisabled={setIsListDisabled}
+            focusIdx={focusIdx}
+            setFocusIdx={setFocusIdx}
+          />
+          <Space padding='.5rem 0' />
+          <TaskList
+            isListDisabled={isListDisabled}
+            setIsListDisabled={setIsListDisabled}
+            focusIdx={focusIdx}
+            setFocusIdx={setFocusIdx}
+          />
+        </FlexColumn>
+      </Container>
+    </FlexRow>
   )
 }
 
-const Padding = styled.div`
+const Container = styled.div`
   padding: 1rem;
+  width: 100%;
+
+  @media (min-width: ${(props) => props.theme.medium}) {
+    max-width: 800px;
+  }
 `
 
 export default InboxPage
