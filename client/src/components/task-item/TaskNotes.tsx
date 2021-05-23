@@ -18,7 +18,7 @@ const TaskNotes = ({ isFocused, task, setIsListDisabled }: TaskNotesProps) => {
   const { updateInboxTask } = useUpdateInboxTaskById(task?._id)
   const [textareaValue, setTextareaValue] = useState<string>(task?.notes)
 
-  useKeypress('n', (event) => {
+  useKeypress(['n', 'ㅜ'], (event) => {
     if (isFocused && !isEditMode) {
       event.preventDefault()
       setIsEditMode(true)
@@ -26,20 +26,8 @@ const TaskNotes = ({ isFocused, task, setIsListDisabled }: TaskNotesProps) => {
     }
   })
 
-  useKeypress('Enter', (event) => {
+  useKeypress(['Enter', 'Escape'], (event) => {
     if (isEditMode && (event.metaKey || event.ctrlKey)) {
-      event.preventDefault()
-      setIsEditMode(false)
-      setIsListDisabled(false)
-      updateInboxTask({
-        _id: task?._id,
-        notes: textareaValue,
-      })
-    }
-  })
-
-  useKeypress('Escape', (event) => {
-    if (isEditMode) {
       event.preventDefault()
       setIsEditMode(false)
       setIsListDisabled(false)

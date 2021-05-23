@@ -33,7 +33,7 @@ const TaskTime = ({ task, isFocused, setIsListDisabled }: TaskTimeProps) => {
     })
   }
 
-  useKeypress('t', () => {
+  useKeypress(['t', 'ㅅ'], () => {
     if (isFocused) {
       setIsListDisabled(true)
       setIsEditMode(true)
@@ -43,31 +43,13 @@ const TaskTime = ({ task, isFocused, setIsListDisabled }: TaskTimeProps) => {
     }
   })
 
-  useKeypress('Enter', () => {
+  useKeypress(['Enter', 'Escape'], () => {
     if (isEditMode) {
       handleBlur()
     }
   })
 
-  useKeypress('Escape', () => {
-    if (isEditMode) {
-      handleBlur()
-    }
-  })
-
-  useKeypress('ArrowLeft', () => {
-    if (isEditMode) {
-      setIsStartTimeFocused(!isStartTimeFocused)
-    }
-  })
-
-  useKeypress('ArrowRight', () => {
-    if (isEditMode) {
-      setIsStartTimeFocused(!isStartTimeFocused)
-    }
-  })
-
-  useKeypress('Tab', (event) => {
+  useKeypress(['ArrowLeft', 'ArrowRight', 'Tab'], (event) => {
     if (isEditMode) {
       event.preventDefault()
       setIsStartTimeFocused(!isStartTimeFocused)

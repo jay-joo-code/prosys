@@ -17,7 +17,7 @@ const TaskDue = ({ isFocused, task, setIsListDisabled }: TaskDueProps) => {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [tempDate, setTempDate] = useState<Date>(task?.due || new Date())
 
-  useKeypress('d', (event) => {
+  useKeypress(['d', 'ㅇ'], (event) => {
     if (isFocused) {
       event.preventDefault()
       setIsOpen(true)

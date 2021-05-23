@@ -15,7 +15,7 @@ const TaskName = ({ task, isFocused, setIsListDisabled }: TaskNameProps) => {
   const { updateInboxTask } = useUpdateInboxTaskById(task?._id)
   const [isEditMode, setIsEditMode] = useState<boolean>(false)
 
-  useKeyPress('e', (event: KeyboardEvent) => {
+  useKeyPress(['e', 'ㄷ'], (event: KeyboardEvent) => {
     if (isFocused && !isEditMode) {
       event.preventDefault()
       setIsEditMode(true)
@@ -23,21 +23,10 @@ const TaskName = ({ task, isFocused, setIsListDisabled }: TaskNameProps) => {
     }
   })
 
-  useKeyPress('Enter', () => {
+  useKeyPress(['Enter', 'Escape'], () => {
     if (isEditMode) {
       setIsEditMode(false)
       setIsListDisabled(false)
-      updateInboxTask({
-        _id: task?._id,
-        name: inputValue,
-      })
-    }
-  })
-
-  useKeyPress('Escape', () => {
-    if (isEditMode) {
-      setIsEditMode(false)
-      setIsListDisabled(true)
       updateInboxTask({
         _id: task?._id,
         name: inputValue,

@@ -2,18 +2,18 @@ import { useEffect, useRef } from 'react'
 
 type KeyboardEventHandler = (event: KeyboardEvent) => void
 
-const useKeypress = (key: string, handler: KeyboardEventHandler) => {
+const useKeypress = (keys: (string | string[]), handler: KeyboardEventHandler) => {
   const eventListenerRef = useRef<KeyboardEventHandler>(handler)
 
   // assign event handler to ref.current
   useEffect(() => {
     // @ts-ignore
     eventListenerRef.current = (event: KeyboardEvent) => {
-      if (key === event.key) {
+      if (Array.isArray(keys) ? keys.includes(event.key) : keys === event.key) {
         handler(event)
       }
     }
-  }, [key, handler])
+  }, [keys, handler])
 
   // handle event with handler
   useEffect(() => {
