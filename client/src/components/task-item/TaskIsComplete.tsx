@@ -23,12 +23,16 @@ const TaskIsComplete = ({ task, isFocused }: TaskIsCompleteProps) => {
   const { updateInboxTask } = useUpdateInboxTaskById(task?._id)
 
   return (
-    <Container isComplete={task?.isComplete} />
+    <Container
+      isComplete={task?.isComplete}
+      isFocused={isFocused}
+    />
   )
 }
 
 interface ContainerProps {
   isComplete: boolean
+  isFocused: boolean
 }
 
 const Container = styled.div<ContainerProps>`
@@ -38,7 +42,10 @@ const Container = styled.div<ContainerProps>`
   width: 15px;
 
   // isComplete
-  background: ${props => props.isComplete && props.theme.brand[500]};
+  background: ${props => props.isComplete && props.theme.brand[300]};
+
+  // isFocused
+  border-color: ${props => props.isFocused && props.theme.bg.default};
 `
 
 export default TaskIsComplete
