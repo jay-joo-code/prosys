@@ -20,7 +20,7 @@ export const useInboxTasks = () => {
     const bDate = new Date(b.due)
       .setHours(Number(b.startTime?.slice(0, 2)), Number(b.startTime?.slice(2, 4)), 0, 0)
 
-    return bDate - aDate || new Date(b.createdAt).valueOf() - new Date(a.createdAt).valueOf()
+    return aDate - bDate || new Date(b.createdAt).valueOf() - new Date(a.createdAt).valueOf()
   })
 
   return {
