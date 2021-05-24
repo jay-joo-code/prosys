@@ -20,14 +20,37 @@ const TaskList = ({ isListDisabled, setIsListDisabled, focusIdx, setFocusIdx }: 
   const { tasks } = useInboxTasks()
 
   // Focus
-  useKeyPress('ArrowUp', () => {
+  const firstTaskOfDayIdxes: number[] = []
+
+  useKeyPress('ArrowUp', (event) => {
     if (!isListDisabled) {
-      setFocusIdx(Math.max(focusIdx - 1, 0))
+      if ((event.metaKey || event.ctrlKey) && tasks) {
+        let hasJumped = false
+        firstTaskOfDayIdxes.forEach((idx, i) => {
+          if (!hasJumped && idx >= focusIdx) {
+            setFocusIdx(firstTaskOfDayIdxes[i - 1 || 0])
+            hasJumped = true
+          }
+        })
+      } else {
+        setFocusIdx(Math.max(focusIdx - 1, 0))
+      }
     }
   })
-  useKeyPress('ArrowDown', () => {
+
+  useKeyPress('ArrowDown', (event) => {
     if (!isListDisabled) {
-      setFocusIdx(Math.min(focusIdx + 1, (tasks?.length || 1) - 1))
+      if ((event.metaKey || event.ctrlKey) && tasks) {
+        let hasJumped = false
+        firstTaskOfDayIdxes.forEach((idx) => {
+          if (!hasJumped && idx > focusIdx) {
+            setFocusIdx(idx)
+            hasJumped = true
+          }
+        })
+      } else {
+        setFocusIdx(Math.min(focusIdx + 1, (tasks?.length || 1) - 1))
+      }
     }
   })
 
@@ -38,6 +61,8 @@ const TaskList = ({ isListDisabled, setIsListDisabled, focusIdx, setFocusIdx }: 
       {tasks?.map((task, idx) => {
         const renderDateStamp = idx === 0 || getDateStamp(task?.due) !== getDateStamp(tasks[idx - 1]?.due)
         const renderDividingSpace = idx !== 0 && isTaskTimeSet(task) && !isTaskTimeSet(tasks[idx - 1])
+
+        if (renderDateStamp) firstTaskOfDayIdxes.push(idx)
 
         return (
           <div key={`${task?._id}${task?.name}`}>
