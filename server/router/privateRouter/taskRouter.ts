@@ -1,7 +1,5 @@
 import express from 'express'
-import moment from 'moment'
 import Task from '../../models/Task'
-import { IScheduleTasks } from '../../types/task.type'
 import { isDateBeforeToday } from '../../util/date'
 
 const taskRouter = express.Router()

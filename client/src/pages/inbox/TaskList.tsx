@@ -42,6 +42,7 @@ const TaskList = ({ isListDisabled, setIsListDisabled, focusIdx, setFocusIdx }: 
   // Focus
   useKeyPress('ArrowUp', (event) => {
     if (!isListDisabled) {
+      event.preventDefault()
       if ((event.metaKey || event.ctrlKey) && tasks) {
         let hasJumped = false
         firstTaskOfDayIdxes.forEach((idx, i) => {
@@ -58,6 +59,7 @@ const TaskList = ({ isListDisabled, setIsListDisabled, focusIdx, setFocusIdx }: 
 
   useKeyPress('ArrowDown', (event) => {
     if (!isListDisabled) {
+      event.preventDefault()
       if ((event.metaKey || event.ctrlKey) && tasks) {
         let hasJumped = false
         firstTaskOfDayIdxes.forEach((idx) => {
