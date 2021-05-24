@@ -27,7 +27,11 @@ taskRouter.get('/inbox', async (req, res) => {
 
     // set overdue task due date as today
     const resetDue = async (_id: string) => {
-      Task.findByIdAndUpdate(_id, { due: new Date() })
+      Task.findByIdAndUpdate(_id, {
+        due: new Date(),
+        startTime: '0000',
+        endTime: '0000',
+      })
     }
 
     const validatedTasks = docs.map((task) => {
