@@ -1,6 +1,6 @@
 import DateFnsUtils from '@date-io/date-fns'
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers'
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { useUpdateInboxTaskById } from 'src/api/task'
 import useKeypress from 'src/hooks/useKeyPress'
 import { ITask } from 'src/types/task.type'
@@ -39,8 +39,10 @@ const TaskDue = ({ isFocused, task, setIsListDisabled }: TaskDueProps) => {
     setIsListDisabled(false)
   }
 
+  const containerRef = useRef<HTMLDivElement>(null)
+
   return (
-    <Container>
+    <Container ref={containerRef}>
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
         <KeyboardDatePicker
           disableToolbar
@@ -53,6 +55,11 @@ const TaskDue = ({ isFocused, task, setIsListDisabled }: TaskDueProps) => {
           open={isOpen}
           onClose={handleClose}
           TextFieldComponent={() => null}
+          PopoverProps={{
+            anchorOrigin: { horizontal: 'center', vertical: 'bottom' },
+            transformOrigin: { horizontal: 'center', vertical: 'top' },
+            anchorEl: containerRef.current,
+          }}
         />
       </MuiPickersUtilsProvider>
     </Container>
