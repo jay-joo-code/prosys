@@ -62,10 +62,6 @@ const TaskTime = ({ task, isFocused, setIsListDisabled }: TaskTimeProps) => {
     return '0000'
   }
 
-  if (task?.name === 'tester') {
-    console.log('localStartTime, localEndTime :>> ', localStartTime, localEndTime)
-  }
-
   useEffect(() => {
     setLocalEndTime(incrementTimeStamp(localStartTime))
   }, [localStartTime])

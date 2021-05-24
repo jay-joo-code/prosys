@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useInboxTasks } from 'src/api/task'
 import theme from 'src/app/theme'
 import Text from 'src/components/fonts/Text'
@@ -19,9 +19,27 @@ interface TaskListProps {
 const TaskList = ({ isListDisabled, setIsListDisabled, focusIdx, setFocusIdx }: TaskListProps) => {
   const { tasks } = useInboxTasks()
 
-  // Focus
-  const firstTaskOfDayIdxes: number[] = []
+  // store important idxes in local state
+  const [firstTaskOfDayIdxes, setFirstTaskOfDayIdxes] = useState<number[]>([])
+  const [dividerIdxes, setDividerIdxes] = useState<number[]>([])
 
+  useEffect(() => {
+    const newFirstTaskOfDayIdxes: number[] = []
+    const newDividerIdxes: number[] = []
+
+    tasks?.forEach((task, idx) => {
+      const isDateStampIdx = idx === 0 || getDateStamp(task?.due) !== getDateStamp(tasks[idx - 1]?.due)
+      const isDividerIdx = idx !== 0 && isTaskTimeSet(task) && !isTaskTimeSet(tasks[idx - 1])
+
+      if (isDateStampIdx) newFirstTaskOfDayIdxes.push(idx)
+      if (isDividerIdx) newDividerIdxes.push(idx)
+    })
+
+    setFirstTaskOfDayIdxes(newFirstTaskOfDayIdxes)
+    setDividerIdxes(newDividerIdxes)
+  }, [tasks])
+
+  // Focus
   useKeyPress('ArrowUp', (event) => {
     if (!isListDisabled) {
       if ((event.metaKey || event.ctrlKey) && tasks) {
@@ -59,13 +77,11 @@ const TaskList = ({ isListDisabled, setIsListDisabled, focusIdx, setFocusIdx }: 
   return (
     <Container>
       {tasks?.map((task, idx) => {
-        const renderDateStamp = idx === 0 || getDateStamp(task?.due) !== getDateStamp(tasks[idx - 1]?.due)
-        const renderDividingSpace = idx !== 0 && isTaskTimeSet(task) && !isTaskTimeSet(tasks[idx - 1])
-
-        if (renderDateStamp) firstTaskOfDayIdxes.push(idx)
+        const renderDateStamp = firstTaskOfDayIdxes.includes(idx)
+        const renderDividingSpace = dividerIdxes.includes(idx)
 
         return (
-          <div key={`${task?._id}${task?.name}`}>
+          <div key={`${task?._id}${new Date(task?.createdAt).getTime()}`}>
             {renderDateStamp && (
               <>
                 <Space padding='.5rem 0' />
