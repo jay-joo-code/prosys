@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React from 'react'
 import { ITask } from 'src/types/task.type'
 import styled from 'styled-components'
 import { FlexRow } from '../layout/Flex'
@@ -23,7 +23,7 @@ const TaskItem = ({ task, isSelected, isFocused, idx, setIsListDisabled, setFocu
     setFocusIdx(idx)
   }
 
-  const scrollTo = (instance: HTMLDivElement) => {
+  const scrollToFocused = (instance: HTMLDivElement) => {
     if (instance && isFocused) {
       instance.scrollIntoView({ behavior: 'smooth', block: 'center' })
     }
@@ -31,7 +31,7 @@ const TaskItem = ({ task, isSelected, isFocused, idx, setIsListDisabled, setFocu
 
   return (
     <Container
-      ref={scrollTo}
+      ref={scrollToFocused}
       isSelected={isSelected}
       isFocused={isFocused}
       onClick={handleClick}
