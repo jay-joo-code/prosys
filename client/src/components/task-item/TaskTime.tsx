@@ -1,14 +1,12 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useUpdateInboxTaskById } from 'src/api/task'
+import theme from 'src/app/theme'
 import useKeypress from 'src/hooks/useKeyPress'
 import { ITask } from 'src/types/task.type'
+import { isTaskTimeSet } from 'src/util/task'
 import styled from 'styled-components'
 import Text from '../fonts/Text'
 import { FlexRow } from '../layout/Flex'
-import Space from '../layout/Space'
-import RemoveIcon from '@material-ui/icons/Remove'
-import { isTaskTimeSet } from 'src/util/task'
-import theme from 'src/app/theme'
 
 interface TaskTimeProps {
   task: ITask
@@ -63,6 +61,10 @@ const TaskTime = ({ task, isFocused, setIsListDisabled }: TaskTimeProps) => {
     }
     return ''
   }
+
+  useEffect(() => {
+    setLocalEndTime(incrementTimeStamp(localStartTime))
+  }, [localStartTime])
 
   /* increment / decrement time with arrow keys */
   // const incrementTime = (timeStamp: string): string => {
@@ -150,8 +152,10 @@ const TaskTime = ({ task, isFocused, setIsListDisabled }: TaskTimeProps) => {
               ? <TimeStampInput
                   autoFocus
                   value={localEndTime}
-                  onChange={(e) => setLocalEndTime(e.target.value)}
-                  onFocus={() => setLocalEndTime(incrementTimeStamp(localStartTime))}
+                  onChange={(event) => setLocalEndTime(event.target.value)}
+                  onFocus={(event) => {
+                    event.target.select()
+                  }}
                 />
               : (
                 <TimeStamp>
