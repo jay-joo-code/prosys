@@ -129,7 +129,7 @@ const TaskTime = ({ task, isFocused, setIsListDisabled }: TaskTimeProps) => {
                   autoFocus
                   value={localStartTime}
                   onChange={(e) => setLocalStartTime(e.target.value)}
-                  onFocus={() => setLocalStartTime('')}
+                  onFocus={(event) => event.target.select()}
                 />
               : (
                 <TimeStamp>
@@ -153,9 +153,7 @@ const TaskTime = ({ task, isFocused, setIsListDisabled }: TaskTimeProps) => {
                   autoFocus
                   value={localEndTime}
                   onChange={(event) => setLocalEndTime(event.target.value)}
-                  onFocus={(event) => {
-                    event.target.select()
-                  }}
+                  onFocus={(event) => event.target.select()}
                 />
               : (
                 <TimeStamp>
