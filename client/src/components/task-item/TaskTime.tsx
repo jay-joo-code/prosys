@@ -59,7 +59,11 @@ const TaskTime = ({ task, isFocused, setIsListDisabled }: TaskTimeProps) => {
     if (Number(timeStamp)) {
       return `0${(Number(timeStamp) + 100).toString()}`.slice(-4)
     }
-    return ''
+    return '0000'
+  }
+
+  if (task?.name === 'tester') {
+    console.log('localStartTime, localEndTime :>> ', localStartTime, localEndTime)
   }
 
   useEffect(() => {
@@ -167,7 +171,7 @@ const TaskTime = ({ task, isFocused, setIsListDisabled }: TaskTimeProps) => {
               )
             }
           </FlexRow>
-          )
+        )
         : null
       }
     </div>

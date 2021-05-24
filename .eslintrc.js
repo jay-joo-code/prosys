@@ -25,6 +25,8 @@ module.exports = {
       exports: 'never',
       functions: 'never',
     }],
+    indent: 'off',
+    '@typescript-eslint/indent': ['warn', 2, { ignoredNodes: ['JSXElement *', 'JSXElement'] }],
     'import/no-named-default': 'off',
     'react/jsx-indent-props': ['warn', 2],
     'react/jsx-max-props-per-line': ['warn', { maximum: 1 }],
@@ -34,7 +36,5 @@ module.exports = {
     'react/jsx-indent': ['warn', 2],
     quotes: ['warn', 'single'],
     'jsx-quotes': ['warn', 'prefer-single'],
-    indent: 'off',
-    // '@typescript-eslint/indent': ['warn', 2],
   },
 }
