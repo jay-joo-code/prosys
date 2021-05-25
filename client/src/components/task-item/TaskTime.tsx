@@ -37,13 +37,15 @@ const TaskTime = ({ task, isFocused, inboxState, setInboxState }: TaskTimeProps)
         setInboxState('EDIT_TIME')
         setIsStartTimeFocused(true)
       } else if (inboxState === 'EDIT_TIME') {
+        event.preventDefault()
         updateTime()
       }
     }
   })
 
-  useKeypress(['Enter', 'Escape'], () => {
+  useKeypress(['Enter', 'Escape'], (event) => {
     if (isFocused && inboxState === 'EDIT_TIME') {
+      event.preventDefault()
       updateTime()
     }
   })
