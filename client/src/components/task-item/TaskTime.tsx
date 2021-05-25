@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { useUpdateInboxTaskById } from 'src/api/task'
 import theme from 'src/app/theme'
+import useIsMobile from 'src/hooks/useIsMobile'
 import useKeypress from 'src/hooks/useKeyPress'
 import { IInboxState, ITask } from 'src/types/task.type'
 import { isTaskTimeSet } from 'src/util/task'
 import styled from 'styled-components'
 import Text from '../fonts/Text'
 import { FlexRow } from '../layout/Flex'
+import OutsideClickListener from '../util/OutsideClickListener'
 
 interface TaskTimeProps {
   task: ITask
@@ -68,111 +70,81 @@ const TaskTime = ({ task, isFocused, inboxState, setInboxState }: TaskTimeProps)
     setLocalEndTime(incrementTimeStamp(localStartTime))
   }, [localStartTime])
 
-  /* increment / decrement time with arrow keys */
-  // const incrementTime = (timeStamp: string): string => {
-  //   if (timeStamp === '2330') {
-  //     return '0000'
-  //   } else if (timeStamp[2] === '3') {
-  //     return `0${(Number(timeStamp.slice(0, 2)) + 1).toString()}00`.slice(-4)
-  //   } else {
-  //     return `${timeStamp[0]}${timeStamp[1]}30`
-  //   }
-  // }
+  // mobile
+  const isMobile = useIsMobile()
 
-  // useKeypress('ArrowUp', (event) => {
-  //   if (isEditMode) {
-  //     event.preventDefault()
-  //     if (isStartTimeFocused) {
-  //       const newStartTime = incrementTime(localStartTime)
-  //       setLocalStartTime(newStartTime)
+  const handleTimeStampClick = (isStartTime: boolean) => {
+    if (isFocused && isMobile) {
+      if (inboxState === 'NAVIGATE') {
+        setInboxState('EDIT_TIME')
+      } else if (inboxState === 'EDIT_TIME') {
+        setIsStartTimeFocused(isStartTime)
+      }
+    }
+  }
 
-  //       if (Number(newStartTime) > Number(localEndTime)) {
-  //         setLocalEndTime(newStartTime)
-  //       }
-  //     } else {
-  //       setLocalEndTime(incrementTime(localEndTime))
-  //     }
-  //   }
-  // })
-
-  // const decrementTime = (timeStamp: string): string => {
-  //   if (timeStamp === '0000') {
-  //     return '2330'
-  //   } else if (timeStamp[2] === '3') {
-  //     return `${timeStamp[0]}${timeStamp[1]}00`
-  //   } else {
-  //     return `0${(Number(timeStamp.slice(0, 2)) - 1).toString()}30`.slice(-4)
-  //   }
-  // }
-
-  // useKeypress('ArrowDown', (event) => {
-  //   if (isEditMode) {
-  //     event.preventDefault()
-  //     if (isStartTimeFocused) {
-  //       const newStartTime = decrementTime(localStartTime)
-  //       setLocalStartTime(newStartTime)
-
-  //       if (Number(newStartTime) > Number(localEndTime)) {
-  //         setLocalEndTime(newStartTime)
-  //       }
-  //     } else {
-  //       setLocalEndTime(decrementTime(localEndTime))
-  //     }
-  //   }
-  // })
+  const handleOutsideClick = () => {
+    if (isFocused && isMobile && inboxState === 'EDIT_TIME') {
+      setInboxState('NAVIGATE')
+    }
+  }
 
   return (
-    <div>
-      {(isTaskTimeSet(task) || (isFocused && inboxState === 'EDIT_TIME'))
-        ? (
-          <FlexRow alignCenter>
-            {((isFocused && inboxState === 'EDIT_TIME') && isStartTimeFocused)
-              ? <TimeStampInput
-                  autoFocus
-                  value={localStartTime}
-                  onChange={(e) => setLocalStartTime(e.target.value)}
-                  onFocus={(event) => event.target.select()}
-                />
-              : (
-                <TimeStamp>
-                  <Text
-                    variant='p'
-                    nowrap
-                    color={theme.text.light}
-                  >{localStartTime}
-                  </Text>
-                </TimeStamp>
-              )
-            }
-            <Text
-              variant='p'
-              nowrap
-              color={theme.text.light}
-            >-
-            </Text>
-            {((isFocused && inboxState === 'EDIT_TIME') && !isStartTimeFocused)
-              ? <TimeStampInput
-                  autoFocus
-                  value={localEndTime}
-                  onChange={(event) => setLocalEndTime(event.target.value)}
-                  onFocus={(event) => event.target.select()}
-                />
-              : (
-                <TimeStamp>
-                  <Text
-                    variant='p'
-                    nowrap
-                    color={theme.text.light}
-                  >{localEndTime}
-                  </Text>
-                </TimeStamp>
-              )
-            }
-          </FlexRow>
+    <OutsideClickListener
+      onOutsideClick={handleOutsideClick}
+      isListening
+    >
+      <div>
+        {(isTaskTimeSet(task) || (isFocused && inboxState === 'EDIT_TIME')) &&
+      (
+        <FlexRow alignCenter>
+          {((isFocused && inboxState === 'EDIT_TIME') && isStartTimeFocused)
+            ? <TimeStampInput
+                autoFocus
+                value={localStartTime}
+                onChange={(e) => setLocalStartTime(e.target.value)}
+                onFocus={(event) => event.target.select()}
+              />
+            : (
+              <TimeStamp onClick={() => handleTimeStampClick(true)}>
+                <Text
+                  variant='p'
+                  nowrap
+                  color={theme.text.light}
+                >{localStartTime}
+                </Text>
+              </TimeStamp>
+            )
+          }
+          <Text
+            variant='p'
+            nowrap
+            color={theme.text.light}
+          >-
+          </Text>
+          {((isFocused && inboxState === 'EDIT_TIME') && !isStartTimeFocused)
+            ? <TimeStampInput
+                autoFocus
+                value={localEndTime}
+                onChange={(event) => setLocalEndTime(event.target.value)}
+                onFocus={(event) => event.target.select()}
+              />
+            : (
+              <TimeStamp onClick={() => handleTimeStampClick(false)}>
+                <Text
+                  variant='p'
+                  nowrap
+                  color={theme.text.light}
+                >{localEndTime}
+                </Text>
+              </TimeStamp>
+            )
+          }
+        </FlexRow>
         )
-        : null
       }
-    </div>
+      </div>
+    </OutsideClickListener>
   )
 }
 

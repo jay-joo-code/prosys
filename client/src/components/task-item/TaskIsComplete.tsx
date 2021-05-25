@@ -13,13 +13,17 @@ interface TaskIsCompleteProps {
 const TaskIsComplete = ({ task, isFocused, inboxState }: TaskIsCompleteProps) => {
   const { updateInboxTask } = useUpdateInboxTaskById(task?._id)
 
+  const toggleIsComplete = () => {
+    updateInboxTask({
+      _id: task?._id,
+      isComplete: !task?.isComplete,
+    })
+  }
+
   useKeyPress(' ', (event) => {
     if (isFocused && inboxState === 'NAVIGATE') {
       event.preventDefault()
-      updateInboxTask({
-        _id: task?._id,
-        isComplete: !task?.isComplete,
-      })
+      toggleIsComplete()
     }
   })
 
@@ -27,6 +31,7 @@ const TaskIsComplete = ({ task, isFocused, inboxState }: TaskIsCompleteProps) =>
     <Container
       isComplete={task?.isComplete}
       isInverted={isFocused && inboxState === 'NAVIGATE'}
+      onClick={toggleIsComplete}
     />
   )
 }

@@ -20,7 +20,8 @@ interface TaskItemProps {
 }
 
 const TaskItem = ({ task, isSelected, isFocused, idx, setFocusIdx, inboxState, setInboxState }: TaskItemProps) => {
-  const handleClick = () => {
+  const handleClick = (event: React.MouseEvent) => {
+    event.preventDefault()
     setFocusIdx(idx)
   }
 

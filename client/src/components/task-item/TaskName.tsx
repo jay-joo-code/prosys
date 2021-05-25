@@ -1,9 +1,11 @@
 import React, { ChangeEvent, useState } from 'react'
 import { useUpdateInboxTaskById } from 'src/api/task'
+import useIsMobile from 'src/hooks/useIsMobile'
 import useKeyPress from 'src/hooks/useKeyPress'
 import { IInboxState, ITask } from 'src/types/task.type'
 import styled from 'styled-components'
 import Text from '../fonts/Text'
+import OutsideClickListener from '../util/OutsideClickListener'
 
 interface TaskNameProps {
   task: ITask
@@ -15,6 +17,22 @@ interface TaskNameProps {
 const TaskName = ({ task, isFocused, inboxState, setInboxState }: TaskNameProps) => {
   const { updateInboxTask } = useUpdateInboxTaskById(task?._id)
 
+  // mobile
+  const isMobile = useIsMobile()
+
+  const handleClick = () => {
+    if (isMobile && isFocused && inboxState === 'NAVIGATE') {
+      setInboxState('EDIT_NAME')
+    }
+  }
+
+  const handleOutsideClick = () => {
+    if (isMobile && isFocused && inboxState === 'EDIT_NAME') {
+      setInboxState('NAVIGATE')
+    }
+  }
+
+  // state handling
   useKeyPress(['e', 'ㄷ'], (event: KeyboardEvent) => {
     if (isFocused && inboxState === 'NAVIGATE') {
       event.preventDefault()
@@ -40,8 +58,12 @@ const TaskName = ({ task, isFocused, inboxState, setInboxState }: TaskNameProps)
   }
 
   return (
-    <Container>
-      {(isFocused && inboxState === 'EDIT_NAME')
+    <OutsideClickListener
+      onOutsideClick={handleOutsideClick}
+      isListening
+    >
+      <Container onClick={handleClick}>
+        {(isFocused && inboxState === 'EDIT_NAME')
         ? <NameTextField
             value={inputValue}
             onChange={handleInputChange}
@@ -56,7 +78,8 @@ const TaskName = ({ task, isFocused, inboxState, setInboxState }: TaskNameProps)
           </Text>
           )
       }
-    </Container>
+      </Container>
+    </OutsideClickListener>
   )
 }
 
