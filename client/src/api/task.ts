@@ -2,6 +2,19 @@ import useCustomMutation from 'src/hooks/useCustomMutation'
 import useCustomQuery from 'src/hooks/useCustomQuery'
 import { IScheduleTasks, ITask } from 'src/types/task.type'
 
+const sortTasks = (tasks: ITask[]) => {
+  tasks?.sort((a, b) => {
+    const aDate = new Date(a.due)
+      .setHours(Number(a.startTime?.slice(0, 2)), Number(a.startTime?.slice(2, 4)), 0, 0)
+
+    const bDate = new Date(b.due)
+      .setHours(Number(b.startTime?.slice(0, 2)), Number(b.startTime?.slice(2, 4)), 0, 0)
+
+    return aDate - bDate || new Date(b.createdAt).valueOf() - new Date(a.createdAt).valueOf()
+  })
+  return tasks
+}
+
 export const fetchInboxTasks = () => ({
   url: '/private/task/inbox',
 })
@@ -13,19 +26,9 @@ export const fetchScheduleTasks = () => ({
 export const useInboxTasks = () => {
   const { data: tasks, ...rest } = useCustomQuery<ITask[]>(fetchInboxTasks())
 
-  tasks?.sort((a, b) => {
-    const aDate = new Date(a.due)
-      .setHours(Number(a.startTime?.slice(0, 2)), Number(a.startTime?.slice(2, 4)), 0, 0)
-
-    const bDate = new Date(b.due)
-      .setHours(Number(b.startTime?.slice(0, 2)), Number(b.startTime?.slice(2, 4)), 0, 0)
-
-    return aDate - bDate || new Date(b.createdAt).valueOf() - new Date(a.createdAt).valueOf()
-  })
-
   return {
     ...rest,
-    tasks,
+    tasks: tasks && sortTasks(tasks),
   }
 }
 

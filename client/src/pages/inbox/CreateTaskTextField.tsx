@@ -1,5 +1,4 @@
 import React, { useRef, useState, useEffect } from 'react'
-
 import { useCreateTask } from 'src/api/task'
 import TextField from 'src/components/form-elements/TextField'
 import useKeyPress from 'src/hooks/useKeyPress'
@@ -22,7 +21,7 @@ const CreateTaskTextField = ({ focusIdx, setFocusIdx, inboxState, setInboxState 
 
   const handleCreateTask = async () => {
     try {
-      if (document.activeElement === inputRef?.current) {
+      if (document.activeElement === inputRef?.current && name !== '') {
         createTask({
           name,
           due: new Date(),
