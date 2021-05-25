@@ -3,25 +3,24 @@ import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/picker
 import React, { useRef, useState } from 'react'
 import { useUpdateInboxTaskById } from 'src/api/task'
 import useKeypress from 'src/hooks/useKeyPress'
-import { ITask } from 'src/types/task.type'
+import { IInboxState, ITask } from 'src/types/task.type'
 import styled from 'styled-components'
 
 interface TaskDueProps {
   isFocused: boolean
   task: ITask
-  setIsListDisabled: (value: boolean) => void
+  inboxState: IInboxState
+  setInboxState: (state: IInboxState) => void
 }
 
-const TaskDue = ({ isFocused, task, setIsListDisabled }: TaskDueProps) => {
+const TaskDue = ({ isFocused, task, inboxState, setInboxState }: TaskDueProps) => {
   const { updateInboxTask } = useUpdateInboxTaskById(task?._id)
-  const [isOpen, setIsOpen] = useState<boolean>(false)
   const [tempDate, setTempDate] = useState<Date>(task?.due || new Date())
 
   useKeypress(['d', 'ㅇ'], (event) => {
-    if (isFocused) {
+    if (isFocused && inboxState === 'NAVIGATE') {
       event.preventDefault()
-      setIsOpen(true)
-      setIsListDisabled(true)
+      setInboxState('EDIT_DUE')
     }
   })
 
@@ -31,12 +30,11 @@ const TaskDue = ({ isFocused, task, setIsListDisabled }: TaskDueProps) => {
   }
 
   const handleClose = () => {
+    setInboxState('NAVIGATE')
     updateInboxTask({
       _id: task?._id,
       due: new Date(tempDate),
     })
-    setIsOpen(false)
-    setIsListDisabled(false)
   }
 
   const containerRef = useRef<HTMLDivElement>(null)
@@ -52,7 +50,7 @@ const TaskDue = ({ isFocused, task, setIsListDisabled }: TaskDueProps) => {
           label='Date picker inline'
           value={tempDate}
           onChange={handleChange}
-          open={isOpen}
+          open={isFocused && inboxState === 'EDIT_DUE'}
           onClose={handleClose}
           TextFieldComponent={() => null}
           PopoverProps={{

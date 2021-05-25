@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import useKeypress from 'src/hooks/useKeyPress'
-import { ITask } from 'src/types/task.type'
+import { IInboxState, ITask } from 'src/types/task.type'
 import styled from 'styled-components'
 import TextareaAutosize from 'react-textarea-autosize'
 import Text from '../fonts/Text'
@@ -10,27 +10,25 @@ import theme from 'src/app/theme'
 interface TaskNotesProps {
   isFocused: boolean
   task: ITask
-  setIsListDisabled: (value: boolean) => void
+  inboxState: IInboxState
+  setInboxState: (state: IInboxState) => void
 }
 
-const TaskNotes = ({ isFocused, task, setIsListDisabled }: TaskNotesProps) => {
-  const [isEditMode, setIsEditMode] = useState<boolean>(false)
+const TaskNotes = ({ isFocused, task, inboxState, setInboxState }: TaskNotesProps) => {
   const { updateInboxTask } = useUpdateInboxTaskById(task?._id)
   const [textareaValue, setTextareaValue] = useState<string>(task?.notes)
 
   useKeypress(['n', 'ㅜ'], (event) => {
-    if (isFocused && !isEditMode) {
+    if (isFocused && inboxState === 'NAVIGATE') {
       event.preventDefault()
-      setIsEditMode(true)
-      setIsListDisabled(true)
+      setInboxState('EDIT_NOTES')
     }
   })
 
   useKeypress(['Enter', 'Escape'], (event) => {
-    if (isEditMode && (event.key === 'Escape' || (event.metaKey || event.ctrlKey))) {
+    if ((isFocused && inboxState === 'EDIT_NOTES') && (event.key === 'Escape' || (event.metaKey || event.ctrlKey))) {
       event.preventDefault()
-      setIsEditMode(false)
-      setIsListDisabled(false)
+      setInboxState('NAVIGATE')
       updateInboxTask({
         _id: task?._id,
         notes: textareaValue,
@@ -40,14 +38,14 @@ const TaskNotes = ({ isFocused, task, setIsListDisabled }: TaskNotesProps) => {
 
   return (
     <>
-      {isEditMode
+      {(isFocused && inboxState === 'EDIT_NOTES')
         ? (
           <NotesTextarea
             value={textareaValue}
             onChange={(e) => setTextareaValue(e.target.value)}
             autoFocus
           />
-          )
+        )
         : (
           <Container>
             <Text
@@ -56,7 +54,7 @@ const TaskNotes = ({ isFocused, task, setIsListDisabled }: TaskNotesProps) => {
             >{task?.notes}
             </Text>
           </Container>
-          )
+        )
       }
     </>
   )

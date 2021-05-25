@@ -1,15 +1,16 @@
 import React from 'react'
 import { useUpdateInboxTaskById } from 'src/api/task'
 import useKeyPress from 'src/hooks/useKeyPress'
-import { ITask } from 'src/types/task.type'
+import { IInboxState, ITask } from 'src/types/task.type'
 import styled from 'styled-components'
 
 interface TaskIsCompleteProps {
   task: ITask
   isFocused: boolean
+  inboxState: IInboxState
 }
 
-const TaskIsComplete = ({ task, isFocused }: TaskIsCompleteProps) => {
+const TaskIsComplete = ({ task, isFocused, inboxState }: TaskIsCompleteProps) => {
   useKeyPress(' ', (event) => {
     if (isFocused) {
       event.preventDefault()
@@ -25,14 +26,14 @@ const TaskIsComplete = ({ task, isFocused }: TaskIsCompleteProps) => {
   return (
     <Container
       isComplete={task?.isComplete}
-      isFocused={isFocused}
+      isInverted={isFocused && inboxState === 'NAVIGATE'}
     />
   )
 }
 
 interface ContainerProps {
   isComplete: boolean
-  isFocused: boolean
+  isInverted: boolean
 }
 
 const Container = styled.div<ContainerProps>`
@@ -44,8 +45,8 @@ const Container = styled.div<ContainerProps>`
   // isComplete
   background: ${props => props.isComplete && props.theme.brand[300]};
 
-  // isFocused
-  border-color: ${props => props.isFocused && props.theme.bg.default};
+  // isInverted
+  border-color: ${props => props.isInverted && props.theme.bg.default};
 `
 
 export default TaskIsComplete

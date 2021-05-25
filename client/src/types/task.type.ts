@@ -13,3 +13,5 @@ export interface ITask extends IDocument {
 export interface IScheduleTasks {
   [id: string]: ITask[]
 }
+
+export type IInboxState = 'CREATE' | 'NAVIGATE' | 'EDIT_NAME' | 'EDIT_NOTES' | 'EDIT_TIME' | 'EDIT_DUE'

@@ -1,5 +1,5 @@
 import React from 'react'
-import { ITask } from 'src/types/task.type'
+import { IInboxState, ITask } from 'src/types/task.type'
 import styled from 'styled-components'
 import { FlexRow } from '../layout/Flex'
 import Space from '../layout/Space'
@@ -16,9 +16,11 @@ interface TaskItemProps {
   idx: number
   setIsListDisabled: (value: boolean) => void
   setFocusIdx: (idx: number) => void
+  inboxState: IInboxState
+  setInboxState: (state: IInboxState) => void
 }
 
-const TaskItem = ({ task, isSelected, isFocused, idx, setIsListDisabled, setFocusIdx }: TaskItemProps) => {
+const TaskItem = ({ task, isSelected, isFocused, idx, setIsListDisabled, setFocusIdx, inboxState, setInboxState }: TaskItemProps) => {
   const handleClick = () => {
     setFocusIdx(idx)
   }
@@ -33,7 +35,7 @@ const TaskItem = ({ task, isSelected, isFocused, idx, setIsListDisabled, setFocu
     <Container
       ref={scrollToFocused}
       isSelected={isSelected}
-      isFocused={isFocused}
+      isHighlighted={inboxState === 'NAVIGATE' && isFocused}
       onClick={handleClick}
     >
       <FlexRow alignStart>
@@ -42,6 +44,7 @@ const TaskItem = ({ task, isSelected, isFocused, idx, setIsListDisabled, setFocu
           <TaskIsComplete
             task={task}
             isFocused={isFocused}
+            inboxState={inboxState}
           />
         </div>
         <Space padding='0 .2rem' />
@@ -50,24 +53,28 @@ const TaskItem = ({ task, isSelected, isFocused, idx, setIsListDisabled, setFocu
             <TaskTime
               isFocused={isFocused}
               task={task}
-              setIsListDisabled={setIsListDisabled}
+              inboxState={inboxState}
+              setInboxState={setInboxState}
             />
             <Space padding='0 .1rem' />
             <TaskName
               isFocused={isFocused}
               task={task}
-              setIsListDisabled={setIsListDisabled}
+              inboxState={inboxState}
+              setInboxState={setInboxState}
             />
           </FlexRow>
           <TaskNotes
             isFocused={isFocused}
             task={task}
-            setIsListDisabled={setIsListDisabled}
+            inboxState={inboxState}
+            setInboxState={setInboxState}
           />
           <TaskDue
             isFocused={isFocused}
             task={task}
-            setIsListDisabled={setIsListDisabled}
+            inboxState={inboxState}
+            setInboxState={setInboxState}
           />
         </FullWidth>
       </FlexRow>
@@ -77,7 +84,7 @@ const TaskItem = ({ task, isSelected, isFocused, idx, setIsListDisabled, setFocu
 
 interface ContainerProps {
   isSelected: boolean
-  isFocused: boolean
+  isHighlighted: boolean
 }
 
 const Container = styled.div<ContainerProps>`
@@ -87,8 +94,8 @@ const Container = styled.div<ContainerProps>`
   // isSelected
   background: ${props => props.isSelected && props.theme.brand[100]};
 
-  // isFocused
-  background: ${props => props.isFocused && props.theme.brand[50]};
+  // isHighlighted
+  background: ${props => props.isHighlighted && props.theme.brand[50]};
 `
 
 const FullWidth = styled.div`

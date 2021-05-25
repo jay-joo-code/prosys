@@ -5,6 +5,7 @@ import Text from 'src/components/fonts/Text'
 import Space from 'src/components/layout/Space'
 import TaskItem from 'src/components/task-item/TaskItem'
 import useKeyPress from 'src/hooks/useKeyPress'
+import { IInboxState } from 'src/types/task.type'
 import { getDateStamp } from 'src/util/date'
 import { isTaskTimeSet } from 'src/util/task'
 import styled from 'styled-components'
@@ -14,9 +15,11 @@ interface TaskListProps {
   setIsListDisabled: (value: boolean) => void
   focusIdx: number
   setFocusIdx: (value: number) => void
+  inboxState: IInboxState
+  setInboxState: (state: IInboxState) => void
 }
 
-const TaskList = ({ isListDisabled, setIsListDisabled, focusIdx, setFocusIdx }: TaskListProps) => {
+const TaskList = ({ isListDisabled, setIsListDisabled, focusIdx, setFocusIdx, inboxState, setInboxState }: TaskListProps) => {
   const { tasks } = useInboxTasks()
 
   // store important idxes in local state
@@ -41,7 +44,7 @@ const TaskList = ({ isListDisabled, setIsListDisabled, focusIdx, setFocusIdx }: 
 
   // Focus
   useKeyPress('ArrowUp', (event) => {
-    if (!isListDisabled) {
+    if (inboxState === 'NAVIGATE') {
       event.preventDefault()
       if ((event.metaKey || event.ctrlKey) && tasks) {
         let hasJumped = false
@@ -58,7 +61,7 @@ const TaskList = ({ isListDisabled, setIsListDisabled, focusIdx, setFocusIdx }: 
   })
 
   useKeyPress('ArrowDown', (event) => {
-    if (!isListDisabled) {
+    if (inboxState === 'NAVIGATE') {
       event.preventDefault()
       if ((event.metaKey || event.ctrlKey) && tasks) {
         let hasJumped = false
@@ -98,10 +101,12 @@ const TaskList = ({ isListDisabled, setIsListDisabled, focusIdx, setFocusIdx }: 
             <TaskItem
               task={task}
               idx={idx}
-              isFocused={!isListDisabled && focusIdx === idx}
+              isFocused={focusIdx === idx}
               isSelected={false}
               setIsListDisabled={setIsListDisabled}
               setFocusIdx={setFocusIdx}
+              inboxState={inboxState}
+              setInboxState={setInboxState}
             />
           </div>
         )

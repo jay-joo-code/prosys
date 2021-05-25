@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useUpdateInboxTaskById } from 'src/api/task'
 import theme from 'src/app/theme'
 import useKeypress from 'src/hooks/useKeyPress'
-import { ITask } from 'src/types/task.type'
+import { IInboxState, ITask } from 'src/types/task.type'
 import { isTaskTimeSet } from 'src/util/task'
 import styled from 'styled-components'
 import Text from '../fonts/Text'
@@ -11,19 +11,18 @@ import { FlexRow } from '../layout/Flex'
 interface TaskTimeProps {
   task: ITask
   isFocused: boolean
-  setIsListDisabled: (value: boolean) => void
+  inboxState: IInboxState
+  setInboxState: (state: IInboxState) => void
 }
 
-const TaskTime = ({ task, isFocused, setIsListDisabled }: TaskTimeProps) => {
-  const [isEditMode, setIsEditMode] = useState<boolean>(false)
+const TaskTime = ({ task, isFocused, inboxState, setInboxState }: TaskTimeProps) => {
   const [isStartTimeFocused, setIsStartTimeFocused] = useState<boolean>(true)
   const { updateInboxTask } = useUpdateInboxTaskById(task?._id)
   const [localStartTime, setLocalStartTime] = useState<string>(task?.startTime)
   const [localEndTime, setLocalEndTime] = useState<string>(task?.endTime)
 
-  const handleBlur = () => {
-    setIsListDisabled(false)
-    setIsEditMode(false)
+  const updateTime = () => {
+    setInboxState('NAVIGATE')
     updateInboxTask({
       _id: task?._id,
       startTime: localStartTime,
@@ -33,23 +32,24 @@ const TaskTime = ({ task, isFocused, setIsListDisabled }: TaskTimeProps) => {
 
   useKeypress(['t', 'ㅅ'], (event) => {
     if (isFocused) {
-      event.preventDefault()
-      setIsListDisabled(true)
-      setIsEditMode(true)
-      setIsStartTimeFocused(true)
-    } else if (isEditMode) {
-      handleBlur()
+      if (inboxState === 'NAVIGATE') {
+        event.preventDefault()
+        setInboxState('EDIT_TIME')
+        setIsStartTimeFocused(true)
+      } else if (inboxState === 'EDIT_TIME') {
+        updateTime()
+      }
     }
   })
 
   useKeypress(['Enter', 'Escape'], () => {
-    if (isEditMode) {
-      handleBlur()
+    if (isFocused && inboxState === 'EDIT_TIME') {
+      updateTime()
     }
   })
 
   useKeypress('Tab', (event) => {
-    if (isEditMode) {
+    if (isFocused && inboxState === 'EDIT_TIME') {
       event.preventDefault()
       setIsStartTimeFocused(!isStartTimeFocused)
     }
@@ -121,10 +121,10 @@ const TaskTime = ({ task, isFocused, setIsListDisabled }: TaskTimeProps) => {
 
   return (
     <div>
-      {(isTaskTimeSet(task) || isEditMode)
+      {(isTaskTimeSet(task) || (isFocused && inboxState === 'EDIT_TIME'))
         ? (
           <FlexRow alignCenter>
-            {(isEditMode && isStartTimeFocused)
+            {((isFocused && inboxState === 'EDIT_TIME') && isStartTimeFocused)
               ? <TimeStampInput
                   autoFocus
                   value={localStartTime}
@@ -148,7 +148,7 @@ const TaskTime = ({ task, isFocused, setIsListDisabled }: TaskTimeProps) => {
               color={theme.text.light}
             >-
             </Text>
-            {(isEditMode && !isStartTimeFocused)
+            {((isFocused && inboxState === 'EDIT_TIME') && !isStartTimeFocused)
               ? <TimeStampInput
                   autoFocus
                   value={localEndTime}

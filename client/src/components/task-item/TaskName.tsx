@@ -1,32 +1,30 @@
 import React, { ChangeEvent, useState } from 'react'
 import { useUpdateInboxTaskById } from 'src/api/task'
 import useKeyPress from 'src/hooks/useKeyPress'
-import { ITask } from 'src/types/task.type'
+import { IInboxState, ITask } from 'src/types/task.type'
 import styled from 'styled-components'
 import Text from '../fonts/Text'
 
 interface TaskNameProps {
   task: ITask
   isFocused: boolean
-  setIsListDisabled: (value: boolean) => void
+  inboxState: IInboxState
+  setInboxState: (state: IInboxState) => void
 }
 
-const TaskName = ({ task, isFocused, setIsListDisabled }: TaskNameProps) => {
+const TaskName = ({ task, isFocused, inboxState, setInboxState }: TaskNameProps) => {
   const { updateInboxTask } = useUpdateInboxTaskById(task?._id)
-  const [isEditMode, setIsEditMode] = useState<boolean>(false)
 
   useKeyPress(['e', 'ㄷ'], (event: KeyboardEvent) => {
-    if (isFocused && !isEditMode) {
+    if (isFocused && inboxState === 'NAVIGATE') {
       event.preventDefault()
-      setIsEditMode(true)
-      setIsListDisabled(true)
+      setInboxState('EDIT_NAME')
     }
   })
 
   useKeyPress(['Enter', 'Escape'], () => {
-    if (isEditMode) {
-      setIsEditMode(false)
-      setIsListDisabled(false)
+    if (isFocused && inboxState === 'EDIT_NAME') {
+      setInboxState('NAVIGATE')
       updateInboxTask({
         _id: task?._id,
         name: inputValue,
@@ -42,7 +40,7 @@ const TaskName = ({ task, isFocused, setIsListDisabled }: TaskNameProps) => {
 
   return (
     <Container>
-      {isEditMode
+      {(isFocused && inboxState === 'EDIT_NAME')
         ? <NameTextField
             value={inputValue}
             onChange={handleInputChange}

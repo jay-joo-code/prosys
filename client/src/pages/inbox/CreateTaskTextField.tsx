@@ -2,18 +2,20 @@ import React, { useRef, useState } from 'react'
 import { useCreateTask } from 'src/api/task'
 import TextField from 'src/components/form-elements/TextField'
 import useKeyPress from 'src/hooks/useKeyPress'
+import { IInboxState } from 'src/types/task.type'
 import styled from 'styled-components'
 
 interface CreateTaskTextFieldProps {
-  isListDisabled: boolean
-  setIsListDisabled: (value: boolean) => void
   focusIdx: number
   setFocusIdx: (value: number) => void
+  inboxState: IInboxState
+  setInboxState: (state: IInboxState) => void
 }
 
-const CreateTaskTextField = ({ isListDisabled, setIsListDisabled, focusIdx, setFocusIdx }: CreateTaskTextFieldProps) => {
+const CreateTaskTextField = ({ focusIdx, setFocusIdx, inboxState, setInboxState }: CreateTaskTextFieldProps) => {
   const inputRef = useRef<HTMLInputElement>(null)
 
+  // create task
   const { createTask } = useCreateTask()
   const [name, setName] = useState<string>('')
 
@@ -32,13 +34,20 @@ const CreateTaskTextField = ({ isListDisabled, setIsListDisabled, focusIdx, setF
     }
   }
 
+  // state / focus handling
+  const handleFocus = () => {
+    setInboxState('CREATE')
+  }
+
+  const handleBlur = () => {
+    setInboxState('NAVIGATE')
+  }
+
   useKeyPress('Escape', () => {
     if (document.activeElement === inputRef?.current) {
       inputRef.current?.blur()
-      setIsListDisabled(false)
-    } else if (!isListDisabled) {
+    } else if (inboxState === 'NAVIGATE') {
       inputRef.current?.focus()
-      setIsListDisabled(true)
     }
   })
 
@@ -46,14 +55,12 @@ const CreateTaskTextField = ({ isListDisabled, setIsListDisabled, focusIdx, setF
     if (document.activeElement === inputRef?.current) {
       setFocusIdx(0)
       inputRef.current?.blur()
-      setIsListDisabled(false)
     }
   })
 
   useKeyPress('ArrowUp', () => {
-    if (focusIdx === 0 && !isListDisabled) {
+    if (focusIdx === 0 && inboxState === 'NAVIGATE') {
       inputRef.current?.focus()
-      setIsListDisabled(true)
     }
   })
 
@@ -64,6 +71,8 @@ const CreateTaskTextField = ({ isListDisabled, setIsListDisabled, focusIdx, setF
         value={name}
         onChange={(e) => setName(e.target.value)}
         onEnterPress={handleCreateTask}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
         fullWidth
         autoFocus
       />
