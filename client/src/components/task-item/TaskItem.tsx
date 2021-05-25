@@ -1,4 +1,5 @@
 import React from 'react'
+import useIsMobile from 'src/hooks/useIsMobile'
 import { IInboxState, ITask } from 'src/types/task.type'
 import styled from 'styled-components'
 import { FlexRow } from '../layout/Flex'
@@ -25,8 +26,10 @@ const TaskItem = ({ task, isSelected, isFocused, idx, setFocusIdx, inboxState, s
     setFocusIdx(idx)
   }
 
+  const isMobile = useIsMobile()
+
   const scrollToFocused = (instance: HTMLDivElement) => {
-    if (instance && isFocused) {
+    if (!isMobile && instance && isFocused) {
       instance.scrollIntoView({ behavior: 'smooth', block: 'center' })
     }
   }
