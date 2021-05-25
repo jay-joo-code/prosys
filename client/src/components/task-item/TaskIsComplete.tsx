@@ -11,8 +11,10 @@ interface TaskIsCompleteProps {
 }
 
 const TaskIsComplete = ({ task, isFocused, inboxState }: TaskIsCompleteProps) => {
+  const { updateInboxTask } = useUpdateInboxTaskById(task?._id)
+
   useKeyPress(' ', (event) => {
-    if (isFocused) {
+    if (isFocused && inboxState === 'NAVIGATE') {
       event.preventDefault()
       updateInboxTask({
         _id: task?._id,
@@ -20,8 +22,6 @@ const TaskIsComplete = ({ task, isFocused, inboxState }: TaskIsCompleteProps) =>
       })
     }
   })
-
-  const { updateInboxTask } = useUpdateInboxTaskById(task?._id)
 
   return (
     <Container

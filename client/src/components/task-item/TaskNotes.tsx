@@ -31,7 +31,7 @@ const TaskNotes = ({ isFocused, task, inboxState, setInboxState }: TaskNotesProp
       setInboxState('NAVIGATE')
       updateInboxTask({
         _id: task?._id,
-        notes: textareaValue,
+        notes: textareaValue.trim(),
       })
     }
   })
