@@ -43,23 +43,27 @@ const CreateTaskTextField = ({ focusIdx, setFocusIdx, inboxState, setInboxState 
     setInboxState('NAVIGATE')
   }
 
-  useKeyPress('Escape', () => {
+  useKeyPress('Escape', (event) => {
     if (document.activeElement === inputRef?.current) {
+      event.preventDefault()
       inputRef.current?.blur()
     } else if (inboxState === 'NAVIGATE') {
+      event.preventDefault()
       inputRef.current?.focus()
     }
   })
 
-  useKeyPress('ArrowDown', () => {
+  useKeyPress('ArrowDown', (event) => {
     if (document.activeElement === inputRef?.current) {
+      event.preventDefault()
       setFocusIdx(0)
       inputRef.current?.blur()
     }
   })
 
-  useKeyPress('ArrowUp', () => {
+  useKeyPress('ArrowUp', (event) => {
     if (focusIdx === 0 && inboxState === 'NAVIGATE') {
+      event.preventDefault()
       inputRef.current?.focus()
     }
   })

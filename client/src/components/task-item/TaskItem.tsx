@@ -14,13 +14,12 @@ interface TaskItemProps {
   isSelected: boolean
   isFocused: boolean
   idx: number
-  setIsListDisabled: (value: boolean) => void
   setFocusIdx: (idx: number) => void
   inboxState: IInboxState
   setInboxState: (state: IInboxState) => void
 }
 
-const TaskItem = ({ task, isSelected, isFocused, idx, setIsListDisabled, setFocusIdx, inboxState, setInboxState }: TaskItemProps) => {
+const TaskItem = ({ task, isSelected, isFocused, idx, setFocusIdx, inboxState, setInboxState }: TaskItemProps) => {
   const handleClick = () => {
     setFocusIdx(idx)
   }

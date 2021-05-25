@@ -7,7 +7,6 @@ import CreateTaskTextField from './CreateTaskTextField'
 import TaskList from './TaskList'
 
 const InboxPage = () => {
-  const [isListDisabled, setIsListDisabled] = useState<boolean>(true)
   const [focusIdx, setFocusIdx] = useState<number>(0)
   const [inboxState, setInboxState] = useState<IInboxState>('CREATE')
 
@@ -24,8 +23,6 @@ const InboxPage = () => {
           />
           <Space padding='.5rem 0' />
           <TaskList
-            isListDisabled={isListDisabled}
-            setIsListDisabled={setIsListDisabled}
             focusIdx={focusIdx}
             setFocusIdx={setFocusIdx}
             inboxState={inboxState}

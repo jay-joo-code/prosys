@@ -11,15 +11,13 @@ import { isTaskTimeSet } from 'src/util/task'
 import styled from 'styled-components'
 
 interface TaskListProps {
-  isListDisabled: boolean
-  setIsListDisabled: (value: boolean) => void
   focusIdx: number
   setFocusIdx: (value: number) => void
   inboxState: IInboxState
   setInboxState: (state: IInboxState) => void
 }
 
-const TaskList = ({ isListDisabled, setIsListDisabled, focusIdx, setFocusIdx, inboxState, setInboxState }: TaskListProps) => {
+const TaskList = ({ focusIdx, setFocusIdx, inboxState, setInboxState }: TaskListProps) => {
   const { tasks } = useInboxTasks()
 
   // store important idxes in local state
@@ -103,7 +101,6 @@ const TaskList = ({ isListDisabled, setIsListDisabled, focusIdx, setFocusIdx, in
               idx={idx}
               isFocused={focusIdx === idx}
               isSelected={false}
-              setIsListDisabled={setIsListDisabled}
               setFocusIdx={setFocusIdx}
               inboxState={inboxState}
               setInboxState={setInboxState}
