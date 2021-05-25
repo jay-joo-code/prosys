@@ -93,6 +93,7 @@ interface ContainerProps {
 const Container = styled.div<ContainerProps>`
   padding: .5rem;
   border-radius: 4px;
+  cursor: pointer;
 
   // isSelected
   background: ${props => props.isSelected && props.theme.brand[100]};
