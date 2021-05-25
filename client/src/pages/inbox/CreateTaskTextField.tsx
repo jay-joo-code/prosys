@@ -1,4 +1,5 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
+
 import { useCreateTask } from 'src/api/task'
 import TextField from 'src/components/form-elements/TextField'
 import useKeyPress from 'src/hooks/useKeyPress'
@@ -35,6 +36,14 @@ const CreateTaskTextField = ({ focusIdx, setFocusIdx, inboxState, setInboxState 
   }
 
   // state / focus handling
+  useEffect(() => {
+    if (inboxState === 'CREATE') {
+      inputRef.current?.focus()
+    } else if (document.activeElement === inputRef?.current) {
+      inputRef.current?.blur()
+    }
+  }, [inboxState])
+
   const handleFocus = () => {
     setInboxState('CREATE')
   }
@@ -46,10 +55,10 @@ const CreateTaskTextField = ({ focusIdx, setFocusIdx, inboxState, setInboxState 
   useKeyPress('Escape', (event) => {
     if (document.activeElement === inputRef?.current) {
       event.preventDefault()
-      inputRef.current?.blur()
+      setInboxState('NAVIGATE')
     } else if (inboxState === 'NAVIGATE') {
       event.preventDefault()
-      inputRef.current?.focus()
+      setInboxState('CREATE')
     }
   })
 
@@ -57,14 +66,14 @@ const CreateTaskTextField = ({ focusIdx, setFocusIdx, inboxState, setInboxState 
     if (document.activeElement === inputRef?.current) {
       event.preventDefault()
       setFocusIdx(0)
-      inputRef.current?.blur()
+      setInboxState('NAVIGATE')
     }
   })
 
   useKeyPress('ArrowUp', (event) => {
     if (focusIdx === 0 && inboxState === 'NAVIGATE') {
       event.preventDefault()
-      inputRef.current?.focus()
+      setInboxState('CREATE')
     }
   })
 
@@ -78,7 +87,6 @@ const CreateTaskTextField = ({ focusIdx, setFocusIdx, inboxState, setInboxState 
         onFocus={handleFocus}
         onBlur={handleBlur}
         fullWidth
-        autoFocus
       />
     </Container>
   )
