@@ -67,7 +67,9 @@ const TaskTime = ({ task, isFocused, inboxState, setInboxState }: TaskTimeProps)
   }
 
   useEffect(() => {
-    setLocalEndTime(incrementTimeStamp(localStartTime))
+    if (isFocused && inboxState === 'EDIT_TIME') {
+      setLocalEndTime(incrementTimeStamp(localStartTime))
+    }
   }, [localStartTime])
 
   // mobile
