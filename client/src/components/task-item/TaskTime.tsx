@@ -74,10 +74,11 @@ const TaskTime = ({ task, isFocused, inboxState, setInboxState }: TaskTimeProps)
   const isMobile = useIsMobile()
 
   const handleTimeStampClick = (isStartTime: boolean) => {
-    if (isFocused && isMobile) {
+    if (isMobile) {
       if (inboxState === 'NAVIGATE') {
         setInboxState('EDIT_TIME')
       } else if (inboxState === 'EDIT_TIME') {
+        console.log('isStartTime :>> ', isStartTime)
         setIsStartTimeFocused(isStartTime)
       }
     }

@@ -21,12 +21,12 @@ interface TaskItemProps {
 }
 
 const TaskItem = ({ task, isSelected, isFocused, idx, setFocusIdx, inboxState, setInboxState }: TaskItemProps) => {
+  const isMobile = useIsMobile()
+
   const handleClick = (event: React.MouseEvent) => {
-    event.preventDefault()
+    if (!isMobile) event.preventDefault()
     setFocusIdx(idx)
   }
-
-  const isMobile = useIsMobile()
 
   const scrollToFocused = (instance: HTMLDivElement) => {
     if (!isMobile && instance && isFocused) {
