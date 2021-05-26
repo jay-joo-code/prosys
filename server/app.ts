@@ -31,7 +31,7 @@ app.use(express.urlencoded({ extended: false }))
 // passport
 declare global {
   namespace Express {
-      interface User extends IUserDocument {}
+    interface User extends IUserDocument {}
   }
 }
 

@@ -19,7 +19,7 @@
     "passport-jwt": "^4.0.0"
   },
   "scripts": {
-    "dev": "nodemon --exec \"ts-node\" app.ts",
+    "dev": "ts-node-dev --debounce --respawn --transpile-only app.ts",
     "build": "npx tsc",
     "lint": "eslint . --ext .js --ext .jsx --ext .ts --ext .tsx --fix"
   },
