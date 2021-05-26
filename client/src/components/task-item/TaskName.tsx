@@ -32,6 +32,12 @@ const TaskName = ({ task, isFocused, inboxState, setInboxState }: TaskNameProps)
     }
   }
 
+  const handleBlur = () => {
+    if (isMobile && isFocused && inboxState === 'EDIT_NAME') {
+      setInboxState('NAVIGATE')
+    }
+  }
+
   // state handling
   useKeyPress(['e', 'ㄷ'], (event: KeyboardEvent) => {
     if (isFocused && inboxState === 'NAVIGATE') {
@@ -67,6 +73,7 @@ const TaskName = ({ task, isFocused, inboxState, setInboxState }: TaskNameProps)
         ? <NameTextField
             value={inputValue}
             onChange={handleInputChange}
+            onBlur={handleBlur}
             autoFocus
           />
         : (

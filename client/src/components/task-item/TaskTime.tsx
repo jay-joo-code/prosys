@@ -92,6 +92,12 @@ const TaskTime = ({ task, isFocused, inboxState, setInboxState }: TaskTimeProps)
     }
   }
 
+  const handleBlur = () => {
+    if (isFocused && isMobile && inboxState === 'EDIT_TIME') {
+      setInboxState('NAVIGATE')
+    }
+  }
+
   return (
     <OutsideClickListener
       onOutsideClick={handleOutsideClick}
@@ -107,6 +113,7 @@ const TaskTime = ({ task, isFocused, inboxState, setInboxState }: TaskTimeProps)
                 value={localStartTime}
                 onChange={(e) => setLocalStartTime(e.target.value)}
                 onFocus={(event) => event.target.select()}
+                onBlur={handleBlur}
               />
             : (
               <TimeStamp onClick={() => handleTimeStampClick(true)}>
@@ -131,6 +138,7 @@ const TaskTime = ({ task, isFocused, inboxState, setInboxState }: TaskTimeProps)
                 value={localEndTime}
                 onChange={(event) => setLocalEndTime(event.target.value)}
                 onFocus={(event) => event.target.select()}
+                onBlur={handleBlur}
               />
             : (
               <TimeStamp onClick={() => handleTimeStampClick(false)}>
