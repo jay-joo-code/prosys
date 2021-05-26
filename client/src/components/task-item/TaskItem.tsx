@@ -9,6 +9,7 @@ import TaskIsComplete from './TaskIsComplete'
 import TaskName from './TaskName'
 import TaskNotes from './TaskNotes'
 import TaskTime from './TaskTime'
+import TaskTimeButton from './TaskTimeButton'
 
 interface TaskItemProps {
   task: ITask
@@ -64,6 +65,12 @@ const TaskItem = ({ task, isSelected, isFocused, idx, setFocusIdx, inboxState, s
             />
             <Space padding='0 .1rem' />
             <TaskName
+              isFocused={isFocused}
+              task={task}
+              inboxState={inboxState}
+              setInboxState={setInboxState}
+            />
+            <TaskTimeButton
               isFocused={isFocused}
               task={task}
               inboxState={inboxState}

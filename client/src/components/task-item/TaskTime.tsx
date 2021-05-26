@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useUpdateInboxTaskById } from 'src/api/task'
 import theme from 'src/app/theme'
 import useIsMobile from 'src/hooks/useIsMobile'
 import useKeypress from 'src/hooks/useKeyPress'
+import usePreviousValue from 'src/hooks/usePreviousValue'
 import { IInboxState, ITask } from 'src/types/task.type'
 import { isTaskTimeSet } from 'src/util/task'
 import styled from 'styled-components'
@@ -74,6 +75,9 @@ const TaskTime = ({ task, isFocused, inboxState, setInboxState }: TaskTimeProps)
 
   // mobile
   const isMobile = useIsMobile()
+  const startTimeStampRef = useRef<HTMLDivElement>(null)
+  const endTimeStampRef = useRef<HTMLDivElement>(null)
+  const [tempRender, setTempRender] = useState<boolean>(false)
 
   const handleTimeStampClick = (isStartTime: boolean) => {
     if (isMobile) {
@@ -95,8 +99,15 @@ const TaskTime = ({ task, isFocused, inboxState, setInboxState }: TaskTimeProps)
   const handleBlur = () => {
     if (isFocused && isMobile && inboxState === 'EDIT_TIME') {
       setInboxState('NAVIGATE')
+      setTempRender(true)
     }
   }
+
+  useEffect(() => {
+    if (tempRender) {
+      setTimeout(() => setTempRender(false), 0)
+    }
+  }, [tempRender])
 
   return (
     <OutsideClickListener
@@ -104,7 +115,7 @@ const TaskTime = ({ task, isFocused, inboxState, setInboxState }: TaskTimeProps)
       isListening
     >
       <div>
-        {(isTaskTimeSet(task) || (isFocused && inboxState === 'EDIT_TIME')) &&
+        {(isTaskTimeSet(task) || (isFocused && inboxState === 'EDIT_TIME') || (isMobile && isFocused && tempRender)) &&
       (
         <FlexRow alignCenter>
           {((isFocused && inboxState === 'EDIT_TIME') && isStartTimeFocused)
@@ -116,7 +127,10 @@ const TaskTime = ({ task, isFocused, inboxState, setInboxState }: TaskTimeProps)
                 onBlur={handleBlur}
               />
             : (
-              <TimeStamp onClick={() => handleTimeStampClick(true)}>
+              <TimeStamp
+                ref={startTimeStampRef}
+                onClick={() => handleTimeStampClick(true)}
+              >
                 <Text
                   variant='p'
                   nowrap
@@ -141,7 +155,10 @@ const TaskTime = ({ task, isFocused, inboxState, setInboxState }: TaskTimeProps)
                 onBlur={handleBlur}
               />
             : (
-              <TimeStamp onClick={() => handleTimeStampClick(false)}>
+              <TimeStamp
+                ref={endTimeStampRef}
+                onClick={() => handleTimeStampClick(false)}
+              >
                 <Text
                   variant='p'
                   nowrap
@@ -160,14 +177,15 @@ const TaskTime = ({ task, isFocused, inboxState, setInboxState }: TaskTimeProps)
 }
 
 const TimeStampInput = styled.input`
-  width: 40px;
+  padding: 0 .2rem;
+  width: 45px;
   font-size: 16px;
   color: ${props => props.theme.text.light};
-  padding: 0;
 `
 
 const TimeStamp = styled.div`
   padding: 0 .2rem;
+  width: 45px;
   border-radius: 6px;
 `
 
