@@ -79,8 +79,8 @@ const TaskTime = ({ task, isFocused, inboxState, setInboxState }: TaskTimeProps)
     if (isMobile) {
       if (inboxState === 'NAVIGATE') {
         setInboxState('EDIT_TIME')
+        setIsStartTimeFocused(isStartTime)
       } else if (inboxState === 'EDIT_TIME') {
-        console.log('isStartTime :>> ', isStartTime)
         setIsStartTimeFocused(isStartTime)
       }
     }
@@ -112,7 +112,7 @@ const TaskTime = ({ task, isFocused, inboxState, setInboxState }: TaskTimeProps)
                 autoFocus
                 value={localStartTime}
                 onChange={(e) => setLocalStartTime(e.target.value)}
-                onFocus={(event) => event.target.select()}
+                onFocus={(event) => { if (!isMobile) event.target.select() }}
                 onBlur={handleBlur}
               />
             : (
@@ -137,7 +137,7 @@ const TaskTime = ({ task, isFocused, inboxState, setInboxState }: TaskTimeProps)
                 autoFocus
                 value={localEndTime}
                 onChange={(event) => setLocalEndTime(event.target.value)}
-                onFocus={(event) => event.target.select()}
+                onFocus={(event) => { if (!isMobile) event.target.select() }}
                 onBlur={handleBlur}
               />
             : (
@@ -163,6 +163,7 @@ const TimeStampInput = styled.input`
   width: 40px;
   font-size: 16px;
   color: ${props => props.theme.text.light};
+  padding: 0;
 `
 
 const TimeStamp = styled.div`
