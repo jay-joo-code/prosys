@@ -52,7 +52,10 @@ const TaskItem = ({ task, isSelected, isFocused, idx, setFocusIdx, inboxState, s
         </div>
         <Space padding='0 .2rem' />
         <FullWidth>
-          <FlexRow alignCenter>
+          <FlexRow
+            alignCenter
+            fullWidth
+          >
             <TaskTime
               isFocused={isFocused}
               task={task}
@@ -103,7 +106,8 @@ const Container = styled.div<ContainerProps>`
 `
 
 const FullWidth = styled.div`
-  width: 100%;
+  flex: 2;
+  overflow: hidden;
 `
 
 export default TaskItem

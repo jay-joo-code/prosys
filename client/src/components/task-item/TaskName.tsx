@@ -64,12 +64,13 @@ const TaskName = ({ task, isFocused, inboxState, setInboxState }: TaskNameProps)
   }
 
   return (
-    <OutsideClickListener
-      onOutsideClick={handleOutsideClick}
-      isListening
-    >
-      <Container onClick={handleClick}>
-        {(isFocused && inboxState === 'EDIT_NAME')
+    <FullWidthParent>
+      <OutsideClickListener
+        onOutsideClick={handleOutsideClick}
+        isListening
+      >
+        <Container onClick={handleClick}>
+          {(isFocused && inboxState === 'EDIT_NAME')
         ? <NameTextField
             value={inputValue}
             onChange={handleInputChange}
@@ -85,10 +86,20 @@ const TaskName = ({ task, isFocused, inboxState, setInboxState }: TaskNameProps)
           </Text>
           )
       }
-      </Container>
-    </OutsideClickListener>
+        </Container>
+      </OutsideClickListener>
+    </FullWidthParent>
   )
 }
+
+const FullWidthParent = styled.div`
+  flex: 2;
+  overflow: hidden;
+
+  & > div {
+    width: 100%;
+  }
+`
 
 const Container = styled.div`
   height: 25px;
