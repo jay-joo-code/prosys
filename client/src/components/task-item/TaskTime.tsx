@@ -3,7 +3,6 @@ import { useUpdateInboxTaskById } from 'src/api/task'
 import theme from 'src/app/theme'
 import useIsMobile from 'src/hooks/useIsMobile'
 import useKeypress from 'src/hooks/useKeyPress'
-import usePreviousValue from 'src/hooks/usePreviousValue'
 import { IInboxState, ITask } from 'src/types/task.type'
 import { isTaskTimeSet } from 'src/util/task'
 import styled from 'styled-components'
@@ -92,13 +91,13 @@ const TaskTime = ({ task, isFocused, inboxState, setInboxState }: TaskTimeProps)
 
   const handleOutsideClick = () => {
     if (isFocused && isMobile && inboxState === 'EDIT_TIME') {
-      setInboxState('NAVIGATE')
+      updateTime()
     }
   }
 
   const handleBlur = () => {
     if (isFocused && isMobile && inboxState === 'EDIT_TIME') {
-      setInboxState('NAVIGATE')
+      updateTime()
       setTempRender(true)
     }
   }
