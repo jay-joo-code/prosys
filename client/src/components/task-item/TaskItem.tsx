@@ -30,7 +30,7 @@ const TaskItem = ({ task, isSelected, isFocused, idx, setFocusIdx, inboxState, s
   }
 
   const scrollToFocused = (instance: HTMLDivElement) => {
-    if (!isMobile && instance && isFocused) {
+    if (!isMobile && instance && isFocused && inboxState === 'NAVIGATE') {
       instance.scrollIntoView({ behavior: 'smooth', block: 'center' })
     }
   }
