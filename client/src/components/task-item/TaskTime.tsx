@@ -176,16 +176,17 @@ const TaskTime = ({ task, isFocused, inboxState, setInboxState }: TaskTimeProps)
 }
 
 const TimeStampInput = styled.input`
-  padding: 0 .2rem;
-  width: 45px;
+  width: 50px;
   font-size: 16px;
   color: ${props => props.theme.text.light};
+  text-align: center;
 `
 
 const TimeStamp = styled.div`
-  padding: 0 .2rem;
-  width: 45px;
+  width: 50px;
   border-radius: 6px;
+  display: flex;
+  justify-content: center;
 `
 
 export default TaskTime
