@@ -33,7 +33,7 @@ module.exports = {
     'react/jsx-first-prop-new-line': ['warn', 'multiline-multiprop'],
     'react/jsx-closing-bracket-location': ['warn', 'tag-aligned'],
     'react/jsx-closing-tag-location': 'warn',
-    'react/jsx-indent': ['warn', 2],
+    'react/jsx-indent': ['warn', 2, { indentLogicalExpressions: true }],
     quotes: ['warn', 'single'],
     'jsx-quotes': ['warn', 'prefer-single'],
   },

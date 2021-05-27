@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
+
 import { useUpdateInboxTaskById } from 'src/api/task'
 import theme from 'src/app/theme'
 import useIsMobile from 'src/hooks/useIsMobile'
@@ -7,7 +8,6 @@ import { IInboxState, ITask } from 'src/types/task.type'
 import { isTaskTimeSet } from 'src/util/task'
 import styled from 'styled-components'
 import Text from '../fonts/Text'
-import { FlexRow } from '../layout/Flex'
 import OutsideClickListener from '../util/OutsideClickListener'
 
 interface TaskTimeProps {
@@ -18,10 +18,11 @@ interface TaskTimeProps {
 }
 
 const TaskTime = ({ task, isFocused, inboxState, setInboxState }: TaskTimeProps) => {
-  const [isStartTimeFocused, setIsStartTimeFocused] = useState<boolean>(true)
   const { updateInboxTask } = useUpdateInboxTaskById(task?._id)
   const [localStartTime, setLocalStartTime] = useState<string>(task?.startTime)
   const [localEndTime, setLocalEndTime] = useState<string>(task?.endTime)
+  const startTimeInputRef = useRef<HTMLInputElement>(null)
+  const endTimeInputRef = useRef<HTMLInputElement>(null)
 
   const updateTime = () => {
     setInboxState('NAVIGATE')
@@ -37,7 +38,7 @@ const TaskTime = ({ task, isFocused, inboxState, setInboxState }: TaskTimeProps)
       if (inboxState === 'NAVIGATE') {
         event.preventDefault()
         setInboxState('EDIT_TIME')
-        setIsStartTimeFocused(true)
+        startTimeInputRef.current?.focus()
       } else if (inboxState === 'EDIT_TIME') {
         event.preventDefault()
         updateTime()
@@ -55,7 +56,11 @@ const TaskTime = ({ task, isFocused, inboxState, setInboxState }: TaskTimeProps)
   useKeypress('Tab', (event) => {
     if (isFocused && inboxState === 'EDIT_TIME') {
       event.preventDefault()
-      setIsStartTimeFocused(!isStartTimeFocused)
+      if (document.activeElement === startTimeInputRef.current) {
+        endTimeInputRef.current?.focus()
+      } else {
+        startTimeInputRef.current?.focus()
+      }
     }
   })
 
@@ -74,17 +79,16 @@ const TaskTime = ({ task, isFocused, inboxState, setInboxState }: TaskTimeProps)
 
   // mobile
   const isMobile = useIsMobile()
-  const startTimeStampRef = useRef<HTMLDivElement>(null)
-  const endTimeStampRef = useRef<HTMLDivElement>(null)
   const [tempRender, setTempRender] = useState<boolean>(false)
 
-  const handleTimeStampClick = (isStartTime: boolean) => {
-    if (isMobile) {
-      if (inboxState === 'NAVIGATE') {
-        setInboxState('EDIT_TIME')
-        setIsStartTimeFocused(isStartTime)
-      } else if (inboxState === 'EDIT_TIME') {
-        setIsStartTimeFocused(isStartTime)
+  const handleTimeStampClick = (type: 'START' | 'END') => {
+    if (isMobile && inboxState === 'NAVIGATE') {
+      setInboxState('EDIT_TIME')
+
+      if (type === 'START') {
+        setTimeout(() => startTimeInputRef.current?.focus(), 0)
+      } else if (type === 'END') {
+        setTimeout(() => endTimeInputRef.current?.focus(), 0)
       }
     }
   }
@@ -108,85 +112,73 @@ const TaskTime = ({ task, isFocused, inboxState, setInboxState }: TaskTimeProps)
     }
   }, [tempRender])
 
+  const isSingleTimeStamp = localStartTime === localEndTime
+  const isEditMode = (isFocused && inboxState === 'EDIT_TIME') || (isMobile && isFocused && tempRender)
+
   return (
     <OutsideClickListener
       onOutsideClick={handleOutsideClick}
       isListening
     >
       <div>
-        {(isTaskTimeSet(task) || (isFocused && inboxState === 'EDIT_TIME') || (isMobile && isFocused && tempRender)) &&
-      (
-        <FlexRow alignCenter>
-          {((isFocused && inboxState === 'EDIT_TIME') && isStartTimeFocused)
-            ? <TimeStampInput
-                autoFocus
-                value={localStartTime}
-                onChange={(e) => setLocalStartTime(e.target.value)}
-                onFocus={(event) => { if (!isMobile) event.target.select() }}
-                onBlur={handleBlur}
-              />
-            : (
-              <TimeStamp
-                ref={startTimeStampRef}
-                onClick={() => handleTimeStampClick(true)}
-              >
-                <Text
-                  variant='p'
-                  nowrap
-                  color={theme.text.light}
-                >{localStartTime}
-                </Text>
-              </TimeStamp>
-            )
-          }
-          <Text
-            variant='p'
-            nowrap
-            color={theme.text.light}
-          >-
-          </Text>
-          {((isFocused && inboxState === 'EDIT_TIME') && !isStartTimeFocused)
-            ? <TimeStampInput
-                autoFocus
-                value={localEndTime}
-                onChange={(event) => setLocalEndTime(event.target.value)}
-                onFocus={(event) => { if (!isMobile) event.target.select() }}
-                onBlur={handleBlur}
-              />
-            : (
-              <TimeStamp
-                ref={endTimeStampRef}
-                onClick={() => handleTimeStampClick(false)}
-              >
-                <Text
-                  variant='p'
-                  nowrap
-                  color={theme.text.light}
-                >{localEndTime}
-                </Text>
-              </TimeStamp>
-            )
-          }
-        </FlexRow>
-        )
-      }
+        {(isTaskTimeSet(task) || isEditMode) &&
+          (
+            <Container>
+              <div onClick={() => handleTimeStampClick('START')}>
+                <TimeStampInput
+                  autoFocus
+                  ref={startTimeInputRef}
+                  value={localStartTime}
+                  onChange={(e) => setLocalStartTime(e.target.value)}
+                  onFocus={(event) => { if (!isMobile) event.target.select() }}
+                  onBlur={handleBlur}
+                  disabled={!isFocused || inboxState !== 'EDIT_TIME'}
+                />
+              </div>
+              {(!isSingleTimeStamp || isEditMode) && (
+                <>
+                  <Text
+                    variant='p'
+                    nowrap
+                    color={theme.text.light}
+                  >-
+                  </Text>
+                  <div onClick={() => handleTimeStampClick('END')}>
+                    <TimeStampInput
+                      ref={endTimeInputRef}
+                      value={localEndTime}
+                      onChange={(event) => setLocalEndTime(event.target.value)}
+                      onFocus={(event) => { if (!isMobile) event.target.select() }}
+                      onBlur={handleBlur}
+                      disabled={!isFocused || inboxState !== 'EDIT_TIME'}
+                    />
+                  </div>
+                </>
+              )}
+            </Container>
+          )
+        }
       </div>
     </OutsideClickListener>
   )
 }
+
+const Container = styled.div`
+  width: 105px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
 
 const TimeStampInput = styled.input`
   width: 50px;
   font-size: 16px;
   color: ${props => props.theme.text.light};
   text-align: center;
-`
 
-const TimeStamp = styled.div`
-  width: 50px;
-  border-radius: 6px;
-  display: flex;
-  justify-content: center;
+  &:disabled {
+    background: inherit;
+  }
 `
 
 export default TaskTime
