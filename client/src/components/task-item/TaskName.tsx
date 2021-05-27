@@ -16,6 +16,19 @@ interface TaskNameProps {
 
 const TaskName = ({ task, isFocused, inboxState, setInboxState }: TaskNameProps) => {
   const { updateInboxTask } = useUpdateInboxTaskById(task?._id)
+  const [inputValue, setInputValue] = useState<string>(task?.name)
+
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value)
+  }
+
+  const updateName = () => {
+    setInboxState('NAVIGATE')
+    updateInboxTask({
+      _id: task?._id,
+      name: inputValue,
+    })
+  }
 
   // mobile
   const isMobile = useIsMobile()
@@ -28,13 +41,13 @@ const TaskName = ({ task, isFocused, inboxState, setInboxState }: TaskNameProps)
 
   const handleOutsideClick = () => {
     if (isMobile && isFocused && inboxState === 'EDIT_NAME') {
-      setInboxState('NAVIGATE')
+      updateName()
     }
   }
 
   const handleBlur = () => {
     if (isMobile && isFocused && inboxState === 'EDIT_NAME') {
-      setInboxState('NAVIGATE')
+      updateName()
     }
   }
 
@@ -49,19 +62,9 @@ const TaskName = ({ task, isFocused, inboxState, setInboxState }: TaskNameProps)
   useKeyPress(['Enter', 'Escape'], (event) => {
     if (isFocused && inboxState === 'EDIT_NAME') {
       event.preventDefault()
-      setInboxState('NAVIGATE')
-      updateInboxTask({
-        _id: task?._id,
-        name: inputValue,
-      })
+      updateName()
     }
   })
-
-  // input
-  const [inputValue, setInputValue] = useState<string>(task?.name)
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value)
-  }
 
   return (
     <FullWidthParent>
