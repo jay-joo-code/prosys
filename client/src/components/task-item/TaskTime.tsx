@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef } from 'react'
-
 import { useUpdateInboxTaskById } from 'src/api/task'
 import theme from 'src/app/theme'
 import useIsMobile from 'src/hooks/useIsMobile'
