@@ -182,6 +182,7 @@ const TimeStampInput = styled.input`
   &:disabled {
     background: inherit;
     color: ${props => props.theme.text.light};
+    opacity: 1 !important;
     text-align: center;
   }
 
