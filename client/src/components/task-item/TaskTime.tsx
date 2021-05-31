@@ -176,12 +176,13 @@ const Container = styled.div`
 const TimeStampInput = styled.input`
   width: 60px;
   font-size: 16px;
-  color: ${props => props.theme.text.light};
   text-align: center;
+  color: ${props => props.theme.text.light} !important;
+  opacity: 1 !important;
 
   &:disabled {
     background: inherit;
-    color: ${props => props.theme.text.light};
+    color: ${props => props.theme.text.light} !important;
     opacity: 1 !important;
     text-align: center;
   }
