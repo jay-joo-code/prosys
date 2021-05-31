@@ -8,6 +8,8 @@ export interface ITask extends IDocument {
   name: string
   due: Date
   notes: string
+  provider?: 'google'
+  providerData?: any
 }
 
 export interface IScheduleTasks {

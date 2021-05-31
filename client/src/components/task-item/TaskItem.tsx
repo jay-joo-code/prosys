@@ -4,6 +4,7 @@ import { IInboxState, ITask } from 'src/types/task.type'
 import styled from 'styled-components'
 import { FlexRow } from '../layout/Flex'
 import Space from '../layout/Space'
+import TaskCalendarIcon from './TaskCalendarIcon'
 import TaskDue from './TaskDue'
 import TaskIsComplete from './TaskIsComplete'
 import TaskName from './TaskName'
@@ -44,12 +45,15 @@ const TaskItem = ({ task, isSelected, isFocused, idx, setFocusIdx, inboxState, s
     >
       <FlexRow alignStart>
         <div>
-          <Space padding='.17rem 0' />
-          <TaskIsComplete
-            task={task}
-            isFocused={isFocused}
-            inboxState={inboxState}
-          />
+          <Space padding='.15rem 0' />
+          {task?.provider === 'google'
+            ? <TaskCalendarIcon />
+            : <TaskIsComplete
+                task={task}
+                isFocused={isFocused}
+                inboxState={inboxState}
+              />
+          }
         </div>
         <Space padding='0 .2rem' />
         <FullWidth>

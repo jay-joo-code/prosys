@@ -58,8 +58,15 @@ authRouter.post('/register', async (req, res) => {
 /* GOOGLE */
 authRouter.get(
   '/google',
+  // @ts-ignore
   passportGoogle.authenticate('google', {
-    scope: ['https://www.googleapis.com/auth/plus.login'],
+    scope: [
+      'https://www.googleapis.com/auth/plus.login',
+      'https://www.googleapis.com/auth/calendar.events',
+      'https://www.googleapis.com/auth/calendar.readonly',
+    ],
+    accessType: 'offline',
+    prompt: 'consent',
   })
 )
 

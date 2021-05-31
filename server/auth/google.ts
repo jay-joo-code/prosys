@@ -6,8 +6,6 @@ import path from 'path'
 
 // dev dotenv path
 dotenv.config({ path: path.resolve(__dirname, '../.env') })
-
-// TODO: prod dotenv path
 dotenv.config({ path: path.resolve(__dirname, '../../.env') })
 
 passport.use(new GoogleStrategy({
@@ -18,14 +16,19 @@ passport.use(new GoogleStrategy({
 async (accessToken, refreshToken, profile, done) => {
   try {
     const user = await User.findOne({ providerId: profile.id })
+    const providerData = {
+      ...profile,
+      accessToken,
+      refreshToken,
+    }
 
     if (user) {
       // update providerData
-      await User.findByIdAndUpdate(user._id, { providerData: profile })
+      await User.findByIdAndUpdate(user._id, { providerData })
 
       return done(null, user)
     }
-    const userData = { authProvider: 'google', providerId: profile.id, providerData: profile }
+    const userData = { authProvider: 'google', providerId: profile.id, providerData }
     const newUser = await new User(userData).save()
     return done(null, newUser)
   } catch (error) {
