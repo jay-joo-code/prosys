@@ -35,10 +35,9 @@ taskRouter.get('/inbox', async (req, res) => {
       auth: oAuth2Client,
     })
 
-    const today = new Date()
     const { data: primaryData } = await calendar.events.list({
       calendarId: 'primary',
-      timeMin: (today).toISOString(),
+      timeMin: (new Date()).toISOString(),
       timeMax: getDateByDayDifference(new Date(), 14).toISOString(),
       maxResults: 100,
       singleEvents: true,
@@ -46,7 +45,7 @@ taskRouter.get('/inbox', async (req, res) => {
     })
     const { data: secondaryData } = await calendar.events.list({
       calendarId: 'jj534@cornell.edu',
-      timeMin: (today).toISOString(),
+      timeMin: (new Date()).toISOString(),
       timeMax: getDateByDayDifference(new Date(), 14).toISOString(),
       maxResults: 100,
       singleEvents: true,
@@ -97,25 +96,32 @@ taskRouter.get('/inbox', async (req, res) => {
       isComplete: false,
     }).sort({ due: 1 })
 
-    // set overdue task due date as today
-    const resetDue = async (_id: string) => {
-      Task.findByIdAndUpdate(_id, {
-        due: new Date(),
-        startTime: '0000',
-        endTime: '0000',
-      })
-    }
-
-    const validatedTasks = docs.map((task) => {
-      if (isDateBeforeToday(task.due) && task.provider !== 'google') {
-        resetDue(task._id)
-        return {
-          ...task.toObject(),
-          due: new Date(),
+    const validatedTasks = docs
+      .filter((task) => {
+        // filter calendar events that are in the past
+        if (isDateBeforeToday(task.due) && task.provider === 'google') {
+          Task.findByIdAndUpdate(task?._id, { isComplete: true })
+          return false
         }
-      }
-      return task
-    })
+        return true
+      })
+      .map((task) => {
+        // set overdue task due date as today
+        if (isDateBeforeToday(task.due) && task.provider !== 'google') {
+          Task.findByIdAndUpdate(task?._id, {
+            due: new Date(),
+            startTime: '0000',
+            endTime: '0000',
+          })
+          return {
+            ...task.toObject(),
+            due: new Date(),
+            startTime: '0000',
+            endTime: '0000',
+          }
+        }
+        return task
+      })
 
     res.send(validatedTasks)
   } catch (e) {
