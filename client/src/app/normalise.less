@@ -73,6 +73,11 @@ input {
 	letter-spacing: .5px;
 }
 
+input:disabled, textarea:disabled, input:disabled::placeholder, textarea:disabled::placeholder {
+  -webkit-text-fill-color: currentcolor; 
+  opacity: 1; 
+}
+
 html {
 	font-size: 16px;
 }
