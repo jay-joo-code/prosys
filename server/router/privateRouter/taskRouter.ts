@@ -1,7 +1,7 @@
 import express from 'express'
-import Task from '../../models/Task'
-import { getTimeStamp, isDateBeforeToday } from '../../util/date'
 import { google } from 'googleapis'
+import Task from '../../models/Task'
+import { getDateByDayDifference, getTimeStamp, isDateBeforeToday } from '../../util/date'
 
 const taskRouter = express.Router()
 
@@ -36,49 +36,60 @@ taskRouter.get('/inbox', async (req, res) => {
     })
 
     const today = new Date()
-    const { data } = await calendar.events.list({
+    const { data: primaryData } = await calendar.events.list({
       calendarId: 'primary',
       timeMin: (today).toISOString(),
-      timeMax: (new Date(today.getFullYear(), today.getMonth(), today.getDate() + 14)).toISOString(),
+      timeMax: getDateByDayDifference(new Date(), 14).toISOString(),
+      maxResults: 100,
+      singleEvents: true,
+      orderBy: 'startTime',
+    })
+    const { data: secondaryData } = await calendar.events.list({
+      calendarId: 'jj534@cornell.edu',
+      timeMin: (today).toISOString(),
+      timeMax: getDateByDayDifference(new Date(), 14).toISOString(),
       maxResults: 100,
       singleEvents: true,
       orderBy: 'startTime',
     })
 
-    if (data && data.items) {
-      const promises = data.items.map(async (event) => {
-        // create task object from calendar event
-        const taskData: any = {
-          userId: req.user?._id,
-          providerTaskId: event.id,
-          provider: 'google',
-          providerData: event,
-          name: event.summary,
-          notes: event.description?.replace(/(<([^>]+)>)/gi, ''),
-        }
-        if (event?.start?.date) {
-          taskData.due = new Date(event.start.date)
-        } else if (event?.start?.dateTime && event?.end?.dateTime) {
-          // set due, startTime, endTime
-          taskData.due = new Date(event.start.dateTime)
-          taskData.startTime = getTimeStamp(new Date(event.start.dateTime))
-          taskData.endTime = getTimeStamp(new Date(event.end.dateTime))
-        }
+    const events = [
+      ...(primaryData?.items || []),
+      ...(secondaryData?.items || []),
+    ]
 
-        // check if event exists
-        const task = await Task.findOne({ providerTaskId: event.id })
+    const promises = events.map(async (event) => {
+      // create task object from calendar event
+      const taskData: any = {
+        userId: req.user?._id,
+        providerTaskId: event.id,
+        provider: 'google',
+        providerData: event,
+        name: event.summary,
+        notes: event.description?.replace(/(<([^>]+)>)/gi, ''),
+      }
+      if (event?.start?.date) {
+        taskData.due = new Date(event.start.date)
+      } else if (event?.start?.dateTime && event?.end?.dateTime) {
+        // set due, startTime, endTime
+        taskData.due = new Date(event.start.dateTime)
+        taskData.startTime = getTimeStamp(new Date(event.start.dateTime))
+        taskData.endTime = getTimeStamp(new Date(event.end.dateTime))
+      }
 
-        if (task) {
-          // update existing task
-          await Task.findOneAndUpdate({ providerTaskId: event.id }, taskData)
-        } else {
-          // create new task
-          new Task(taskData).save()
-        }
-      })
+      // check if event exists
+      const task = await Task.findOne({ providerTaskId: event.id })
 
-      await Promise.all(promises)
-    }
+      if (task) {
+        // update existing task
+        await Task.findOneAndUpdate({ providerTaskId: event.id }, taskData)
+      } else {
+        // create new task
+        new Task(taskData).save()
+      }
+    })
+
+    await Promise.all(promises)
 
     // fetch user tasks
     const docs = await Task.find({

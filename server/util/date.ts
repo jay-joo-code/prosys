@@ -5,3 +5,7 @@ export const isDateBeforeToday = (date: Date) => {
 export const getTimeStamp = (date: Date) => {
   return `0${date.getHours()}`.slice(-2) + `0${date.getMinutes()}`.slice(-2)
 }
+
+export const getDateByDayDifference = (date: Date, difference: number) => {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate() + difference)
+}
