@@ -6,7 +6,7 @@ import Space from 'src/components/layout/Space'
 import TaskItem from 'src/components/task-item/TaskItem'
 import useKeyPress from 'src/hooks/useKeyPress'
 import { IInboxState } from 'src/types/task.type'
-import { getDateStamp } from 'src/util/date'
+import { getDateStamp, getDay } from 'src/util/date'
 import { isTaskTimeSet } from 'src/util/task'
 import styled from 'styled-components'
 
@@ -91,7 +91,7 @@ const TaskList = ({ focusIdx, setFocusIdx, inboxState, setInboxState }: TaskList
                 <Text
                   variant='h4'
                   color={theme.text.light}
-                >{getDateStamp(task?.due)}
+                >{getDateStamp(task?.due)} {getDay(task?.due)}
                 </Text>
               </>
             )}

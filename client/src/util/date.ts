@@ -7,3 +7,7 @@ export const isDateBeforeToday = (date: Date) => {
 export const getDateStamp = (date: Date) => {
   return moment(date).format('MM.DD')
 }
+
+export const getDay = (date: Date) => {
+  return moment(date).format('ddd')
+}
