@@ -108,7 +108,7 @@ taskRouter.get('/inbox', async (req, res) => {
 
     res.send(validatedTasks)
   } catch (e) {
-    console.log('e', e.response.data)
+    console.log('ERROR: ', e)
     res.status(500).send(e)
   }
 })
