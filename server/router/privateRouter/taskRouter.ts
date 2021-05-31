@@ -130,7 +130,6 @@ taskRouter.get('/', async (req, res) => {
     const docs = await Task.find({ userId: req.user?._id })
     res.send(docs)
   } catch (e) {
-    console.log('e', e)
     res.status(500).send(e)
   }
 })
