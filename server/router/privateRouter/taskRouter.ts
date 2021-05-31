@@ -96,7 +96,7 @@ taskRouter.get('/inbox', async (req, res) => {
     }
 
     const validatedTasks = docs.map((task) => {
-      if (isDateBeforeToday(task.due)) {
+      if (isDateBeforeToday(task.due) && task.provider !== 'google') {
         resetDue(task._id)
         return {
           ...task.toObject(),
