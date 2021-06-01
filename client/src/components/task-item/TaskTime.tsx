@@ -179,14 +179,14 @@ const TimeStampInput = styled.input`
   text-align: center;
   color: ${props => props.theme.text.light} !important;
   opacity: 1 !important;
-  -webkit-text-fill-color: inherit;
+  -webkit-text-fill-color: ${props => props.theme.text.light} !important;
 
   &:disabled {
     background: inherit;
     color: ${props => props.theme.text.light} !important;
     opacity: 1 !important;
     text-align: center;
-    -webkit-text-fill-color: inherit;
+    -webkit-text-fill-color: ${props => props.theme.text.light} !important;
   }
 
   @media (min-width: ${props => props.theme.large}) {
