@@ -57,7 +57,10 @@ taskRouter.get('/inbox', async (req, res) => {
       ...(secondaryData?.items || []),
     ]
 
-    const promises = events.map(async (event) => {
+    const calendarTasks = await Task.find({ userId: req.user?._id, provider: 'google' })
+    const updatedTasks: string[] = []
+
+    const syncPromises = events.map(async (event) => {
       // create task object from calendar event
       const taskData: any = {
         userId: req.user?._id,
@@ -77,18 +80,29 @@ taskRouter.get('/inbox', async (req, res) => {
       }
 
       // check if event exists
-      const task = await Task.findOne({ providerTaskId: event.id })
+      const matchIdx = calendarTasks.findIndex((task) => task?.providerTaskId === event.id)
 
-      if (task) {
+      if (matchIdx >= 0) {
         // update existing task
         await Task.findOneAndUpdate({ providerTaskId: event.id }, taskData)
+        if (event.id) {
+          updatedTasks.push(event.id)
+        }
       } else {
         // create new task
         new Task(taskData).save()
       }
     })
 
-    await Promise.all(promises)
+    await Promise.all(syncPromises)
+
+    // delete all calendar tasks that weren't updated (likely deleted)
+    const tasksToDelete = calendarTasks.filter((task) => task.providerTaskId && !updatedTasks.includes(task.providerTaskId))
+    const deletePromises = tasksToDelete.map(async (task) => {
+      await Task.findByIdAndDelete(task?._id)
+    })
+
+    await Promise.all(deletePromises)
 
     // fetch user tasks
     const docs = await Task.find({

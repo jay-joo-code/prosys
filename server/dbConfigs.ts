@@ -16,7 +16,7 @@ class Database {
       this._mongo
         .connect(
           url,
-          { useNewUrlParser: true, useUnifiedTopology: true }
+          { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false }
         )
       const db: Connection = this._mongo.connection
       db.on('error', console.error.bind(console, 'connection error:'))

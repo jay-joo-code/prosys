@@ -9,6 +9,7 @@ export interface ITask extends IDocument {
   due: Date
   notes: string
   provider?: 'google'
+  providerTaskId?: string | null
   providerData?: any
 }
 
