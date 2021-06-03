@@ -8,9 +8,11 @@ interface TaskIsCompleteProps {
   task: ITask
   isFocused: boolean
   inboxState: IInboxState
+  setInboxState: (state: IInboxState) => void
+  focusNextTask: () => void
 }
 
-const TaskIsComplete = ({ task, isFocused, inboxState }: TaskIsCompleteProps) => {
+const TaskIsComplete = ({ task, isFocused, inboxState, setInboxState, focusNextTask }: TaskIsCompleteProps) => {
   const { updateInboxTask } = useUpdateInboxTaskById(task?._id)
 
   const toggleIsComplete = () => {
@@ -18,6 +20,8 @@ const TaskIsComplete = ({ task, isFocused, inboxState }: TaskIsCompleteProps) =>
       _id: task?._id,
       isComplete: !task?.isComplete,
     })
+    setInboxState('NAVIGATE')
+    setTimeout(focusNextTask, 0)
   }
 
   useKeyPress(' ', (event) => {

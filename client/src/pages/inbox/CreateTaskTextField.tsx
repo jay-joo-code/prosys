@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useCreateTask } from 'src/api/task'
 import TextField from 'src/components/form-elements/TextField'
 import useFirstTaskId from 'src/hooks/useFirstTaskId'
@@ -32,7 +32,7 @@ const CreateTaskTextField = ({ focusId, setFocusId, inboxState, setInboxState }:
         setName('')
       }
     } catch (error) {
-      console.log('error.message.data :>> ', error.message.data)
+      console.log('error', error)
     }
   }
 

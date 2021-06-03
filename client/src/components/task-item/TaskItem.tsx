@@ -20,9 +20,10 @@ interface TaskItemProps {
   setFocusId: (value: string | undefined) => void
   inboxState: IInboxState
   setInboxState: (state: IInboxState) => void
+  focusNextTask: () => void
 }
 
-const TaskItem = ({ task, isSelected, isFocused, idx, setFocusId, inboxState, setInboxState }: TaskItemProps) => {
+const TaskItem = ({ task, isSelected, isFocused, idx, setFocusId, inboxState, setInboxState, focusNextTask }: TaskItemProps) => {
   const isMobile = useIsMobile()
 
   const handleClick = (event: React.MouseEvent) => {
@@ -52,6 +53,8 @@ const TaskItem = ({ task, isSelected, isFocused, idx, setFocusId, inboxState, se
                 task={task}
                 isFocused={isFocused}
                 inboxState={inboxState}
+                setInboxState={setInboxState}
+                focusNextTask={focusNextTask}
               />
           }
         </div>

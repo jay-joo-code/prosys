@@ -11,7 +11,7 @@ import { isTaskTimeSet } from 'src/util/task'
 import styled from 'styled-components'
 
 interface TaskListProps {
-  focusId: string
+  focusId: string | undefined
   setFocusId: (value: string | undefined) => void
   inboxState: IInboxState
   setInboxState: (state: IInboxState) => void
@@ -19,6 +19,12 @@ interface TaskListProps {
 
 const TaskList = ({ focusId, setFocusId, inboxState, setInboxState }: TaskListProps) => {
   const { tasks } = useInboxTasks()
+
+  useEffect(() => {
+    if (tasks?.findIndex((task) => task?._id === focusId) === -1 && tasks?.length > 0) {
+      setFocusId(tasks[0]?._id)
+    }
+  }, [tasks, focusId])
 
   // store important idxes in local state
   const [firstTaskOfDayIdxes, setFirstTaskOfDayIdxes] = useState<number[]>([])
@@ -87,6 +93,14 @@ const TaskList = ({ focusId, setFocusId, inboxState, setInboxState }: TaskListPr
     }
   })
 
+  const focusNextTask = () => {
+    tasks?.forEach((task, idx) => {
+      if (task?._id === focusId && idx + 1 !== tasks?.length) {
+        setFocusId(tasks[idx + 1]?._id)
+      }
+    })
+  }
+
   // TODO: select
 
   return (
@@ -116,6 +130,7 @@ const TaskList = ({ focusId, setFocusId, inboxState, setInboxState }: TaskListPr
               setFocusId={setFocusId}
               inboxState={inboxState}
               setInboxState={setInboxState}
+              focusNextTask={focusNextTask}
             />
           </div>
         )
