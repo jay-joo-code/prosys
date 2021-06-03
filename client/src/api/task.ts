@@ -17,6 +17,9 @@ const sortTasks = (tasks: ITask[]) => {
 
 export const fetchInboxTasks = () => ({
   url: '/private/task/inbox',
+  options: {
+    refetchOnWindowFocus: 'always',
+  },
 })
 
 export const fetchScheduleTasks = () => ({
