@@ -12,7 +12,6 @@ taskRouter.post('/', async (req, res) => {
       ...req.body,
       userId: req.user?._id,
     }).save()
-    console.log('doc', doc)
     res.send(doc)
   } catch (e) {
     res.status(500).send(e)
