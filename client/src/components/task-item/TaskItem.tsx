@@ -1,7 +1,6 @@
 import React, { memo } from 'react'
 import useIsMobile from 'src/hooks/useIsMobile'
 import { IInboxState, ITask } from 'src/types/task.type'
-import { getDateStamp } from 'src/util/date'
 import styled from 'styled-components'
 import { FlexRow } from '../layout/Flex'
 import Space from '../layout/Space'
@@ -18,17 +17,17 @@ interface TaskItemProps {
   isSelected: boolean
   isFocused: boolean
   idx: number
-  setFocusIdx: (idx: number) => void
+  setFocusId: (value: string | undefined) => void
   inboxState: IInboxState
   setInboxState: (state: IInboxState) => void
 }
 
-const TaskItem = ({ task, isSelected, isFocused, idx, setFocusIdx, inboxState, setInboxState }: TaskItemProps) => {
+const TaskItem = ({ task, isSelected, isFocused, idx, setFocusId, inboxState, setInboxState }: TaskItemProps) => {
   const isMobile = useIsMobile()
 
   const handleClick = (event: React.MouseEvent) => {
     if (!isMobile) event.preventDefault()
-    setFocusIdx(idx)
+    setFocusId(task?._id)
   }
 
   const scrollToFocused = (instance: HTMLDivElement) => {

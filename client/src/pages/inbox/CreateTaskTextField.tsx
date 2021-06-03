@@ -1,19 +1,21 @@
 import React, { useRef, useState, useEffect } from 'react'
 import { useCreateTask } from 'src/api/task'
 import TextField from 'src/components/form-elements/TextField'
+import useFirstTaskId from 'src/hooks/useFirstTaskId'
 import useKeyPress from 'src/hooks/useKeyPress'
 import { IInboxState } from 'src/types/task.type'
 import styled from 'styled-components'
 
 interface CreateTaskTextFieldProps {
-  focusIdx: number
-  setFocusIdx: (value: number) => void
+  focusId: string | undefined
+  setFocusId: (value: string | undefined) => void
   inboxState: IInboxState
   setInboxState: (state: IInboxState) => void
 }
 
-const CreateTaskTextField = ({ focusIdx, setFocusIdx, inboxState, setInboxState }: CreateTaskTextFieldProps) => {
+const CreateTaskTextField = ({ focusId, setFocusId, inboxState, setInboxState }: CreateTaskTextFieldProps) => {
   const inputRef = useRef<HTMLInputElement>(null)
+  const firstTaskId = useFirstTaskId()
 
   // create task
   const { createTask } = useCreateTask()
@@ -64,13 +66,13 @@ const CreateTaskTextField = ({ focusIdx, setFocusIdx, inboxState, setInboxState 
   useKeyPress('ArrowDown', (event) => {
     if (document.activeElement === inputRef?.current) {
       event.preventDefault()
-      setFocusIdx(0)
+      setFocusId(firstTaskId)
       setInboxState('NAVIGATE')
     }
   })
 
   useKeyPress('ArrowUp', (event) => {
-    if (focusIdx === 0 && inboxState === 'NAVIGATE') {
+    if (focusId === firstTaskId && inboxState === 'NAVIGATE') {
       event.preventDefault()
       setInboxState('CREATE')
     }

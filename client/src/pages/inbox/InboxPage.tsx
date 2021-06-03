@@ -7,7 +7,7 @@ import CreateTaskTextField from './CreateTaskTextField'
 import TaskList from './TaskList'
 
 const InboxPage = () => {
-  const [focusIdx, setFocusIdx] = useState<number>(0)
+  const [focusId, setFocusId] = useState<string>()
   const [inboxState, setInboxState] = useState<IInboxState>('CREATE')
 
   return (
@@ -16,15 +16,15 @@ const InboxPage = () => {
         <FlexColumn alignCenter>
           <Space padding='1rem 0' />
           <CreateTaskTextField
-            focusIdx={focusIdx}
-            setFocusIdx={setFocusIdx}
+            focusId={focusId}
+            setFocusId={setFocusId}
             inboxState={inboxState}
             setInboxState={setInboxState}
           />
           <Space padding='.5rem 0' />
           <TaskList
-            focusIdx={focusIdx}
-            setFocusIdx={setFocusIdx}
+            focusId={focusId}
+            setFocusId={setFocusId}
             inboxState={inboxState}
             setInboxState={setInboxState}
           />

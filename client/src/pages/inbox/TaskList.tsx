@@ -11,13 +11,13 @@ import { isTaskTimeSet } from 'src/util/task'
 import styled from 'styled-components'
 
 interface TaskListProps {
-  focusIdx: number
-  setFocusIdx: (value: number) => void
+  focusId: string
+  setFocusId: (value: string | undefined) => void
   inboxState: IInboxState
   setInboxState: (state: IInboxState) => void
 }
 
-const TaskList = ({ focusIdx, setFocusIdx, inboxState, setInboxState }: TaskListProps) => {
+const TaskList = ({ focusId, setFocusId, inboxState, setInboxState }: TaskListProps) => {
   const { tasks } = useInboxTasks()
 
   // store important idxes in local state
@@ -45,15 +45,22 @@ const TaskList = ({ focusIdx, setFocusIdx, inboxState, setInboxState }: TaskList
     if (inboxState === 'NAVIGATE') {
       event.preventDefault()
       if ((event.metaKey || event.ctrlKey) && tasks) {
+        // jump to first task of day
         let hasJumped = false
+        const focusIdx = tasks?.findIndex((task) => task?._id === focusId)
         firstTaskOfDayIdxes.forEach((idx, i) => {
           if (!hasJumped && idx >= focusIdx) {
-            setFocusIdx(firstTaskOfDayIdxes[i - 1 || 0])
+            const jumpIdx = firstTaskOfDayIdxes[i - 1 || 0]
+            setFocusId(tasks[jumpIdx]?._id)
             hasJumped = true
           }
         })
       } else {
-        setFocusIdx(Math.max(focusIdx - 1, 0))
+        tasks?.forEach((task, idx) => {
+          if (task?._id === focusId && idx !== 0) {
+            setFocusId(tasks[idx - 1]?._id)
+          }
+        })
       }
     }
   })
@@ -63,14 +70,19 @@ const TaskList = ({ focusIdx, setFocusIdx, inboxState, setInboxState }: TaskList
       event.preventDefault()
       if ((event.metaKey || event.ctrlKey) && tasks) {
         let hasJumped = false
+        const focusIdx = tasks?.findIndex((task) => task?._id === focusId)
         firstTaskOfDayIdxes.forEach((idx) => {
           if (!hasJumped && idx > focusIdx) {
-            setFocusIdx(idx)
+            setFocusId(tasks[idx]?._id)
             hasJumped = true
           }
         })
       } else {
-        setFocusIdx(Math.min(focusIdx + 1, (tasks?.length || 1) - 1))
+        tasks?.forEach((task, idx) => {
+          if (task?._id === focusId && idx + 1 !== tasks?.length) {
+            setFocusId(tasks[idx + 1]?._id)
+          }
+        })
       }
     }
   })
@@ -99,9 +111,9 @@ const TaskList = ({ focusIdx, setFocusIdx, inboxState, setInboxState }: TaskList
             <TaskItem
               task={task}
               idx={idx}
-              isFocused={focusIdx === idx}
+              isFocused={focusId === task?._id}
               isSelected={false}
-              setFocusIdx={setFocusIdx}
+              setFocusId={setFocusId}
               inboxState={inboxState}
               setInboxState={setInboxState}
             />
