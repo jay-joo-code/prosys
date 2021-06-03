@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { memo } from 'react'
 import useIsMobile from 'src/hooks/useIsMobile'
 import { IInboxState, ITask } from 'src/types/task.type'
+import { getDateStamp } from 'src/util/date'
 import styled from 'styled-components'
 import { FlexRow } from '../layout/Flex'
 import Space from '../layout/Space'
@@ -121,4 +122,4 @@ const FullWidth = styled.div`
   overflow: hidden;
 `
 
-export default TaskItem
+export default memo(TaskItem)
