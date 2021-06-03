@@ -1,3 +1,4 @@
+import mongoose from 'mongoose'
 import React, { useEffect, useRef, useState } from 'react'
 import { useCreateTask } from 'src/api/task'
 import TextField from 'src/components/form-elements/TextField'
@@ -24,7 +25,9 @@ const CreateTaskTextField = ({ focusId, setFocusId, inboxState, setInboxState }:
   const handleCreateTask = async () => {
     try {
       if (document.activeElement === inputRef?.current && name !== '') {
+        const newTaskId = mongoose.Types.ObjectId().toString()
         createTask({
+          _id: newTaskId,
           name,
           due: new Date(),
           createdAt: new Date(),

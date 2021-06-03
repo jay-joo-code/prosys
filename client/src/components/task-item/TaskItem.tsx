@@ -1,5 +1,8 @@
-import React, { memo } from 'react'
+import mongoose from 'mongoose'
+import React, { memo, useEffect } from 'react'
+import { useCreateTask } from 'src/api/task'
 import useIsMobile from 'src/hooks/useIsMobile'
+import useKeypress from 'src/hooks/useKeyPress'
 import { IInboxState, ITask } from 'src/types/task.type'
 import styled from 'styled-components'
 import { FlexRow } from '../layout/Flex'
@@ -21,10 +24,12 @@ interface TaskItemProps {
   inboxState: IInboxState
   setInboxState: (state: IInboxState) => void
   focusNextTask: () => void
+  isFirstTimeStampedTask: boolean
 }
 
-const TaskItem = ({ task, isSelected, isFocused, idx, setFocusId, inboxState, setInboxState, focusNextTask }: TaskItemProps) => {
+const TaskItem = ({ task, isSelected, isFocused, idx, setFocusId, inboxState, setInboxState, focusNextTask, isFirstTimeStampedTask }: TaskItemProps) => {
   const isMobile = useIsMobile()
+  const { createTask } = useCreateTask()
 
   const handleClick = (event: React.MouseEvent) => {
     if (!isMobile) event.preventDefault()
@@ -36,6 +41,24 @@ const TaskItem = ({ task, isSelected, isFocused, idx, setFocusId, inboxState, se
       instance.scrollIntoView({ behavior: 'smooth', block: 'center' })
     }
   }
+
+  // create task above
+  useKeypress('Enter', (event) => {
+    if (isFocused && inboxState === 'NAVIGATE' && (event.metaKey || event.ctrlKey)) {
+      event.preventDefault()
+      const newTaskId = mongoose.Types.ObjectId().toString()
+      createTask({
+        _id: newTaskId,
+        name: '',
+        due: task?.due,
+        createdAt: new Date(),
+        startTime: isFirstTimeStampedTask ? '0000' : task?.startTime,
+        endTime: isFirstTimeStampedTask ? '0000' : task?.endTime,
+      })
+      setFocusId(newTaskId)
+      setInboxState('EDIT_NAME')
+    }
+  })
 
   return (
     <Container

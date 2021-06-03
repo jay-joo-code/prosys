@@ -5,7 +5,8 @@ import Text from 'src/components/fonts/Text'
 import Space from 'src/components/layout/Space'
 import TaskItem from 'src/components/task-item/TaskItem'
 import useKeyPress from 'src/hooks/useKeyPress'
-import { IInboxState } from 'src/types/task.type'
+import usePreviousValue from 'src/hooks/usePreviousValue'
+import { IInboxState, ITask } from 'src/types/task.type'
 import { getDateStamp, getDay } from 'src/util/date'
 import { isTaskTimeSet } from 'src/util/task'
 import styled from 'styled-components'
@@ -20,11 +21,18 @@ interface TaskListProps {
 const TaskList = ({ focusId, setFocusId, inboxState, setInboxState }: TaskListProps) => {
   const { tasks } = useInboxTasks()
 
+  // handle focusId missing in new tasks
+  const previousTasks: ITask[] = usePreviousValue(tasks)
   useEffect(() => {
-    if (tasks?.findIndex((task) => task?._id === focusId) === -1 && tasks?.length > 0) {
-      setFocusId(tasks[0]?._id)
+    if (tasks && previousTasks) {
+      const currentIdx = tasks.findIndex((task) => task._id === focusId)
+      const previousIdx = previousTasks.findIndex((task) => task._id === focusId)
+      if (currentIdx === -1 && previousIdx !== -1) {
+        const nearbyTask = tasks[previousIdx] || tasks[previousIdx - 1] || tasks[previousIdx + 1]
+        setFocusId(nearbyTask?._id)
+      }
     }
-  }, [tasks, focusId])
+  }, [tasks, previousTasks])
 
   // store important idxes in local state
   const [firstTaskOfDayIdxes, setFirstTaskOfDayIdxes] = useState<number[]>([])
@@ -101,8 +109,6 @@ const TaskList = ({ focusId, setFocusId, inboxState, setInboxState }: TaskListPr
     })
   }
 
-  // TODO: select
-
   return (
     <Container>
       {tasks?.map((task, idx) => {
@@ -131,6 +137,7 @@ const TaskList = ({ focusId, setFocusId, inboxState, setInboxState }: TaskListPr
               inboxState={inboxState}
               setInboxState={setInboxState}
               focusNextTask={focusNextTask}
+              isFirstTimeStampedTask={renderDividingSpace}
             />
           </div>
         )
