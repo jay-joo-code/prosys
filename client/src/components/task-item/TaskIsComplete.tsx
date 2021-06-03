@@ -26,6 +26,8 @@ const TaskIsComplete = ({ task, isFocused, inboxState, setInboxState, focusNextT
 
   useKeyPress(' ', (event) => {
     if (isFocused && inboxState === 'NAVIGATE') {
+      event.stopPropagation()
+      event.stopImmediatePropagation()
       event.preventDefault()
       toggleIsComplete()
     }

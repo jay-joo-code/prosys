@@ -19,6 +19,8 @@ const TaskDue = ({ isFocused, task, inboxState, setInboxState }: TaskDueProps) =
 
   useKeypress(['d', 'ㅇ'], (event) => {
     if (isFocused && inboxState === 'NAVIGATE') {
+      event.stopPropagation()
+      event.stopImmediatePropagation()
       event.preventDefault()
       setInboxState('EDIT_DUE')
     }

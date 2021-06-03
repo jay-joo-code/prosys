@@ -35,10 +35,14 @@ const TaskTime = ({ task, isFocused, inboxState, setInboxState }: TaskTimeProps)
   useKeypress(['t', 'ㅅ'], (event) => {
     if (isFocused) {
       if (inboxState === 'NAVIGATE') {
+        event.stopPropagation()
+        event.stopImmediatePropagation()
         event.preventDefault()
         setInboxState('EDIT_TIME')
         startTimeInputRef.current?.focus()
       } else if (inboxState === 'EDIT_TIME') {
+        event.stopPropagation()
+        event.stopImmediatePropagation()
         event.preventDefault()
         updateTime()
       }
@@ -47,6 +51,8 @@ const TaskTime = ({ task, isFocused, inboxState, setInboxState }: TaskTimeProps)
 
   useKeypress(['Enter', 'Escape'], (event) => {
     if (isFocused && inboxState === 'EDIT_TIME') {
+      event.stopPropagation()
+      event.stopImmediatePropagation()
       event.preventDefault()
       updateTime()
     }
@@ -54,6 +60,8 @@ const TaskTime = ({ task, isFocused, inboxState, setInboxState }: TaskTimeProps)
 
   useKeypress('Tab', (event) => {
     if (isFocused && inboxState === 'EDIT_TIME') {
+      event.stopPropagation()
+      event.stopImmediatePropagation()
       event.preventDefault()
       if (document.activeElement === startTimeInputRef.current) {
         endTimeInputRef.current?.focus()

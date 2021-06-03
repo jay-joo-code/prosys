@@ -54,6 +54,8 @@ const TaskName = ({ task, isFocused, inboxState, setInboxState }: TaskNameProps)
   // state handling
   useKeyPress(['e', 'ㄷ'], (event: KeyboardEvent) => {
     if (isFocused && inboxState === 'NAVIGATE') {
+      event.stopPropagation()
+      event.stopImmediatePropagation()
       event.preventDefault()
       setInboxState('EDIT_NAME')
     }
@@ -61,6 +63,8 @@ const TaskName = ({ task, isFocused, inboxState, setInboxState }: TaskNameProps)
 
   useKeyPress(['Enter', 'Escape'], (event) => {
     if (isFocused && inboxState === 'EDIT_NAME') {
+      event.stopPropagation()
+      event.stopImmediatePropagation()
       event.preventDefault()
       updateName()
     }

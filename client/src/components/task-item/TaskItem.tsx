@@ -1,5 +1,5 @@
 import mongoose from 'mongoose'
-import React, { memo, useEffect } from 'react'
+import React, { memo } from 'react'
 import { useCreateTask } from 'src/api/task'
 import useIsMobile from 'src/hooks/useIsMobile'
 import useKeypress from 'src/hooks/useKeyPress'
@@ -32,7 +32,8 @@ const TaskItem = ({ task, isSelected, isFocused, idx, setFocusId, inboxState, se
   const { createTask } = useCreateTask()
 
   const handleClick = (event: React.MouseEvent) => {
-    if (!isMobile) event.preventDefault()
+    if (!isMobile) event.stopPropagation()
+    event.preventDefault()
     setFocusId(task?._id)
   }
 
@@ -45,6 +46,8 @@ const TaskItem = ({ task, isSelected, isFocused, idx, setFocusId, inboxState, se
   // create task above
   useKeypress('Enter', (event) => {
     if (isFocused && inboxState === 'NAVIGATE' && (event.metaKey || event.ctrlKey)) {
+      event.stopPropagation()
+      event.stopImmediatePropagation()
       event.preventDefault()
       const newTaskId = mongoose.Types.ObjectId().toString()
       createTask({

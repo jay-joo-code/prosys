@@ -20,6 +20,8 @@ const TaskNotes = ({ isFocused, task, inboxState, setInboxState }: TaskNotesProp
 
   useKeypress(['n', 'ㅜ'], (event) => {
     if (isFocused && inboxState === 'NAVIGATE') {
+      event.stopPropagation()
+      event.stopImmediatePropagation()
       event.preventDefault()
       setInboxState('EDIT_NOTES')
     }
@@ -27,6 +29,8 @@ const TaskNotes = ({ isFocused, task, inboxState, setInboxState }: TaskNotesProp
 
   useKeypress(['Enter', 'Escape'], (event) => {
     if ((isFocused && inboxState === 'EDIT_NOTES') && (event.key === 'Escape' || (event.metaKey || event.ctrlKey))) {
+      event.stopPropagation()
+      event.stopImmediatePropagation()
       event.preventDefault()
       setInboxState('NAVIGATE')
       updateInboxTask({

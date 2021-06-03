@@ -21,6 +21,8 @@ const PageNavigator = () => {
 
   useKeypress('i', (event) => {
     if (event.metaKey || event.ctrlKey) {
+      event.stopPropagation()
+      event.stopImmediatePropagation()
       event.preventDefault()
       push('/inbox')
     }
@@ -28,6 +30,8 @@ const PageNavigator = () => {
 
   useKeypress('s', (event) => {
     if (event.metaKey || event.ctrlKey) {
+      event.stopPropagation()
+      event.stopImmediatePropagation()
       event.preventDefault()
       push('/schedule')
     }

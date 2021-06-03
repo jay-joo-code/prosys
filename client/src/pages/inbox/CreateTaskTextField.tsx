@@ -58,9 +58,13 @@ const CreateTaskTextField = ({ focusId, setFocusId, inboxState, setInboxState }:
 
   useKeyPress('Escape', (event) => {
     if (document.activeElement === inputRef?.current) {
+      event.stopPropagation()
+      event.stopImmediatePropagation()
       event.preventDefault()
       setInboxState('NAVIGATE')
     } else if (inboxState === 'NAVIGATE') {
+      event.stopPropagation()
+      event.stopImmediatePropagation()
       event.preventDefault()
       setInboxState('CREATE')
     }
@@ -68,6 +72,8 @@ const CreateTaskTextField = ({ focusId, setFocusId, inboxState, setInboxState }:
 
   useKeyPress('ArrowDown', (event) => {
     if (document.activeElement === inputRef?.current) {
+      event.stopPropagation()
+      event.stopImmediatePropagation()
       event.preventDefault()
       setFocusId(firstTaskId)
       setInboxState('NAVIGATE')
@@ -76,6 +82,8 @@ const CreateTaskTextField = ({ focusId, setFocusId, inboxState, setInboxState }:
 
   useKeyPress('ArrowUp', (event) => {
     if (focusId === firstTaskId && inboxState === 'NAVIGATE') {
+      event.stopPropagation()
+      event.stopImmediatePropagation()
       event.preventDefault()
       setInboxState('CREATE')
     }

@@ -57,6 +57,8 @@ const TaskList = ({ focusId, setFocusId, inboxState, setInboxState }: TaskListPr
   // Focus
   useKeyPress('ArrowUp', (event) => {
     if (inboxState === 'NAVIGATE') {
+      event.stopPropagation()
+      event.stopImmediatePropagation()
       event.preventDefault()
       if ((event.metaKey || event.ctrlKey) && tasks) {
         // jump to first task of day
@@ -81,6 +83,8 @@ const TaskList = ({ focusId, setFocusId, inboxState, setInboxState }: TaskListPr
 
   useKeyPress('ArrowDown', (event) => {
     if (inboxState === 'NAVIGATE') {
+      event.stopPropagation()
+      event.stopImmediatePropagation()
       event.preventDefault()
       if ((event.metaKey || event.ctrlKey) && tasks) {
         let hasJumped = false
