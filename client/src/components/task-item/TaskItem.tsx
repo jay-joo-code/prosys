@@ -4,6 +4,7 @@ import { useCreateTask } from 'src/api/task'
 import useIsMobile from 'src/hooks/useIsMobile'
 import useKeypress from 'src/hooks/useKeyPress'
 import { IInboxState, ITask } from 'src/types/task.type'
+import { incrementTimeStamp } from 'src/util/task'
 import styled from 'styled-components'
 import { FlexRow } from '../layout/Flex'
 import Space from '../layout/Space'
@@ -55,8 +56,8 @@ const TaskItem = ({ task, isSelected, isFocused, idx, setFocusId, inboxState, se
         name: '',
         due: task?.due,
         createdAt: new Date(),
-        startTime: isFirstTimeStampedTask ? '0000' : task?.startTime,
-        endTime: isFirstTimeStampedTask ? '0000' : task?.endTime,
+        startTime: isFirstTimeStampedTask ? '0000' : incrementTimeStamp(task?.startTime),
+        endTime: isFirstTimeStampedTask ? '0000' : incrementTimeStamp(task?.endTime),
       })
       setFocusId(newTaskId)
       setInboxState('EDIT_NAME')

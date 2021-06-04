@@ -4,7 +4,7 @@ import theme from 'src/app/theme'
 import useIsMobile from 'src/hooks/useIsMobile'
 import useKeypress from 'src/hooks/useKeyPress'
 import { IInboxState, ITask } from 'src/types/task.type'
-import { isTaskTimeSet } from 'src/util/task'
+import { incrementTimeStamp, isTaskTimeSet } from 'src/util/task'
 import styled from 'styled-components'
 import Text from '../fonts/Text'
 import OutsideClickListener from '../util/OutsideClickListener'
@@ -71,13 +71,6 @@ const TaskTime = ({ task, isFocused, inboxState, setInboxState }: TaskTimeProps)
       }
     }
   })
-
-  const incrementTimeStamp = (timeStamp: string) => {
-    if (Number(timeStamp)) {
-      return `0${(Number(timeStamp) + 100).toString()}`.slice(-4)
-    }
-    return '0000'
-  }
 
   useEffect(() => {
     if (isFocused && inboxState === 'EDIT_TIME') {
