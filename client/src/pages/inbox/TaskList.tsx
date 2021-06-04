@@ -60,6 +60,7 @@ const TaskList = ({ focusId, setFocusId, inboxState, setInboxState }: TaskListPr
       event.stopPropagation()
       event.stopImmediatePropagation()
       event.preventDefault()
+
       if ((event.metaKey || event.ctrlKey) && tasks) {
         // jump to first task of day
         let hasJumped = false
@@ -69,6 +70,14 @@ const TaskList = ({ focusId, setFocusId, inboxState, setInboxState }: TaskListPr
             const jumpIdx = firstTaskOfDayIdxes[i - 1 || 0]
             setFocusId(tasks[jumpIdx]?._id)
             hasJumped = true
+          }
+        })
+      } else if (event.altKey) {
+        // move focus up by 2
+        tasks?.forEach((task, idx) => {
+          const targetTask = tasks[idx - 2] || tasks[idx - 1]
+          if (task?._id === focusId && idx !== 0) {
+            setFocusId(targetTask?._id)
           }
         })
       } else {
@@ -93,6 +102,14 @@ const TaskList = ({ focusId, setFocusId, inboxState, setInboxState }: TaskListPr
           if (!hasJumped && idx > focusIdx) {
             setFocusId(tasks[idx]?._id)
             hasJumped = true
+          }
+        })
+      } else if (event.altKey) {
+        // move focus down by 2
+        tasks?.forEach((task, idx) => {
+          if (task?._id === focusId && idx + 1 !== tasks?.length) {
+            const targetTask = tasks[idx + 2] || tasks[idx + 1]
+            setFocusId(targetTask?._id)
           }
         })
       } else {
