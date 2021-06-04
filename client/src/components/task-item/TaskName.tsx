@@ -52,7 +52,7 @@ const TaskName = ({ task, isFocused, inboxState, setInboxState }: TaskNameProps)
   }
 
   // state handling
-  useKeyPress(['e', 'ㄷ'], (event: KeyboardEvent) => {
+  useKeyPress(['e', 'ㄷ', 'Enter'], (event: KeyboardEvent) => {
     if (isFocused && inboxState === 'NAVIGATE') {
       event.stopPropagation()
       event.stopImmediatePropagation()
