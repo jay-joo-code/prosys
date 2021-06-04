@@ -21,7 +21,7 @@ const TaskIsComplete = ({ task, isFocused, inboxState, setInboxState, focusNextT
       isComplete: !task?.isComplete,
     })
     setInboxState('NAVIGATE')
-    setTimeout(focusNextTask, 0)
+    // setTimeout(focusNextTask, 0)
   }
 
   useKeyPress(' ', (event) => {
