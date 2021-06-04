@@ -25,6 +25,7 @@ const TaskTime = ({ task, isFocused, inboxState, setInboxState }: TaskTimeProps)
 
   const updateTime = () => {
     setInboxState('NAVIGATE')
+    window?.getSelection()?.removeAllRanges()
     updateInboxTask({
       _id: task?._id,
       startTime: localStartTime,
