@@ -56,8 +56,8 @@ const TaskItem = ({ task, isSelected, isFocused, idx, setFocusId, inboxState, se
         name: '',
         due: task?.due,
         createdAt: new Date(),
-        startTime: isFirstTimeStampedTask ? '0000' : incrementTimeStamp(task?.startTime),
-        endTime: isFirstTimeStampedTask ? '0000' : incrementTimeStamp(task?.endTime),
+        startTime: incrementTimeStamp(task?.startTime),
+        endTime: incrementTimeStamp(task?.endTime),
       })
       setFocusId(newTaskId)
       setInboxState('EDIT_NAME')
