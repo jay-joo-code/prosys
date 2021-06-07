@@ -26,7 +26,7 @@ const Container = styled.div`
   flex-direction: column;
   background: ${(props) => props.theme.bg};
 
-  @media (min-width: ${(props) => props.theme.medium}) {
+  @media (min-width: ${(props) => props.theme.tablet}) {
     width: initial;
     max-width: initial;
     overflow-x: initial;

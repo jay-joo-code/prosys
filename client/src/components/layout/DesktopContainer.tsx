@@ -18,7 +18,7 @@ export const Container = styled.div<ContainerProps>`
     width: 100%;
   }
 
-  @media (min-width: ${(props) => props.theme.medium}) {
+  @media (min-width: ${(props) => props.theme.tablet}) {
     & > div {
       width: 90%;
     }

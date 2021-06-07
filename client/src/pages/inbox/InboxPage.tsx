@@ -38,7 +38,7 @@ const Container = styled.div`
   padding: 1rem;
   width: 100%;
 
-  @media (min-width: ${(props) => props.theme.medium}) {
+  @media (min-width: ${(props) => props.theme.tablet}) {
     max-width: 800px;
   }
 `

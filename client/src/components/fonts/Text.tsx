@@ -99,7 +99,7 @@ export const H1 = styled(CoreText)`
   font-size: 42px;
   font-weight: 500;
 
-  @media (min-width: ${(props) => props.theme.medium}) {
+  @media (min-width: ${(props) => props.theme.tablet}) {
     font-size: 48px;
   }
 `
@@ -108,7 +108,7 @@ export const H2 = styled(CoreText)`
   font-size: 30px;
   font-weight: 500;
 
-  @media (min-width: ${(props) => props.theme.medium}) {
+  @media (min-width: ${(props) => props.theme.tablet}) {
     font-size: 36px;
   }
 `
