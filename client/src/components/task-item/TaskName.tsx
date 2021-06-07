@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useState } from 'react'
 import { useUpdateInboxTaskById } from 'src/api/task'
-import useIsMobile from 'src/hooks/useIsMobile'
+import useisTablet from 'src/hooks/useisTablet'
 import useKeyPress from 'src/hooks/useKeyPress'
 import { IInboxState, ITask } from 'src/types/task.type'
 import styled from 'styled-components'
@@ -31,22 +31,22 @@ const TaskName = ({ task, isFocused, inboxState, setInboxState }: TaskNameProps)
   }
 
   // mobile
-  const isMobile = useIsMobile()
+  const isTablet = useisTablet()
 
   const handleClick = () => {
-    if (isMobile && inboxState === 'NAVIGATE') {
+    if (isTablet && inboxState === 'NAVIGATE') {
       setInboxState('EDIT_NAME')
     }
   }
 
   const handleOutsideClick = () => {
-    if (isMobile && isFocused && inboxState === 'EDIT_NAME') {
+    if (isTablet && isFocused && inboxState === 'EDIT_NAME') {
       updateName()
     }
   }
 
   const handleBlur = () => {
-    if (isMobile && isFocused && inboxState === 'EDIT_NAME') {
+    if (isTablet && isFocused && inboxState === 'EDIT_NAME') {
       updateName()
     }
   }

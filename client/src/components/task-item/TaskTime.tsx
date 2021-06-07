@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { useUpdateInboxTaskById } from 'src/api/task'
 import theme from 'src/app/theme'
-import useIsMobile from 'src/hooks/useIsMobile'
+import useisTablet from 'src/hooks/useisTablet'
 import useKeypress from 'src/hooks/useKeyPress'
 import { IInboxState, ITask } from 'src/types/task.type'
 import { incrementTimeStamp, isTaskTimeSet } from 'src/util/task'
@@ -79,11 +79,11 @@ const TaskTime = ({ task, isFocused, inboxState, setInboxState }: TaskTimeProps)
   }, [localStartTime])
 
   // mobile
-  const isMobile = useIsMobile()
+  const isTablet = useisTablet()
   const [tempRender, setTempRender] = useState<boolean>(false)
 
   const handleTimeStampClick = (type: 'START' | 'END') => {
-    if (isMobile && inboxState === 'NAVIGATE') {
+    if (isTablet && inboxState === 'NAVIGATE') {
       setInboxState('EDIT_TIME')
 
       if (type === 'START') {
@@ -95,13 +95,13 @@ const TaskTime = ({ task, isFocused, inboxState, setInboxState }: TaskTimeProps)
   }
 
   const handleOutsideClick = () => {
-    if (isFocused && isMobile && inboxState === 'EDIT_TIME') {
+    if (isFocused && isTablet && inboxState === 'EDIT_TIME') {
       updateTime()
     }
   }
 
   const handleBlur = () => {
-    if (isFocused && isMobile && inboxState === 'EDIT_TIME') {
+    if (isFocused && isTablet && inboxState === 'EDIT_TIME') {
       updateTime()
       setTempRender(true)
     }
@@ -114,7 +114,7 @@ const TaskTime = ({ task, isFocused, inboxState, setInboxState }: TaskTimeProps)
   }, [tempRender])
 
   const isSingleTimeStamp = localStartTime === localEndTime
-  const isEditMode = (isFocused && inboxState === 'EDIT_TIME') || (isMobile && isFocused && tempRender)
+  const isEditMode = (isFocused && inboxState === 'EDIT_TIME') || (isTablet && isFocused && tempRender)
 
   return (
     <OutsideClickListener
@@ -131,7 +131,7 @@ const TaskTime = ({ task, isFocused, inboxState, setInboxState }: TaskTimeProps)
                   ref={startTimeInputRef}
                   value={localStartTime}
                   onChange={(e) => setLocalStartTime(e.target.value)}
-                  onFocus={(event) => { if (!isMobile) event.target.select() }}
+                  onFocus={(event) => { if (!isTablet) event.target.select() }}
                   onBlur={handleBlur}
                   disabled={!isFocused || inboxState !== 'EDIT_TIME'}
                 />
@@ -149,7 +149,7 @@ const TaskTime = ({ task, isFocused, inboxState, setInboxState }: TaskTimeProps)
                       ref={endTimeInputRef}
                       value={localEndTime}
                       onChange={(event) => setLocalEndTime(event.target.value)}
-                      onFocus={(event) => { if (!isMobile) event.target.select() }}
+                      onFocus={(event) => { if (!isTablet) event.target.select() }}
                       onBlur={handleBlur}
                       disabled={!isFocused || inboxState !== 'EDIT_TIME'}
                     />

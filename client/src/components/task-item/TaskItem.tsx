@@ -1,7 +1,7 @@
 import mongoose from 'mongoose'
 import React, { memo } from 'react'
 import { useCreateTask } from 'src/api/task'
-import useIsMobile from 'src/hooks/useIsMobile'
+import useisTablet from 'src/hooks/useisTablet'
 import useKeypress from 'src/hooks/useKeyPress'
 import { IInboxState, ITask } from 'src/types/task.type'
 import { incrementTimeStamp } from 'src/util/task'
@@ -29,17 +29,17 @@ interface TaskItemProps {
 }
 
 const TaskItem = ({ task, isSelected, isFocused, idx, setFocusId, inboxState, setInboxState, focusNextTask, isFirstTimeStampedTask }: TaskItemProps) => {
-  const isMobile = useIsMobile()
+  const isTablet = useisTablet()
   const { createTask } = useCreateTask()
 
   const handleClick = (event: React.MouseEvent) => {
-    if (!isMobile) event.stopPropagation()
+    if (!isTablet) event.stopPropagation()
     event.preventDefault()
     setFocusId(task?._id)
   }
 
   const scrollToFocused = (instance: HTMLDivElement) => {
-    if (!isMobile && instance && isFocused && inboxState === 'NAVIGATE') {
+    if (!isTablet && instance && isFocused && inboxState === 'NAVIGATE') {
       instance.scrollIntoView({ behavior: 'smooth', block: 'center' })
     }
   }

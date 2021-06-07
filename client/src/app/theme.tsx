@@ -39,7 +39,7 @@ export const theme = {
 
   // breakpoints
   small: '576px', // landscape phones
-  medium: '768px', // tablets
+  tablet: '1366px', // tablets (includes 12.9 iPad pro)
   large: '992px', // desktops, laptops
 }
 
