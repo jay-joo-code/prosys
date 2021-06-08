@@ -144,7 +144,7 @@ const TaskList = ({ focusId, setFocusId, inboxState, setInboxState }: TaskListPr
                 <Text
                   variant='h4'
                   color={theme.text.light}
-                >{getDateStamp(task?.due)} {getDay(task?.due)}
+                >{task?.due ? getDateStamp(task?.due) : 'Backlog'} {task?.due && getDay(task?.due)}
                 </Text>
               </>
             )}

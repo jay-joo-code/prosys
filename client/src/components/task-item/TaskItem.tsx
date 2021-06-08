@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 import React, { memo } from 'react'
-import { useCreateTask } from 'src/api/task'
+import { useCreateTask, useUpdateInboxTaskById } from 'src/api/task'
 import useisTablet from 'src/hooks/useisTablet'
 import useKeypress from 'src/hooks/useKeyPress'
 import { IInboxState, ITask } from 'src/types/task.type'
@@ -31,6 +31,7 @@ interface TaskItemProps {
 const TaskItem = ({ task, isSelected, isFocused, idx, setFocusId, inboxState, setInboxState, focusNextTask, isFirstTimeStampedTask }: TaskItemProps) => {
   const isTablet = useisTablet()
   const { createTask } = useCreateTask()
+  const { updateInboxTask } = useUpdateInboxTaskById(task?._id)
 
   const handleClick = (event: React.MouseEvent) => {
     if (!isTablet) event.stopPropagation()
@@ -61,6 +62,19 @@ const TaskItem = ({ task, isSelected, isFocused, idx, setFocusId, inboxState, se
       })
       setFocusId(newTaskId)
       setInboxState('EDIT_NAME')
+    }
+  })
+
+  // send to backlog
+  useKeypress(['b', 'ㅠ'], (event) => {
+    if (isFocused && inboxState === 'NAVIGATE') {
+      event.stopPropagation()
+      event.stopImmediatePropagation()
+      event.preventDefault()
+      updateInboxTask({
+        _id: task?._id,
+        due: null,
+      })
     }
   })
 

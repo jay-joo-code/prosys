@@ -29,7 +29,7 @@ const CreateTaskTextField = ({ focusId, setFocusId, inboxState, setInboxState }:
         createTask({
           _id: newTaskId,
           name,
-          due: new Date(),
+          due: null,
           createdAt: new Date(),
         })
         setName('')

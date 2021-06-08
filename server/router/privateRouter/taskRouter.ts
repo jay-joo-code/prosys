@@ -33,7 +33,7 @@ taskRouter.get('/inbox', async (req, res) => {
     const validatedTasks = docs
       .filter((task) => {
         // filter calendar events that are in the past
-        if (isDateBeforeToday(task.due) && task.provider === 'google') {
+        if (task.due && isDateBeforeToday(task.due) && task.provider === 'google') {
           Task.findByIdAndUpdate(task?._id, { isComplete: true })
           return false
         }
@@ -41,7 +41,7 @@ taskRouter.get('/inbox', async (req, res) => {
       })
       .map((task) => {
         // set overdue task due date as today
-        if (isDateBeforeToday(task.due) && task.provider !== 'google') {
+        if (task.due && isDateBeforeToday(task.due) && task.provider !== 'google') {
           Task.findByIdAndUpdate(task?._id, {
             due: new Date(),
             startTime: '0000',

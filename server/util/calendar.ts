@@ -66,7 +66,7 @@ export const syncCalendar = async (req: Request) => {
 
     if (matchIdx >= 0) {
       // update existing task
-      await Task.findOneAndUpdate({ providerTaskId: event.id }, taskData)
+      await Task.findOneAndUpdate({ providerTaskId: event?.id }, taskData)
       if (event.id) {
         updatedTasks.push(event.id)
       }

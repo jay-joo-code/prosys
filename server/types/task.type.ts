@@ -6,7 +6,7 @@ export interface ITaskDocument extends Document {
   startTime: string
   endTime: string
   name: string
-  due: Date
+  due: Date | null
   notes: string
   provider?: 'google'
   providerTaskId?: string | null

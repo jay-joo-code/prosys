@@ -10,3 +10,18 @@ export const incrementTimeStamp = (timeStamp: string) => {
   }
   return '0000'
 }
+
+export const sortTasks = (tasks: ITask[]) => {
+  tasks?.sort((a, b) => {
+    const aDate = a.due
+      ? new Date(a.due).setHours(Number(a.startTime?.slice(0, 2)), Number(a.startTime?.slice(2, 4)), 0, 0)
+      : 0
+
+    const bDate = b.due
+      ? new Date(b.due).setHours(Number(b.startTime?.slice(0, 2)), Number(b.startTime?.slice(2, 4)), 0, 0)
+      : 0
+
+    return aDate - bDate || new Date(b.createdAt).valueOf() - new Date(a.createdAt).valueOf()
+  })
+  return tasks
+}
