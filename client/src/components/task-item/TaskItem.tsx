@@ -1,7 +1,7 @@
 import mongoose from 'mongoose'
 import React, { memo } from 'react'
 import { useCreateTask, useUpdateInboxTaskById } from 'src/api/task'
-import useisTablet from 'src/hooks/useisTablet'
+import useIsTablet from 'src/hooks/useIsTablet'
 import useKeypress from 'src/hooks/useKeyPress'
 import { IInboxState, ITask } from 'src/types/task.type'
 import { incrementTimeStamp } from 'src/util/task'
@@ -29,7 +29,7 @@ interface TaskItemProps {
 }
 
 const TaskItem = ({ task, isSelected, isFocused, idx, setFocusId, inboxState, setInboxState, focusNextTask, isFirstTimeStampedTask }: TaskItemProps) => {
-  const isTablet = useisTablet()
+  const isTablet = useIsTablet()
   const { createTask } = useCreateTask()
   const { updateInboxTask } = useUpdateInboxTaskById(task?._id)
 

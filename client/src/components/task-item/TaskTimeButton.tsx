@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import WatchLaterOutlinedIcon from '@material-ui/icons/WatchLaterOutlined'
-import useisTablet from 'src/hooks/useisTablet'
+import useIsTablet from 'src/hooks/useIsTablet'
 import { IInboxState, ITask } from 'src/types/task.type'
 import { isTaskTimeSet } from 'src/util/task'
 
@@ -13,7 +13,7 @@ interface TaskTimeButtonProps {
 }
 
 const TaskTimeButton = ({ isFocused, task, inboxState, setInboxState }: TaskTimeButtonProps) => {
-  const isTablet = useisTablet()
+  const isTablet = useIsTablet()
 
   const handleClick = () => {
     setInboxState('EDIT_TIME')

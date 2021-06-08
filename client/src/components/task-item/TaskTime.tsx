@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { useUpdateInboxTaskById } from 'src/api/task'
 import theme from 'src/app/theme'
-import useisTablet from 'src/hooks/useisTablet'
+import useIsTablet from 'src/hooks/useIsTablet'
 import useKeypress from 'src/hooks/useKeyPress'
 import { IInboxState, ITask } from 'src/types/task.type'
 import { incrementTimeStamp, isTaskTimeSet } from 'src/util/task'
@@ -79,7 +79,7 @@ const TaskTime = ({ task, isFocused, inboxState, setInboxState }: TaskTimeProps)
   }, [localStartTime])
 
   // mobile
-  const isTablet = useisTablet()
+  const isTablet = useIsTablet()
   const [tempRender, setTempRender] = useState<boolean>(false)
 
   const handleTimeStampClick = (type: 'START' | 'END') => {

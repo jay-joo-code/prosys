@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useState } from 'react'
 import { useUpdateInboxTaskById } from 'src/api/task'
-import useisTablet from 'src/hooks/useisTablet'
+import useIsTablet from 'src/hooks/useIsTablet'
 import useKeyPress from 'src/hooks/useKeyPress'
 import { IInboxState, ITask } from 'src/types/task.type'
 import styled from 'styled-components'
@@ -31,7 +31,7 @@ const TaskName = ({ task, isFocused, inboxState, setInboxState }: TaskNameProps)
   }
 
   // mobile
-  const isTablet = useisTablet()
+  const isTablet = useIsTablet()
 
   const handleClick = () => {
     if (isTablet && inboxState === 'NAVIGATE') {
