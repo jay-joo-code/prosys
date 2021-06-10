@@ -172,6 +172,7 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  padding-top: 0.1rem;
 
   @media (min-width: ${(props) => props.theme.large}) {
     width: 110px;

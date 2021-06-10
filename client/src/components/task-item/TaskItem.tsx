@@ -118,7 +118,7 @@ const TaskItem = ({
         </div>
         <Space padding='0 .2rem' />
         <FullWidth>
-          <FlexRow alignCenter fullWidth>
+          <FlexRow alignStart fullWidth>
             <TaskTime
               isFocused={isFocused}
               task={task}
@@ -126,25 +126,37 @@ const TaskItem = ({
               setInboxState={setInboxState}
             />
             <Space padding='0 .1rem' />
-            <TaskName
+            <div>
+              <TaskName
+                isFocused={isFocused}
+                task={task}
+                inboxState={inboxState}
+                setInboxState={setInboxState}
+              />
+              {!isTablet && (
+                <TaskNotes
+                  isFocused={isFocused}
+                  task={task}
+                  inboxState={inboxState}
+                  setInboxState={setInboxState}
+                />
+              )}
+            </div>
+            {/* <TaskTimeButton
               isFocused={isFocused}
               task={task}
               inboxState={inboxState}
               setInboxState={setInboxState}
-            />
-            <TaskTimeButton
-              isFocused={isFocused}
-              task={task}
-              inboxState={inboxState}
-              setInboxState={setInboxState}
-            />
+            /> */}
           </FlexRow>
-          <TaskNotes
-            isFocused={isFocused}
-            task={task}
-            inboxState={inboxState}
-            setInboxState={setInboxState}
-          />
+          {isTablet && (
+            <TaskNotes
+              isFocused={isFocused}
+              task={task}
+              inboxState={inboxState}
+              setInboxState={setInboxState}
+            />
+          )}
           <TaskDue
             isFocused={isFocused}
             task={task}
