@@ -22,7 +22,7 @@ taskRouter.post('/', async (req, res) => {
 taskRouter.get('/inbox', async (req, res) => {
   try {
     // async fetch and save google calendar events
-    syncCalendar(req)
+    syncCalendar(req, res)
 
     // fetch user tasks
     const docs = await Task.find({

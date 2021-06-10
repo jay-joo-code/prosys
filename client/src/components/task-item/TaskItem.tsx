@@ -55,7 +55,6 @@ const TaskItem = ({
     }
   }
 
-  // create task above
   useKeypress('Enter', (event) => {
     if (
       isFocused &&
