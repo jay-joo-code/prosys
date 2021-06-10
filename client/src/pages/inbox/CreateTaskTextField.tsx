@@ -14,7 +14,12 @@ interface CreateTaskTextFieldProps {
   setInboxState: (state: IInboxState) => void
 }
 
-const CreateTaskTextField = ({ focusId, setFocusId, inboxState, setInboxState }: CreateTaskTextFieldProps) => {
+const CreateTaskTextField = ({
+  focusId,
+  setFocusId,
+  inboxState,
+  setInboxState,
+}: CreateTaskTextFieldProps) => {
   const inputRef = useRef<HTMLInputElement>(null)
   const firstTaskId = useFirstTaskId()
 
@@ -105,7 +110,7 @@ const CreateTaskTextField = ({ focusId, setFocusId, inboxState, setInboxState }:
 }
 
 const Container = styled.div`
-  width: 100%
+  width: 100%;
 `
 
 export default CreateTaskTextField

@@ -4,27 +4,40 @@ import { FormProvider, useForm } from 'react-hook-form'
 import Button from 'src/components/Button'
 import Checkbox, { HookedCheckbox } from 'src/components/form-elements/Checkbox'
 import Input, { HookedInput } from 'src/components/form-elements/TextField'
-import RadioGroup, { HookedRadioGroup } from 'src/components/form-elements/RadioGroup'
-import Select, { HookedSelect, ISelectOption } from 'src/components/form-elements/Select'
+import RadioGroup, {
+  HookedRadioGroup,
+} from 'src/components/form-elements/RadioGroup'
+import Select, {
+  HookedSelect,
+  ISelectOption,
+} from 'src/components/form-elements/Select'
 import Textarea, { HookedTextarea } from 'src/components/form-elements/Textarea'
 import { FlexRow } from 'src/components/layout/Flex'
 import styled from 'styled-components'
 import * as yup from 'yup'
-import Datepicker, { HookedDatePicker } from 'src/components/form-elements/DatePicker'
-import DateRangePicker, { HookedDateRangePicker, IDates } from 'src/components/form-elements/DateRangePicker'
-import Incrementor, { HookedIncrementor } from 'src/components/form-elements/Incrementor'
+import Datepicker, {
+  HookedDatePicker,
+} from 'src/components/form-elements/DatePicker'
+import DateRangePicker, {
+  HookedDateRangePicker,
+  IDates,
+} from 'src/components/form-elements/DateRangePicker'
+import Incrementor, {
+  HookedIncrementor,
+} from 'src/components/form-elements/Incrementor'
 
 const schema = yup.object().shape({
   inputName: yup.string().required('This is a required field'),
   textareaName: yup.string().required('This is a required field'),
   checkboxName: yup.boolean().oneOf([true], 'Must check this checkbox'),
-  selectName: yup.object()
-    .required('Must select an option'),
-  radioGroupName: yup.string()
+  selectName: yup.object().required('Must select an option'),
+  radioGroupName: yup
+    .string()
     .typeError('Must choose an option')
     .required('Must choose an option'),
   datePickerName: yup.date().typeError('Must pick a date'),
-  dateRangePickerName: yup.object()
+  dateRangePickerName: yup
+    .object()
     .shape({
       startDate: yup.date().typeError('Must pick a start date'),
       endDate: yup.date().typeError('Must pick an end date'),
@@ -38,9 +51,9 @@ interface IFormData {
   inputName: string
   textareaName: string
   checkboxName: boolean
-  selectName: ISelectOption,
-  radioGroupName: string,
-  datePickerName: Date,
+  selectName: ISelectOption
+  radioGroupName: string
+  datePickerName: Date
   dateRangePickerName: IDates
   incrementorName: number
 }
@@ -88,7 +101,7 @@ const DefaultForm = () => {
 
   return (
     <Container>
-      <FormProvider {...methods} >
+      <FormProvider {...methods}>
         <Form onSubmit={handleSubmit(onSubmit)}>
           {/* local state */}
           <Input
@@ -98,11 +111,7 @@ const DefaultForm = () => {
           />
 
           {/* react-hook-form */}
-          <HookedInput
-            label='inputName'
-            name='inputName'
-            fullWidth
-          />
+          <HookedInput label='inputName' name='inputName' fullWidth />
 
           {/* local state */}
           <Textarea
@@ -128,10 +137,7 @@ const DefaultForm = () => {
           />
 
           {/* react-hook-form */}
-          <HookedCheckbox
-            label='checkboxName'
-            name='checkboxName'
-          />
+          <HookedCheckbox label='checkboxName' name='checkboxName' />
 
           {/* local state */}
           <Select
@@ -176,15 +182,10 @@ const DefaultForm = () => {
           />
 
           {/* local state */}
-          <Datepicker
-            date={datePickerValue}
-            setDate={setDatePickerValue}
-          />
+          <Datepicker date={datePickerValue} setDate={setDatePickerValue} />
 
           {/* react-hook-form */}
-          <HookedDatePicker
-            name='datePickerName'
-          />
+          <HookedDatePicker name='datePickerName' />
 
           {/* local state */}
           <DateRangePicker
@@ -193,9 +194,7 @@ const DefaultForm = () => {
           />
 
           {/* react-hook-form */}
-          <HookedDateRangePicker
-            name='dateRangePickerName'
-          />
+          <HookedDateRangePicker name='dateRangePickerName' />
 
           {/* local state */}
           <Incrementor
@@ -205,16 +204,10 @@ const DefaultForm = () => {
           />
 
           {/* react-hook-form */}
-          <HookedIncrementor
-            name='incrementorName'
-            label='incrementorName'
-          />
+          <HookedIncrementor name='incrementorName' label='incrementorName' />
 
           <FlexRow justifyEnd>
-            <Button
-              type='submit'
-            >Submit
-            </Button>
+            <Button type='submit'>Submit</Button>
           </FlexRow>
         </Form>
       </FormProvider>
@@ -226,7 +219,7 @@ const Container = styled.div`
   padding: 1rem;
 
   /* datepickers need at least 340px width */
-  min-width: 340px; 
+  min-width: 340px;
 `
 
 const Form = styled.form`

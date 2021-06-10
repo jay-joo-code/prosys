@@ -16,7 +16,12 @@ interface TaskTimeProps {
   setInboxState: (state: IInboxState) => void
 }
 
-const TaskTime = ({ task, isFocused, inboxState, setInboxState }: TaskTimeProps) => {
+const TaskTime = ({
+  task,
+  isFocused,
+  inboxState,
+  setInboxState,
+}: TaskTimeProps) => {
   const { updateInboxTask } = useUpdateInboxTaskById(task?._id)
   const [localStartTime, setLocalStartTime] = useState<string>(task?.startTime)
   const [localEndTime, setLocalEndTime] = useState<string>(task?.endTime)
@@ -34,7 +39,7 @@ const TaskTime = ({ task, isFocused, inboxState, setInboxState }: TaskTimeProps)
   }
 
   useKeypress(['t', 'ㅅ'], (event) => {
-    if (isFocused) {
+    if (isFocused && task?.due) {
       if (inboxState === 'NAVIGATE') {
         event.stopPropagation()
         event.stopImmediatePropagation()
@@ -59,7 +64,7 @@ const TaskTime = ({ task, isFocused, inboxState, setInboxState }: TaskTimeProps)
     }
   })
 
-  useKeypress('Tab', (event) => {
+  useKeypress(['Tab', '-'], (event) => {
     if (isFocused && inboxState === 'EDIT_TIME') {
       event.stopPropagation()
       event.stopImmediatePropagation()
@@ -114,51 +119,49 @@ const TaskTime = ({ task, isFocused, inboxState, setInboxState }: TaskTimeProps)
   }, [tempRender])
 
   const isSingleTimeStamp = localStartTime === localEndTime
-  const isEditMode = (isFocused && inboxState === 'EDIT_TIME') || (isTablet && isFocused && tempRender)
+  const isEditMode =
+    (isFocused && inboxState === 'EDIT_TIME') ||
+    (isTablet && isFocused && tempRender)
 
   return (
-    <OutsideClickListener
-      onOutsideClick={handleOutsideClick}
-      isListening
-    >
+    <OutsideClickListener onOutsideClick={handleOutsideClick} isListening>
       <div>
-        {(isTaskTimeSet(task) || isEditMode) &&
-          (
-            <Container>
-              <div onClick={() => handleTimeStampClick('START')}>
-                <TimeStampInput
-                  autoFocus
-                  ref={startTimeInputRef}
-                  value={localStartTime}
-                  onChange={(e) => setLocalStartTime(e.target.value)}
-                  onFocus={(event) => { if (!isTablet) event.target.select() }}
-                  onBlur={handleBlur}
-                  disabled={!isFocused || inboxState !== 'EDIT_TIME'}
-                />
-              </div>
-              {(!isSingleTimeStamp || isEditMode) && (
-                <>
-                  <Text
-                    variant='p'
-                    nowrap
-                    color={theme.text.light}
-                  >-
-                  </Text>
-                  <div onClick={() => handleTimeStampClick('END')}>
-                    <TimeStampInput
-                      ref={endTimeInputRef}
-                      value={localEndTime}
-                      onChange={(event) => setLocalEndTime(event.target.value)}
-                      onFocus={(event) => { if (!isTablet) event.target.select() }}
-                      onBlur={handleBlur}
-                      disabled={!isFocused || inboxState !== 'EDIT_TIME'}
-                    />
-                  </div>
-                </>
-              )}
-            </Container>
-          )
-        }
+        {(isTaskTimeSet(task) || isEditMode) && (
+          <Container>
+            <div onClick={() => handleTimeStampClick('START')}>
+              <TimeStampInput
+                autoFocus
+                ref={startTimeInputRef}
+                value={localStartTime}
+                onChange={(e) => setLocalStartTime(e.target.value)}
+                onFocus={(event) => {
+                  if (!isTablet) event.target.select()
+                }}
+                onBlur={handleBlur}
+                disabled={!isFocused || inboxState !== 'EDIT_TIME'}
+              />
+            </div>
+            {(!isSingleTimeStamp || isEditMode) && (
+              <>
+                <Text variant='p' nowrap color={theme.text.light}>
+                  -
+                </Text>
+                <div onClick={() => handleTimeStampClick('END')}>
+                  <TimeStampInput
+                    ref={endTimeInputRef}
+                    value={localEndTime}
+                    onChange={(event) => setLocalEndTime(event.target.value)}
+                    onFocus={(event) => {
+                      if (!isTablet) event.target.select()
+                    }}
+                    onBlur={handleBlur}
+                    disabled={!isFocused || inboxState !== 'EDIT_TIME'}
+                  />
+                </div>
+              </>
+            )}
+          </Container>
+        )}
       </div>
     </OutsideClickListener>
   )
@@ -170,7 +173,7 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
 
-  @media (min-width: ${props => props.theme.large}) {
+  @media (min-width: ${(props) => props.theme.large}) {
     width: 110px;
   }
 `
@@ -179,19 +182,19 @@ const TimeStampInput = styled.input`
   width: 60px;
   font-size: 16px;
   text-align: center;
-  color: ${props => props.theme.text.light} !important;
+  color: ${(props) => props.theme.text.light} !important;
   opacity: 1 !important;
-  -webkit-text-fill-color: ${props => props.theme.text.light} !important;
+  -webkit-text-fill-color: ${(props) => props.theme.text.light} !important;
 
   &:disabled {
     background: inherit;
-    color: ${props => props.theme.text.light} !important;
+    color: ${(props) => props.theme.text.light} !important;
     opacity: 1 !important;
     text-align: center;
-    -webkit-text-fill-color: ${props => props.theme.text.light} !important;
+    -webkit-text-fill-color: ${(props) => props.theme.text.light} !important;
   }
 
-  @media (min-width: ${props => props.theme.large}) {
+  @media (min-width: ${(props) => props.theme.large}) {
     width: 50px;
   }
 `

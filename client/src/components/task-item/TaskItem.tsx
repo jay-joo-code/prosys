@@ -4,7 +4,7 @@ import { useCreateTask, useUpdateInboxTaskById } from 'src/api/task'
 import useIsTablet from 'src/hooks/useIsTablet'
 import useKeypress from 'src/hooks/useKeyPress'
 import { IInboxState, ITask } from 'src/types/task.type'
-import { incrementTimeStamp } from 'src/util/task'
+import { incrementTimeStamp, isTaskTimeSet } from 'src/util/task'
 import styled from 'styled-components'
 import { FlexRow } from '../layout/Flex'
 import Space from '../layout/Space'
@@ -28,7 +28,17 @@ interface TaskItemProps {
   isFirstTimeStampedTask: boolean
 }
 
-const TaskItem = ({ task, isSelected, isFocused, idx, setFocusId, inboxState, setInboxState, focusNextTask, isFirstTimeStampedTask }: TaskItemProps) => {
+const TaskItem = ({
+  task,
+  isSelected,
+  isFocused,
+  idx,
+  setFocusId,
+  inboxState,
+  setInboxState,
+  focusNextTask,
+  isFirstTimeStampedTask,
+}: TaskItemProps) => {
   const isTablet = useIsTablet()
   const { createTask } = useCreateTask()
   const { updateInboxTask } = useUpdateInboxTaskById(task?._id)
@@ -47,7 +57,11 @@ const TaskItem = ({ task, isSelected, isFocused, idx, setFocusId, inboxState, se
 
   // create task above
   useKeypress('Enter', (event) => {
-    if (isFocused && inboxState === 'NAVIGATE' && (event.metaKey || event.ctrlKey)) {
+    if (
+      isFocused &&
+      inboxState === 'NAVIGATE' &&
+      (event.metaKey || event.ctrlKey)
+    ) {
       event.stopPropagation()
       event.stopImmediatePropagation()
       event.preventDefault()
@@ -61,7 +75,11 @@ const TaskItem = ({ task, isSelected, isFocused, idx, setFocusId, inboxState, se
         endTime: incrementTimeStamp(task?.endTime),
       })
       setFocusId(newTaskId)
-      setInboxState('EDIT_NAME')
+      if (isTaskTimeSet(task)) {
+        setInboxState('EDIT_TIME')
+      } else {
+        setInboxState('EDIT_NAME')
+      }
     }
   })
 
@@ -83,28 +101,25 @@ const TaskItem = ({ task, isSelected, isFocused, idx, setFocusId, inboxState, se
       ref={scrollToFocused}
       isSelected={isSelected}
       isHighlighted={inboxState === 'NAVIGATE' && isFocused}
-      onClick={handleClick}
-    >
+      onClick={handleClick}>
       <FlexRow alignStart>
         <div>
           <Space padding='.15rem 0' />
-          {task?.provider === 'google'
-            ? <TaskCalendarIcon />
-            : <TaskIsComplete
-                task={task}
-                isFocused={isFocused}
-                inboxState={inboxState}
-                setInboxState={setInboxState}
-                focusNextTask={focusNextTask}
-              />
-          }
+          {task?.provider === 'google' ? (
+            <TaskCalendarIcon />
+          ) : (
+            <TaskIsComplete
+              task={task}
+              isFocused={isFocused}
+              inboxState={inboxState}
+              setInboxState={setInboxState}
+              focusNextTask={focusNextTask}
+            />
+          )}
         </div>
         <Space padding='0 .2rem' />
         <FullWidth>
-          <FlexRow
-            alignCenter
-            fullWidth
-          >
+          <FlexRow alignCenter fullWidth>
             <TaskTime
               isFocused={isFocused}
               task={task}
@@ -149,15 +164,15 @@ interface ContainerProps {
 }
 
 const Container = styled.div<ContainerProps>`
-  padding: .5rem;
+  padding: 0.5rem;
   border-radius: 4px;
   cursor: pointer;
 
   // isSelected
-  background: ${props => props.isSelected && props.theme.brand[100]};
+  background: ${(props) => props.isSelected && props.theme.brand[100]};
 
   // isHighlighted
-  background: ${props => props.isHighlighted && props.theme.brand[50]};
+  background: ${(props) => props.isHighlighted && props.theme.brand[50]};
 `
 
 const FullWidth = styled.div`

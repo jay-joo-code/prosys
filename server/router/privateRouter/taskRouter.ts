@@ -33,7 +33,11 @@ taskRouter.get('/inbox', async (req, res) => {
     const validatedTasks = docs
       .filter((task) => {
         // filter calendar events that are in the past
-        if (task.due && isDateBeforeToday(task.due) && task.provider === 'google') {
+        if (
+          task.due &&
+          isDateBeforeToday(task.due) &&
+          task.provider === 'google'
+        ) {
           Task.findByIdAndUpdate(task?._id, { isComplete: true })
           return false
         }
@@ -41,7 +45,11 @@ taskRouter.get('/inbox', async (req, res) => {
       })
       .map((task) => {
         // set overdue task due date as today
-        if (task.due && isDateBeforeToday(task.due) && task.provider !== 'google') {
+        if (
+          task.due &&
+          isDateBeforeToday(task.due) &&
+          task.provider !== 'google'
+        ) {
           Task.findByIdAndUpdate(task?._id, {
             due: new Date(),
             startTime: '0000',
@@ -85,7 +93,9 @@ taskRouter.get('/:id', async (req, res) => {
 
 taskRouter.put('/:id', async (req, res) => {
   try {
-    const doc = await Task.findByIdAndUpdate(req.params.id, req.body, { new: true })
+    const doc = await Task.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    })
     res.send(doc)
   } catch (e) {
     res.status(500).send(e)

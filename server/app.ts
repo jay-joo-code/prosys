@@ -1,4 +1,3 @@
-
 import compression from 'compression'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
@@ -41,17 +40,19 @@ const opts = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
   secretOrKey: process.env.AUTH_SECRET,
 }
-passport.use(new JwtStrategy(opts, (jwtPayload, done) => {
-  User.findById(jwtPayload._id, (err: any, user: IUserDocument) => {
-    if (err) {
-      return done(err, false)
-    }
-    if (user) {
-      return done(null, user)
-    }
-    return done(null, false)
+passport.use(
+  new JwtStrategy(opts, (jwtPayload, done) => {
+    User.findById(jwtPayload._id, (err: any, user: IUserDocument) => {
+      if (err) {
+        return done(err, false)
+      }
+      if (user) {
+        return done(null, user)
+      }
+      return done(null, false)
+    })
   })
-}))
+)
 
 // database
 DBConnect.dbConnection()

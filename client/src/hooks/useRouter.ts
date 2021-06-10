@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { parse, stringify } from 'query-string'
 import history from 'src/util/history'
 
-export default function useRouter () {
+export default function useRouter() {
   const params = useParams()
   const location = useLocation()
   const match: any = useRouteMatch()
