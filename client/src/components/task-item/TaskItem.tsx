@@ -56,11 +56,7 @@ const TaskItem = ({
   }
 
   useKeypress('Enter', (event) => {
-    if (
-      isFocused &&
-      inboxState === 'NAVIGATE' &&
-      (event.metaKey || event.ctrlKey)
-    ) {
+    if (isFocused && inboxState === 'NAVIGATE' && (event.metaKey || event.ctrlKey)) {
       event.stopPropagation()
       event.stopImmediatePropagation()
       event.preventDefault()
@@ -84,7 +80,7 @@ const TaskItem = ({
 
   // send to backlog
   useKeypress(['b', 'ㅠ'], (event) => {
-    if (isFocused && inboxState === 'NAVIGATE') {
+    if (isFocused && inboxState === 'NAVIGATE' && task?.provider !== 'google') {
       event.stopPropagation()
       event.stopImmediatePropagation()
       event.preventDefault()
@@ -126,7 +122,7 @@ const TaskItem = ({
               setInboxState={setInboxState}
             />
             <Space padding='0 .1rem' />
-            <div>
+            <FullWidth>
               <TaskName
                 isFocused={isFocused}
                 task={task}
@@ -141,7 +137,7 @@ const TaskItem = ({
                   setInboxState={setInboxState}
                 />
               )}
-            </div>
+            </FullWidth>
             {/* <TaskTimeButton
               isFocused={isFocused}
               task={task}

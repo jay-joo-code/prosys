@@ -43,7 +43,8 @@ const TaskList = ({ focusId, setFocusId, inboxState, setInboxState }: TaskListPr
     const newDividerIdxes: number[] = []
 
     tasks?.forEach((task, idx) => {
-      const isDateStampIdx = idx === 0 || getDateStamp(task?.due) !== getDateStamp(tasks[idx - 1]?.due)
+      const isDateStampIdx =
+        idx === 0 || getDateStamp(task?.due) !== getDateStamp(tasks[idx - 1]?.due)
       const isDividerIdx = idx !== 0 && isTaskTimeSet(task) && !isTaskTimeSet(tasks[idx - 1])
 
       if (isDateStampIdx) newFirstTaskOfDayIdxes.push(idx)
@@ -54,7 +55,7 @@ const TaskList = ({ focusId, setFocusId, inboxState, setInboxState }: TaskListPr
     setDividerIdxes(newDividerIdxes)
   }, [tasks])
 
-  // Focus
+  // focus handling
   useKeyPress('ArrowUp', (event) => {
     if (inboxState === 'NAVIGATE') {
       event.stopPropagation()
@@ -141,10 +142,8 @@ const TaskList = ({ focusId, setFocusId, inboxState, setInboxState }: TaskListPr
             {renderDateStamp && (
               <>
                 <Space padding='.5rem 0' />
-                <Text
-                  variant='h4'
-                  color={theme.text.light}
-                >{task?.due ? getDateStamp(task?.due) : 'Backlog'} {task?.due && getDay(task?.due)}
+                <Text variant='h4' color={theme.text.light}>
+                  {task?.due ? getDateStamp(task?.due) : 'Backlog'} {task?.due && getDay(task?.due)}
                 </Text>
               </>
             )}
