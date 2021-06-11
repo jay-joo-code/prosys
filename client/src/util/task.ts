@@ -39,7 +39,7 @@ export const sortTasks = (tasks: ITask[]) => {
     const untimedSortValue =
       a?.provider === 'google'
         ? -1
-        : new Date(a.createdAt).valueOf() - new Date(b.createdAt).valueOf()
+        : new Date(b.createdAt).valueOf() - new Date(a.createdAt).valueOf()
 
     return aDate - bDate || untimedSortValue
   })

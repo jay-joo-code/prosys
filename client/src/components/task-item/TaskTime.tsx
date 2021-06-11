@@ -16,12 +16,7 @@ interface TaskTimeProps {
   setInboxState: (state: IInboxState) => void
 }
 
-const TaskTime = ({
-  task,
-  isFocused,
-  inboxState,
-  setInboxState,
-}: TaskTimeProps) => {
+const TaskTime = ({ task, isFocused, inboxState, setInboxState }: TaskTimeProps) => {
   const { updateInboxTask } = useUpdateInboxTaskById(task?._id)
   const [localStartTime, setLocalStartTime] = useState<string>(task?.startTime)
   const [localEndTime, setLocalEndTime] = useState<string>(task?.endTime)
@@ -69,10 +64,20 @@ const TaskTime = ({
       event.stopPropagation()
       event.stopImmediatePropagation()
       event.preventDefault()
-      if (document.activeElement === startTimeInputRef.current) {
-        endTimeInputRef.current?.focus()
+
+      if (event.shiftKey) {
+        // shift + tab
+        if (document.activeElement === endTimeInputRef.current) {
+          startTimeInputRef.current?.focus()
+        }
       } else {
-        startTimeInputRef.current?.focus()
+        // tab
+        if (document.activeElement === startTimeInputRef.current) {
+          endTimeInputRef.current?.focus()
+        } else {
+          updateTime()
+          setInboxState('EDIT_NAME')
+        }
       }
     }
   })
@@ -120,8 +125,7 @@ const TaskTime = ({
 
   const isSingleTimeStamp = localStartTime === localEndTime
   const isEditMode =
-    (isFocused && inboxState === 'EDIT_TIME') ||
-    (isTablet && isFocused && tempRender)
+    (isFocused && inboxState === 'EDIT_TIME') || (isTablet && isFocused && tempRender)
 
   return (
     <OutsideClickListener onOutsideClick={handleOutsideClick} isListening>
