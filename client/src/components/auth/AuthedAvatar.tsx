@@ -20,10 +20,7 @@ const AuthedAvatar = ({ userPhotoSrc }: AuthedProps) => {
     },
   ]
   return (
-    <Menu
-      options={menuOptions}
-      offset={10}
-    >
+    <Menu options={menuOptions} offset={10} autoFocus={false}>
       <Container>
         <Avatar src={userPhotoSrc} />
         <Space margin='0 .1rem' />

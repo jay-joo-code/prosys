@@ -32,16 +32,12 @@ const Menu = ({ options, children, offset }: MenuProps) => {
 
   return (
     <>
-      <Anchor
-        ref={anchorRef}
-        onClick={handleToggle}
-      >
+      <Anchor ref={anchorRef} onClick={handleToggle}>
         {children}
       </Anchor>
       <Popper
         open={open}
         anchorEl={anchorRef.current}
-        role={undefined}
         transition
         disablePortal
         modifiers={{
@@ -49,29 +45,22 @@ const Menu = ({ options, children, offset }: MenuProps) => {
             enabled: true,
             offset: `0, ${offset || 0}`,
           },
-        }}
-      >
+        }}>
         {({ TransitionProps, placement }) => (
           <Grow
             {...TransitionProps}
-            style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
-          >
+            style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}>
             <Paper>
-              <OutsideClickListener
-                onOutsideClick={handleClose}
-                isListening
-              >
-                <MenuList
-                  autoFocusItem={open}
-                >
+              <OutsideClickListener onOutsideClick={handleClose} isListening>
+                <MenuList>
                   {options.map((option) => (
                     <MenuItem
                       key={option.label}
                       onClick={() => {
                         option.onClick()
                         handleClose()
-                      }}
-                    >{option.label}
+                      }}>
+                      {option.label}
                     </MenuItem>
                   ))}
                 </MenuList>
