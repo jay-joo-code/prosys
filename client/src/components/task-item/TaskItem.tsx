@@ -14,7 +14,6 @@ import TaskIsComplete from './TaskIsComplete'
 import TaskName from './TaskName'
 import TaskNotes from './TaskNotes'
 import TaskTime from './TaskTime'
-import TaskTimeButton from './TaskTimeButton'
 
 interface TaskItemProps {
   task: ITask
@@ -25,7 +24,7 @@ interface TaskItemProps {
   inboxState: IInboxState
   setInboxState: (state: IInboxState) => void
   focusNextTask: () => void
-  isFirstTimeStampedTask: boolean
+  focusPrevTask: () => void
 }
 
 const TaskItem = ({
@@ -37,7 +36,7 @@ const TaskItem = ({
   inboxState,
   setInboxState,
   focusNextTask,
-  isFirstTimeStampedTask,
+  focusPrevTask,
 }: TaskItemProps) => {
   const isTablet = useIsTablet()
   const { createTask } = useCreateTask()
@@ -138,12 +137,6 @@ const TaskItem = ({
                 />
               )}
             </FullWidth>
-            {/* <TaskTimeButton
-              isFocused={isFocused}
-              task={task}
-              inboxState={inboxState}
-              setInboxState={setInboxState}
-            /> */}
           </FlexRow>
           {isTablet && (
             <TaskNotes
@@ -158,6 +151,7 @@ const TaskItem = ({
             task={task}
             inboxState={inboxState}
             setInboxState={setInboxState}
+            focusPrevTask={focusPrevTask}
           />
         </FullWidth>
       </FlexRow>

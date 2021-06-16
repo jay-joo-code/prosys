@@ -11,9 +11,10 @@ interface TaskDueProps {
   task: ITask
   inboxState: IInboxState
   setInboxState: (state: IInboxState) => void
+  focusPrevTask: () => void
 }
 
-const TaskDue = ({ isFocused, task, inboxState, setInboxState }: TaskDueProps) => {
+const TaskDue = ({ isFocused, task, inboxState, setInboxState, focusPrevTask }: TaskDueProps) => {
   const { updateInboxTask } = useUpdateInboxTaskById(task?._id)
   const [tempDate, setTempDate] = useState<Date>(task?.due || new Date())
 
@@ -26,9 +27,8 @@ const TaskDue = ({ isFocused, task, inboxState, setInboxState }: TaskDueProps) =
     }
   })
 
-  // TODO: figure out Mui date type
-  const handleChange = (date: any) => {
-    setTempDate(new Date(date))
+  const handleChange = (date: Date | null) => {
+    if (date) setTempDate(new Date(date))
   }
 
   const handleClose = () => {
@@ -37,6 +37,7 @@ const TaskDue = ({ isFocused, task, inboxState, setInboxState }: TaskDueProps) =
       _id: task?._id,
       due: new Date(tempDate),
     })
+    if (!task?.due) focusPrevTask()
   }
 
   const containerRef = useRef<HTMLDivElement>(null)
@@ -67,7 +68,7 @@ const TaskDue = ({ isFocused, task, inboxState, setInboxState }: TaskDueProps) =
 }
 
 const Container = styled.div`
-  margin-left: .5rem;
+  margin-left: 0.5rem;
   position: relative;
 
   & label {

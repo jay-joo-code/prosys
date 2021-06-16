@@ -131,6 +131,18 @@ const TaskList = ({ focusId, setFocusId, inboxState, setInboxState }: TaskListPr
     })
   }
 
+  const focusPrevTask = () => {
+    tasks?.forEach((task, idx) => {
+      if (task?._id === focusId) {
+        if (idx - 1 >= 0) {
+          setFocusId(tasks[idx - 1]?._id)
+        } else if (tasks?.length >= 2) {
+          setFocusId(tasks[idx + 1]?._id)
+        }
+      }
+    })
+  }
+
   return (
     <Container>
       {tasks?.map((task, idx) => {
@@ -157,7 +169,7 @@ const TaskList = ({ focusId, setFocusId, inboxState, setInboxState }: TaskListPr
               inboxState={inboxState}
               setInboxState={setInboxState}
               focusNextTask={focusNextTask}
-              isFirstTimeStampedTask={renderDividingSpace}
+              focusPrevTask={focusPrevTask}
             />
           </div>
         )
