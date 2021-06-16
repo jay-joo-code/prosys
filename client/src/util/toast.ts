@@ -1,11 +1,13 @@
 import { toast } from 'react-toastify'
 
-type IToastVariant = 'info' | 'success' | 'warning' | 'error'
-
-interface IOptions {
-  toastId: string
+export interface IToastOptions {
+  id: string
+  variant: IToastVariant
+  msg: string
 }
 
-export const showToast = (variant: IToastVariant, msg: string, options?: IOptions) => {
-  toast[variant](msg, options)
+type IToastVariant = 'info' | 'success' | 'warning' | 'error'
+
+export const showToast = ({ id, variant, msg }: IToastOptions) => {
+  toast[variant](msg, { toastId: id })
 }

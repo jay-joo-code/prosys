@@ -15,6 +15,8 @@ import Routes from './Routes'
 import theme from './theme'
 
 import './normalise.less'
+import { showToast } from 'src/util/toast'
+import GlobalSnackbar from 'src/components/GlobalSnackbar'
 
 const Container = styled.div`
   width: 100vw;
@@ -55,12 +57,10 @@ export const queryCache = new QueryCache({
 
 const App = () => {
   const queryClient = new QueryClient()
+
   return (
     <Provider store={store}>
-      <PersistGate
-        loading={null}
-        persistor={persistor}
-      >
+      <PersistGate loading={null} persistor={persistor}>
         <QueryClientProvider client={queryClient}>
           <ThemeProvider theme={theme}>
             <Router history={history}>
@@ -73,6 +73,7 @@ const App = () => {
               </Container>
               <ToastWrapper />
               <ScrollToTop />
+              <GlobalSnackbar />
             </Router>
           </ThemeProvider>
         </QueryClientProvider>

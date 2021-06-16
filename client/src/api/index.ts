@@ -7,11 +7,7 @@ import { showToast } from 'src/util/toast'
 
 const BASE_URL = '/api'
 
-const api = (
-  method: 'get' | 'post' | 'put' | 'delete',
-  url: string,
-  variables: any
-) =>
+const api = (method: 'get' | 'post' | 'put' | 'delete', url: string, variables: any) =>
   new Promise((resolve, reject) => {
     const { accessToken } = store.getState().authState
     const headers = {
@@ -26,8 +22,8 @@ const api = (
       params: method === 'get' ? variables : undefined,
       data: method !== 'get' ? variables : undefined,
       paramsSerializer: objectToQueryString,
-    })
-      .then((response) => {
+    }).then(
+      (response) => {
         resolve(response.data)
       },
       (error) => {
@@ -38,7 +34,11 @@ const api = (
             if (message === 'Access token has expired') {
               history.push('/refresh-token')
             } else {
-              showToast('error', 'Session expired')
+              showToast({
+                id: 'session-expired',
+                variant: 'error',
+                msg: 'Session expired',
+              })
               store.dispatch(logout())
               history.push('/login')
             }
@@ -49,7 +49,7 @@ const api = (
           reject(error)
         }
       }
-      )
+    )
   })
 
 export default api

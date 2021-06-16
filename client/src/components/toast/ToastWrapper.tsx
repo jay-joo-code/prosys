@@ -13,15 +13,20 @@ const ZoomCustom = cssTransition({
 })
 
 const ToastWrapper = () => {
-  return <StyledToastContainer
-    position='top-center'
-    autoClose={2500}
-    hideProgressBar={true}
-    newestOnTop={false}
-    transition={ZoomCustom}
-    rtl={false}
-    pauseOnHover
-  />
+  return (
+    <StyledToastContainer
+      position='bottom-left'
+      transition={ZoomCustom}
+      autoClose={4000}
+      hideProgressBar
+      newestOnTop={false}
+      closeOnClick
+      rtl={false}
+      pauseOnFocusLoss
+      draggable
+      pauseOnHover
+    />
+  )
 }
 
 const StyledToastContainer = styled(ToastContainer).attrs({
@@ -34,19 +39,19 @@ const StyledToastContainer = styled(ToastContainer).attrs({
   /* width: 100%; */
 
   & .Toastify__toast--success {
-    background: ${(props) => props.theme.success}
+    background: ${(props) => props.theme.success};
   }
   & .Toastify__toast--info {
-    background: ${(props) => props.theme.info[500]}
+    background: ${(props) => props.theme.info[500]};
   }
   & .Toastify__toast--warning {
-    background: ${(props) => props.theme.warning[500]}
+    background: ${(props) => props.theme.warning[500]};
   }
   & .Toastify__toast--error {
-    background: ${(props) => props.theme.danger[500]}
+    background: ${(props) => props.theme.danger[500]};
   }
 
-   /* .toast is passed to toastClassName */
+  /* .toast is passed to toastClassName */
   .toast {
     min-height: 0;
     border-radius: 4px;
@@ -55,7 +60,7 @@ const StyledToastContainer = styled(ToastContainer).attrs({
     align-items: center;
   }
 
-  button[aria-label="close"] {
+  button[aria-label='close'] {
     opacity: 1;
     align-self: center;
   }
@@ -63,13 +68,14 @@ const StyledToastContainer = styled(ToastContainer).attrs({
   /* .body is passed to bodyClassName */
   .body {
     margin: 0;
-    padding: .2rem .5rem;
-    font-size: .9rem;
+    padding: 0.2rem 0.5rem;
+    font-size: 0.9rem;
     color: ${(props) => props.theme.white};
   }
 
   /* .progress is passed to progressClassName */
-  .progress {}
+  .progress {
+  }
 `
 
 export default ToastWrapper
