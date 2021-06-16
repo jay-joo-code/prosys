@@ -172,24 +172,25 @@ const TaskTime = ({ task, isFocused, inboxState, setInboxState }: TaskTimeProps)
 }
 
 const Container = styled.div`
-  width: 126px;
+  width: 100px;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding-top: 0.1rem;
 
   @media (min-width: ${(props) => props.theme.large}) {
     width: 110px;
+    padding-top: 0.1rem;
   }
 `
 
 const TimeStampInput = styled.input`
-  width: 60px;
+  width: 45px;
   font-size: 16px;
   text-align: center;
   color: ${(props) => props.theme.text.light} !important;
   opacity: 1 !important;
   -webkit-text-fill-color: ${(props) => props.theme.text.light} !important;
+  padding: 0;
 
   &:disabled {
     background: inherit;
