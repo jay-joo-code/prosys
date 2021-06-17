@@ -86,6 +86,8 @@ const TaskItem = ({
       updateInboxTask({
         _id: task?._id,
         due: null,
+        startTime: '0000',
+        endTime: '0000',
       })
     }
   })
