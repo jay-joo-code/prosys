@@ -66,3 +66,18 @@ export const useUpdateInboxTaskById = (_id: string) => {
     updateInboxTask,
   }
 }
+
+export const useUndoIsComplete = () => {
+  const { mutateAsync: undoIsComplete, ...rest } = useCustomMutation<ITask>({
+    url: `/private/task/undo`,
+    method: 'put',
+    updateLocal: {
+      queryConfigs: [fetchInboxTasks()],
+    },
+  })
+
+  return {
+    ...rest,
+    undoIsComplete,
+  }
+}

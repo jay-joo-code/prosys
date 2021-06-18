@@ -4,6 +4,12 @@ export interface IAuthState {
 
 export interface ISnackbarState {
   isOpen: boolean
+  snackPack: ISnackbar[]
+  currentSnack?: ISnackbar | undefined
+}
+
+export interface ISnackbar {
+  key: number
   variant: ISnackbarVariant
   message: string
 }

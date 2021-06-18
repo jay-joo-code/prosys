@@ -83,6 +83,19 @@ taskRouter.get('/:id', async (req, res) => {
   }
 })
 
+taskRouter.put('/undo', async (req, res) => {
+  try {
+    const doc = await Task.findOneAndUpdate(
+      { userId: req.user?._id, isComplete: true },
+      { isComplete: false },
+      { new: true }
+    ).sort({ updatedAt: -1 })
+    res.send(doc)
+  } catch (e) {
+    res.status(500).send(e)
+  }
+})
+
 taskRouter.put('/:id', async (req, res) => {
   try {
     const doc = await Task.findByIdAndUpdate(req.params.id, req.body, {

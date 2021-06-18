@@ -4,8 +4,7 @@ import { ISnackbarState } from 'src/types/redux.type'
 
 const initialState: ISnackbarState = {
   isOpen: false,
-  variant: 'error',
-  message: '',
+  snackPack: [],
 }
 
 const snackbarSlice = createSlice({
@@ -13,9 +12,24 @@ const snackbarSlice = createSlice({
   initialState,
   reducers: {
     showSnackbar: (state, { payload }) => {
+      // add new snack to snackPack
+      state.snackPack.push({
+        key: payload.key || new Date().getTime(),
+        variant: payload.variant,
+        message: payload.message,
+      })
+    },
+    handleShowSnackbar: (state) => {
+      // display snack from snackPack
+      state.currentSnack = state.snackPack[0]
+      state.snackPack = state.snackPack.slice(1)
       state.isOpen = true
-      state.variant = payload.variant
-      state.message = payload.message
+    },
+    popSnack: (state) => {
+      state.snackPack = state.snackPack.slice(1)
+    },
+    exitSnackbar: (state) => {
+      state.currentSnack = undefined
     },
     hideSnackbar: (state) => {
       state.isOpen = false
@@ -23,6 +37,7 @@ const snackbarSlice = createSlice({
   },
 })
 
-export const { showSnackbar, hideSnackbar } = snackbarSlice.actions
+export const { showSnackbar, handleShowSnackbar, popSnack, hideSnackbar, exitSnackbar } =
+  snackbarSlice.actions
 
 export default snackbarSlice.reducer

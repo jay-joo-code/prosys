@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import { useInboxTasks } from 'src/api/task'
+import { useDispatch } from 'react-redux'
+import { useInboxTasks, useUndoIsComplete } from 'src/api/task'
 import theme from 'src/app/theme'
 import Text from 'src/components/fonts/Text'
 import Space from 'src/components/layout/Space'
 import TaskItem from 'src/components/task-item/TaskItem'
+import useKeypress from 'src/hooks/useKeyPress'
 import useKeyPress from 'src/hooks/useKeyPress'
 import usePreviousValue from 'src/hooks/usePreviousValue'
+import { showSnackbar } from 'src/redux/snackbar'
 import { IInboxState, ITask } from 'src/types/task.type'
 import { getDateStamp, getDay } from 'src/util/date'
 import { isTaskTimeSet } from 'src/util/task'
@@ -142,6 +145,32 @@ const TaskList = ({ focusId, setFocusId, inboxState, setInboxState }: TaskListPr
       }
     })
   }
+
+  // undo isComplete
+  const { undoIsComplete } = useUndoIsComplete()
+  const dispatch = useDispatch()
+  useKeypress(['z', 'ㅋ'], async (event) => {
+    if (inboxState === 'NAVIGATE' && (event.metaKey || event.ctrlKey)) {
+      event.stopPropagation()
+      event.stopImmediatePropagation()
+      event.preventDefault()
+      dispatch(
+        showSnackbar({
+          key: 'RECOVERING_TASK',
+          variant: 'info',
+          message: 'Recovering latest completed task',
+        })
+      )
+      await undoIsComplete({})
+      dispatch(
+        showSnackbar({
+          key: 'RECOVERED_TASK',
+          variant: 'success',
+          message: 'Recovered task',
+        })
+      )
+    }
+  })
 
   return (
     <Container>

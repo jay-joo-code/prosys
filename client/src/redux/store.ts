@@ -5,9 +5,8 @@ import storage from 'redux-persist/lib/storage'
 import rootReducer from 'src/redux'
 
 const loggerMiddleware = import.meta.env.VITE_NODE_ENV === 'development' ? [logger] : []
-const persistBlacklist = import.meta.env.VITE_NODE_ENV === 'development'
-  ? []
-  : []
+const persistBlacklist =
+  import.meta.env.VITE_NODE_ENV === 'development' ? ['snackbarState'] : ['snackbarState']
 
 const persistConfig = {
   key: 'root',
@@ -19,7 +18,10 @@ const persistedReducer = persistReducer(persistConfig, rootReducer)
 
 const store = configureStore({
   reducer: persistedReducer,
-  middleware: [...getDefaultMiddleware({ thunk: false, serializableCheck: false }), ...loggerMiddleware],
+  middleware: [
+    ...getDefaultMiddleware({ thunk: false, serializableCheck: false }),
+    ...loggerMiddleware,
+  ],
   devTools: import.meta.env.VITE_NODE_ENV !== 'production',
 })
 
