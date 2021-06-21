@@ -89,6 +89,7 @@ const TaskItem = ({
         startTime: '0000',
         endTime: '0000',
       })
+      focusNextTask()
     }
   })
 
