@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import useKeypress from 'src/hooks/useKeyPress'
 import { IInboxState, ITask } from 'src/types/task.type'
 import styled from 'styled-components'
@@ -15,12 +15,7 @@ interface TaskNotesProps {
   setInboxState: (state: IInboxState) => void
 }
 
-const TaskNotes = ({
-  isFocused,
-  task,
-  inboxState,
-  setInboxState,
-}: TaskNotesProps) => {
+const TaskNotes = ({ isFocused, task, inboxState, setInboxState }: TaskNotesProps) => {
   const { updateInboxTask } = useUpdateInboxTaskById(task?._id)
   const [textareaValue, setTextareaValue] = useState<string>(task?.notes)
   const isTablet = useIsTablet()
@@ -87,12 +82,19 @@ const Container = styled.div<ContainerProps>`
 
 const NotesTextarea = styled(TextareaAutosize)`
   width: 100%;
-  border: none;
   font-family: inherit;
   line-height: 1.5;
   letter-spacing: 0.5px;
   font-size: 14px;
   color: ${(props) => props.theme.text.light};
+
+  border: 2px solid ${(props) => props.theme.grey[100]};
+  border-radius: 4px;
+  resize: none;
+
+  &:focus {
+    border-color: transparent;
+  }
 `
 
 export default TaskNotes
