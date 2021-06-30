@@ -3,7 +3,7 @@ import useCustomMutation from 'src/hooks/useCustomMutation'
 import useCustomQuery from 'src/hooks/useCustomQuery'
 import useRouter from 'src/hooks/useRouter'
 import { showSnackbar } from 'src/redux/snackbar'
-import { ITask } from 'src/types/task.type'
+import { ITask, IUseUpdateInboxTaskByIdOptions } from 'src/types/task.type'
 import { sortTasks } from 'src/util/task'
 
 export const fetchInboxTasks = () => ({
@@ -51,13 +51,19 @@ export const useCreateTask = () => {
   }
 }
 
-export const useUpdateInboxTaskById = (_id: string) => {
+export const useUpdateInboxTaskById = (
+  _id: string,
+  options: IUseUpdateInboxTaskByIdOptions = {
+    refetchOnSettle: false,
+  }
+) => {
   const { mutate: updateInboxTask, ...rest } = useCustomMutation<ITask>({
     url: `/private/task/${_id}`,
     method: 'put',
     updateLocal: {
       queryConfigs: [fetchInboxTasks()],
       type: 'update',
+      isNotRefetchOnSettle: !options?.refetchOnSettle,
     },
   })
 

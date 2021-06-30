@@ -15,7 +15,9 @@ interface TaskDueProps {
 }
 
 const TaskDue = ({ isFocused, task, inboxState, setInboxState, focusPrevTask }: TaskDueProps) => {
-  const { updateInboxTask } = useUpdateInboxTaskById(task?._id)
+  const { updateInboxTask } = useUpdateInboxTaskById(task?._id, {
+    refetchOnSettle: true,
+  })
   const [tempDate, setTempDate] = useState<Date>(task?.due || new Date())
 
   useKeypress(['d', 'ㅇ'], (event) => {

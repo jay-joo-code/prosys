@@ -114,7 +114,7 @@ const NameTextField = styled.input`
   letter-spacing: 0.5px;
   width: 100%;
   padding: 0;
-  margin: 0;
+  margin: 0.2rem 0 0 0;
 `
 
 export default TaskName

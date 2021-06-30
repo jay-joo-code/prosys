@@ -8,6 +8,7 @@ export interface ITask extends IDocument {
   name: string
   due: Date | null
   notes: string
+  isRecur: boolean
   provider?: 'google'
   providerTaskId?: string | null
   providerData?: any
@@ -17,4 +18,14 @@ export interface IScheduleTasks {
   [id: string]: ITask[]
 }
 
-export type IInboxState = 'CREATE' | 'NAVIGATE' | 'EDIT_NAME' | 'EDIT_NOTES' | 'EDIT_TIME' | 'EDIT_DUE'
+export type IInboxState =
+  | 'CREATE'
+  | 'NAVIGATE'
+  | 'EDIT_NAME'
+  | 'EDIT_NOTES'
+  | 'EDIT_TIME'
+  | 'EDIT_DUE'
+
+export interface IUseUpdateInboxTaskByIdOptions {
+  refetchOnSettle?: boolean
+}
