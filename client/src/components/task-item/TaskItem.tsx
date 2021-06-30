@@ -43,7 +43,7 @@ const TaskItem = ({
   const { updateInboxTask } = useUpdateInboxTaskById(task?._id)
 
   const handleClick = (event: React.MouseEvent) => {
-    if (!isTablet) event.stopPropagation()
+    event.stopPropagation()
     event.preventDefault()
     setFocusId(task?._id)
   }

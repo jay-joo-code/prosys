@@ -34,7 +34,7 @@ const TaskName = ({ task, isFocused, inboxState, setInboxState }: TaskNameProps)
   const isTablet = useIsTablet()
 
   const handleClick = () => {
-    if (isTablet && inboxState === 'NAVIGATE') {
+    if (isFocused && isTablet && inboxState === 'NAVIGATE') {
       setInboxState('EDIT_NAME')
     }
   }
