@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from 'react'
+import React, { ChangeEvent, useEffect, useState } from 'react'
 import { useUpdateArchiveTaskById, useUpdateInboxTaskById } from 'src/api/task'
 import useIsTablet from 'src/hooks/useIsTablet'
 import useKeyPress from 'src/hooks/useKeyPress'
@@ -75,6 +75,20 @@ const TaskName = ({ task, isFocused, inboxState, setInboxState }: TaskNameProps)
       event.stopImmediatePropagation()
       event.preventDefault()
       updateName()
+    }
+  })
+
+  const handleWindowBlur = () => {
+    if (isFocused && inboxState === 'EDIT_NAME') {
+      updateName()
+    }
+  }
+
+  useEffect(() => {
+    window.addEventListener('blur', handleWindowBlur)
+
+    return () => {
+      window.removeEventListener('blur', handleWindowBlur)
     }
   })
 

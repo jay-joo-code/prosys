@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import useKeypress from 'src/hooks/useKeyPress'
 import { IInboxState, ITask } from 'src/types/task.type'
 import styled from 'styled-components'
@@ -21,6 +21,21 @@ const TaskNotes = ({ isFocused, task, inboxState, setInboxState }: TaskNotesProp
   const [textareaValue, setTextareaValue] = useState<string>(task?.notes)
   const isTablet = useIsTablet()
 
+  const updateNotes = () => {
+    setInboxState('NAVIGATE')
+    if (task?.isArchived) {
+      updateArchiveTask({
+        _id: task?._id,
+        notes: textareaValue.trim(),
+      })
+    } else {
+      updateInboxTask({
+        _id: task?._id,
+        notes: textareaValue.trim(),
+      })
+    }
+  }
+
   useKeypress(['n', 'ㅜ'], (event) => {
     if (isFocused && inboxState === 'NAVIGATE') {
       event.stopPropagation()
@@ -39,18 +54,21 @@ const TaskNotes = ({ isFocused, task, inboxState, setInboxState }: TaskNotesProp
       event.stopPropagation()
       event.stopImmediatePropagation()
       event.preventDefault()
-      setInboxState('NAVIGATE')
-      if (task?.isArchived) {
-        updateArchiveTask({
-          _id: task?._id,
-          notes: textareaValue.trim(),
-        })
-      } else {
-        updateInboxTask({
-          _id: task?._id,
-          notes: textareaValue.trim(),
-        })
-      }
+      updateNotes()
+    }
+  })
+
+  const handleWindowBlur = () => {
+    if (isFocused && inboxState === 'EDIT_NOTES') {
+      updateNotes()
+    }
+  }
+
+  useEffect(() => {
+    window.addEventListener('blur', handleWindowBlur)
+
+    return () => {
+      window.removeEventListener('blur', handleWindowBlur)
     }
   })
 
@@ -58,6 +76,12 @@ const TaskNotes = ({ isFocused, task, inboxState, setInboxState }: TaskNotesProp
     <>
       {isFocused && inboxState === 'EDIT_NOTES' ? (
         <NotesTextarea
+          ref={(input) => {
+            if (input) {
+              input.selectionStart = textareaValue?.length
+              input.selectionEnd = textareaValue?.length
+            }
+          }}
           value={textareaValue}
           onChange={(e) => setTextareaValue(e.target.value)}
           autoFocus

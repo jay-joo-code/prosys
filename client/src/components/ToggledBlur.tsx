@@ -8,7 +8,7 @@ interface ToggleBlurProps {
   children: React.ReactNode
 }
 
-const ToggleBlur = ({ children }: ToggleBlurProps) => {
+const ToggledBlur = ({ children }: ToggleBlurProps) => {
   const { isHide } = useSelector((state: IRootState) => state.appState)
   const dispatch = useDispatch()
 
@@ -36,4 +36,4 @@ const Container = styled.div<ContainerProps>`
   filter: ${(props) => props.isHide && 'blur(4px)'};
 `
 
-export default ToggleBlur
+export default ToggledBlur

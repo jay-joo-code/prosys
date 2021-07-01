@@ -7,7 +7,7 @@ import { PersistGate } from 'redux-persist/integration/react'
 import Footer from 'src/components/footer/Footer'
 import GlobalSnackbar from 'src/components/GlobalSnackbar'
 import ToastWrapper from 'src/components/toast/ToastWrapper'
-import ToggleBlur from 'src/components/ToggledBlur'
+import ToggledBlur from 'src/components/ToggledBlur'
 import ScrollToTop from 'src/components/util/ScrollToTop'
 import store from 'src/redux/store'
 import history from 'src/util/history'
@@ -30,7 +30,7 @@ const App = () => {
         <QueryClientProvider client={queryClient}>
           <ThemeProvider theme={theme}>
             <Router history={history}>
-              <ToggleBlur>
+              <ToggledBlur>
                 <Container>
                   <Header />
                   <FillHeight>
@@ -38,7 +38,7 @@ const App = () => {
                   </FillHeight>
                   <Footer />
                 </Container>
-              </ToggleBlur>
+              </ToggledBlur>
               <ToastWrapper />
               <ScrollToTop />
               <GlobalSnackbar />
