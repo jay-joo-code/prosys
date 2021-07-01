@@ -12,25 +12,27 @@ const ToggleBlur = ({ children }: ToggleBlurProps) => {
   const { isHide } = useSelector((state: IRootState) => state.appState)
   const dispatch = useDispatch()
 
-  const handleFocus = () => {
-    dispatch(setHide(false))
-  }
-
   const handleBlur = () => {
     dispatch(setHide(true))
   }
 
+  const handleClick = () => {
+    dispatch(setHide(false))
+  }
+
   useEffect(() => {
-    window.addEventListener('focus', handleFocus)
     window.addEventListener('blur', handleBlur)
 
     return () => {
-      window.removeEventListener('focus', handleFocus)
       window.removeEventListener('blur', handleBlur)
     }
   })
 
-  return <Container isHide={isHide}>{children}</Container>
+  return (
+    <Container isHide={isHide} onClick={handleClick}>
+      {children}
+    </Container>
+  )
 }
 
 interface ContainerProps {
