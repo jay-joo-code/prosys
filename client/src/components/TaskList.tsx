@@ -5,6 +5,7 @@ import theme from 'src/app/theme'
 import Text from 'src/components/fonts/Text'
 import Space from 'src/components/layout/Space'
 import TaskItem from 'src/components/task-item/TaskItem'
+import useIsInbox from 'src/hooks/useIsInbox'
 import { default as useKeypress, default as useKeyPress } from 'src/hooks/useKeyPress'
 import usePreviousValue from 'src/hooks/usePreviousValue'
 import { toggleHide } from 'src/redux/appSlice'
@@ -24,6 +25,7 @@ interface TaskListProps {
 
 const TaskList = ({ focusId, setFocusId, inboxState, setInboxState, tasks }: TaskListProps) => {
   const previousTasks: ITask[] = usePreviousValue(tasks)
+  const isInbox = useIsInbox()
 
   // focus first task after fetching tasks
   useEffect(() => {
@@ -197,7 +199,7 @@ const TaskList = ({ focusId, setFocusId, inboxState, setInboxState, tasks }: Tas
 
         return (
           <div key={`${task?._id}${new Date(task?.createdAt).getTime()}`}>
-            {renderDateStamp && (
+            {isInbox && renderDateStamp && (
               <>
                 <Space padding='.5rem 0' />
                 <Text variant='h4' color={theme.text.light}>
