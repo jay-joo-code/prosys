@@ -38,6 +38,7 @@ const TaskIsComplete = ({
       event.stopPropagation()
       event.stopImmediatePropagation()
       event.preventDefault()
+      toggleIsComplete()
     }
   })
 
