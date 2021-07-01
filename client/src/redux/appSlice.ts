@@ -13,9 +13,12 @@ const appSlice = createSlice({
     toggleHide: (state) => {
       state.isHide = !state.isHide
     },
+    setHide: (state, { payload }) => {
+      state.isHide = payload
+    },
   },
 })
 
-export const { toggleHide } = appSlice.actions
+export const { toggleHide, setHide } = appSlice.actions
 
 export default appSlice.reducer
