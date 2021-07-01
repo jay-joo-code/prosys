@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 import React, { memo } from 'react'
-import { useCreateTask, useUpdateInboxTaskById } from 'src/api/task'
+import { useToggleArchive, useCreateTask, useUpdateInboxTaskById } from 'src/api/task'
 import useIsTablet from 'src/hooks/useIsTablet'
 import useKeypress from 'src/hooks/useKeyPress'
 import { IInboxState, ITask } from 'src/types/task.type'
@@ -41,6 +41,7 @@ const TaskItem = ({
   const isTablet = useIsTablet()
   const { createTask } = useCreateTask()
   const { updateInboxTask } = useUpdateInboxTaskById(task?._id)
+  const { toggleArchive } = useToggleArchive(task?._id)
 
   const handleClick = (event: React.MouseEvent) => {
     event.stopPropagation()
@@ -89,6 +90,30 @@ const TaskItem = ({
         startTime: '0000',
         endTime: '0000',
       })
+      focusNextTask()
+    }
+  })
+
+  // send to archive
+  useKeypress(['a', 'ㅁ'], (event) => {
+    if (isFocused && inboxState === 'NAVIGATE' && task?.provider !== 'google') {
+      event.stopPropagation()
+      event.stopImmediatePropagation()
+      event.preventDefault()
+      if (task?.isArchived) {
+        toggleArchive({
+          _id: task?._id,
+          isArchived: false,
+        })
+      } else {
+        toggleArchive({
+          _id: task?._id,
+          isArchived: true,
+          due: null,
+          startTime: '0000',
+          endTime: '0000',
+        })
+      }
       focusNextTask()
     }
   })

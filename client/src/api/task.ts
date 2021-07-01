@@ -35,6 +35,22 @@ export const useInboxTasks = () => {
   }
 }
 
+export const fetchArchivedTasks = () => ({
+  url: '/private/task/archive',
+  options: {
+    refetchOnWindowFocus: 'always',
+  },
+})
+
+export const useArchivedTasks = () => {
+  const { data: tasks, ...rest } = useCustomQuery<ITask[]>(fetchArchivedTasks())
+
+  return {
+    ...rest,
+    tasks,
+  }
+}
+
 export const useCreateTask = () => {
   const { mutate: createTask, ...rest } = useCustomMutation<ITask>({
     url: '/private/task',
@@ -73,12 +89,50 @@ export const useUpdateInboxTaskById = (
   }
 }
 
+export const useUpdateArchiveTaskById = (
+  _id: string,
+  options: IUseUpdateInboxTaskByIdOptions = {
+    refetchOnSettle: false,
+  }
+) => {
+  const { mutate: updateArchiveTask, ...rest } = useCustomMutation<ITask>({
+    url: `/private/task/${_id}`,
+    method: 'put',
+    updateLocal: {
+      queryConfigs: [fetchArchivedTasks()],
+      type: 'update',
+      isNotRefetchOnSettle: !options?.refetchOnSettle,
+    },
+  })
+
+  return {
+    ...rest,
+    updateArchiveTask,
+  }
+}
+
+export const useToggleArchive = (_id: string) => {
+  const { mutate: toggleArchive, ...rest } = useCustomMutation<ITask>({
+    url: `/private/task/${_id}`,
+    method: 'put',
+    updateLocal: {
+      queryConfigs: [fetchInboxTasks(), fetchArchivedTasks()],
+      type: 'delete',
+    },
+  })
+
+  return {
+    ...rest,
+    toggleArchive,
+  }
+}
+
 export const useUndoIsComplete = () => {
   const { mutateAsync: undoIsComplete, ...rest } = useCustomMutation<ITask>({
     url: `/private/task/undo`,
     method: 'put',
     updateLocal: {
-      queryConfigs: [fetchInboxTasks()],
+      queryConfigs: [fetchInboxTasks(), fetchArchivedTasks()],
     },
   })
 

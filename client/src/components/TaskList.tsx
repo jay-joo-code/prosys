@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { useInboxTasks, useUndoIsComplete } from 'src/api/task'
+import { useUndoIsComplete } from 'src/api/task'
 import theme from 'src/app/theme'
 import Text from 'src/components/fonts/Text'
 import Space from 'src/components/layout/Space'
 import TaskItem from 'src/components/task-item/TaskItem'
-import useKeypress from 'src/hooks/useKeyPress'
-import useKeyPress from 'src/hooks/useKeyPress'
+import { default as useKeypress, default as useKeyPress } from 'src/hooks/useKeyPress'
 import usePreviousValue from 'src/hooks/usePreviousValue'
 import { showSnackbar } from 'src/redux/snackbar'
 import { IInboxState, ITask } from 'src/types/task.type'
@@ -19,13 +18,20 @@ interface TaskListProps {
   setFocusId: (value: string | undefined) => void
   inboxState: IInboxState
   setInboxState: (state: IInboxState) => void
+  tasks?: ITask[]
 }
 
-const TaskList = ({ focusId, setFocusId, inboxState, setInboxState }: TaskListProps) => {
-  const { tasks } = useInboxTasks()
+const TaskList = ({ focusId, setFocusId, inboxState, setInboxState, tasks }: TaskListProps) => {
+  const previousTasks: ITask[] = usePreviousValue(tasks)
+
+  // focus first task after fetching tasks
+  useEffect(() => {
+    if ((!previousTasks || previousTasks?.length === 0) && tasks && tasks?.length > 0 && !focusId) {
+      setFocusId(tasks[0]?._id)
+    }
+  }, [tasks])
 
   // handle focusId missing in new tasks
-  const previousTasks: ITask[] = usePreviousValue(tasks)
   useEffect(() => {
     if (tasks && previousTasks) {
       const currentIdx = tasks.findIndex((task) => task._id === focusId)

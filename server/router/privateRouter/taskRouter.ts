@@ -24,10 +24,20 @@ taskRouter.get('/inbox', async (req, res) => {
     // async fetch and save google calendar events
     syncCalendar(req, res)
 
-    // fetch user tasks
+    // fetch user's inbox tasks
     const docs = await Task.find({
-      userId: req.user?._id,
-      isComplete: false,
+      $or: [
+        {
+          userId: req.user?._id,
+          isComplete: false,
+          isArchived: false,
+        },
+        {
+          userId: req.user?._id,
+          isComplete: false,
+          isArchived: undefined,
+        },
+      ],
     }).sort({ due: 1 })
 
     const validatedTasks = docs
@@ -62,6 +72,16 @@ taskRouter.get('/inbox', async (req, res) => {
       })
 
     res.send(validatedTasks)
+  } catch (e) {
+    res.status(500).send(e)
+  }
+})
+
+// get user's archived
+taskRouter.get('/archive', async (req, res) => {
+  try {
+    const docs = await Task.find({ userId: req.user?._id, isArchived: true, isComplete: false })
+    res.send(docs)
   } catch (e) {
     res.status(500).send(e)
   }

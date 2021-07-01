@@ -4,6 +4,7 @@ import useKeyPress from 'src/hooks/useKeyPress'
 import { IInboxState, ITask } from 'src/types/task.type'
 import styled from 'styled-components'
 import LoopIcon from '@material-ui/icons/Loop'
+import useIsArchive from 'src/hooks/useIsArchive'
 
 interface TaskIsCompleteProps {
   task: ITask
@@ -33,13 +34,10 @@ const TaskIsComplete = ({
   }
 
   useKeyPress(' ', (event) => {
-    if (isFocused && inboxState === 'NAVIGATE') {
+    if (isFocused && inboxState === 'NAVIGATE' && !task?.isRecur && !task?.isArchived) {
       event.stopPropagation()
       event.stopImmediatePropagation()
       event.preventDefault()
-      if (!task?.isRecur) {
-        toggleIsComplete()
-      }
     }
   })
 
@@ -54,6 +52,10 @@ const TaskIsComplete = ({
       })
     }
   })
+
+  const isArchive = useIsArchive()
+
+  if (isArchive) return null
 
   return (
     <Container>

@@ -40,6 +40,10 @@ const taskSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    isArchived: {
+      type: Boolean,
+      default: false,
+    },
     provider: {
       type: String,
     },

@@ -9,6 +9,7 @@ export interface ITask extends IDocument {
   due: Date | null
   notes: string
   isRecur: boolean
+  isArchived: boolean
   provider?: 'google'
   providerTaskId?: string | null
   providerData?: any

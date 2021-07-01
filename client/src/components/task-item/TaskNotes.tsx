@@ -4,7 +4,7 @@ import { IInboxState, ITask } from 'src/types/task.type'
 import styled from 'styled-components'
 import TextareaAutosize from 'react-textarea-autosize'
 import Text from '../fonts/Text'
-import { useUpdateInboxTaskById } from 'src/api/task'
+import { useUpdateArchiveTaskById, useUpdateInboxTaskById } from 'src/api/task'
 import theme from 'src/app/theme'
 import useIsTablet from 'src/hooks/useIsTablet'
 
@@ -17,6 +17,7 @@ interface TaskNotesProps {
 
 const TaskNotes = ({ isFocused, task, inboxState, setInboxState }: TaskNotesProps) => {
   const { updateInboxTask } = useUpdateInboxTaskById(task?._id)
+  const { updateArchiveTask } = useUpdateArchiveTaskById(task?._id)
   const [textareaValue, setTextareaValue] = useState<string>(task?.notes)
   const isTablet = useIsTablet()
 
@@ -39,10 +40,17 @@ const TaskNotes = ({ isFocused, task, inboxState, setInboxState }: TaskNotesProp
       event.stopImmediatePropagation()
       event.preventDefault()
       setInboxState('NAVIGATE')
-      updateInboxTask({
-        _id: task?._id,
-        notes: textareaValue.trim(),
-      })
+      if (task?.isArchived) {
+        updateArchiveTask({
+          _id: task?._id,
+          notes: textareaValue.trim(),
+        })
+      } else {
+        updateInboxTask({
+          _id: task?._id,
+          notes: textareaValue.trim(),
+        })
+      }
     }
   })
 

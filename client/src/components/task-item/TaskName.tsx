@@ -1,5 +1,5 @@
 import React, { ChangeEvent, useState } from 'react'
-import { useUpdateInboxTaskById } from 'src/api/task'
+import { useUpdateArchiveTaskById, useUpdateInboxTaskById } from 'src/api/task'
 import useIsTablet from 'src/hooks/useIsTablet'
 import useKeyPress from 'src/hooks/useKeyPress'
 import { IInboxState, ITask } from 'src/types/task.type'
@@ -16,6 +16,7 @@ interface TaskNameProps {
 
 const TaskName = ({ task, isFocused, inboxState, setInboxState }: TaskNameProps) => {
   const { updateInboxTask } = useUpdateInboxTaskById(task?._id)
+  const { updateArchiveTask } = useUpdateArchiveTaskById(task?._id)
   const [inputValue, setInputValue] = useState<string>(task?.name)
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -24,10 +25,17 @@ const TaskName = ({ task, isFocused, inboxState, setInboxState }: TaskNameProps)
 
   const updateName = () => {
     setInboxState('NAVIGATE')
-    updateInboxTask({
-      _id: task?._id,
-      name: inputValue,
-    })
+    if (task?.isArchived) {
+      updateArchiveTask({
+        _id: task?._id,
+        name: inputValue,
+      })
+    } else {
+      updateInboxTask({
+        _id: task?._id,
+        name: inputValue,
+      })
+    }
   }
 
   // mobile

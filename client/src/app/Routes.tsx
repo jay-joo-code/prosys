@@ -12,6 +12,7 @@ const MobileBlock = React.lazy(() => import('src/pages/mobile-block/MobileBlock'
 const FormTest = React.lazy(() => import('src/pages/form-test/FormTest'))
 const DesignSystem = React.lazy(() => import('src/pages/design-system/DesignSystem'))
 const InboxPage = React.lazy(() => import('src/pages/inbox/InboxPage'))
+const ArchivePage = React.lazy(() => import('src/pages/archive/ArchivePage'))
 
 interface IRoute {
   path: string
@@ -91,6 +92,15 @@ export const routes: IRoute[] = [
     isDesktopOnly: false,
   },
   {
+    path: '/archive',
+    component: ArchivePage,
+    label: 'Archive',
+    isPublicNav: false,
+    isPrivateNav: false,
+    isPrivateRoute: true,
+    isDesktopOnly: true,
+  },
+  {
     path: '/',
     component: Home,
     label: 'Home',
@@ -108,14 +118,7 @@ const PrivateRoute = ({ component: Component, ...rest }: IRoute) => {
     return <Redirect to='/login' />
   }
 
-  return (
-    <Route
-      {...rest}
-      render={() => (
-        <Component />
-      )}
-    />
-  )
+  return <Route {...rest} render={() => <Component />} />
 }
 
 const DesktopRoute = ({ component: Component, ...rest }: IRoute) => {
@@ -125,22 +128,16 @@ const DesktopRoute = ({ component: Component, ...rest }: IRoute) => {
     return <Redirect to='/mobile-block' />
   }
 
-  return (
-    <Route
-      {...rest}
-      render={() => (
-        <Component />
-      )}
-    />
-  )
+  return <Route {...rest} render={() => <Component />} />
 }
 
 const Routes = () => {
   return (
     <Suspense fallback={<div />}>
       <Switch>
-        {routes.map(({ path, component, isPrivateRoute, isDesktopOnly, ...rest }) => isPrivateRoute
-          ? <PrivateRoute
+        {routes.map(({ path, component, isPrivateRoute, isDesktopOnly, ...rest }) =>
+          isPrivateRoute ? (
+            <PrivateRoute
               key={path}
               path={path}
               component={component}
@@ -148,20 +145,18 @@ const Routes = () => {
               isDesktopOnly={isDesktopOnly}
               {...rest}
             />
-          : isDesktopOnly
-            ? <DesktopRoute
-                key={path}
-                path={path}
-                component={component}
-                isPrivateRoute={isPrivateRoute}
-                isDesktopOnly={isDesktopOnly}
-                {...rest}
-              />
-            : <Route
-                key={path}
-                path={path}
-                component={component}
-              />
+          ) : isDesktopOnly ? (
+            <DesktopRoute
+              key={path}
+              path={path}
+              component={component}
+              isPrivateRoute={isPrivateRoute}
+              isDesktopOnly={isDesktopOnly}
+              {...rest}
+            />
+          ) : (
+            <Route key={path} path={path} component={component} />
+          )
         )}
       </Switch>
     </Suspense>
