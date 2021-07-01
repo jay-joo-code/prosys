@@ -6,7 +6,9 @@ import rootReducer from 'src/redux'
 
 const loggerMiddleware = import.meta.env.VITE_NODE_ENV === 'development' ? [logger] : []
 const persistBlacklist =
-  import.meta.env.VITE_NODE_ENV === 'development' ? ['snackbarState'] : ['snackbarState']
+  import.meta.env.VITE_NODE_ENV === 'development'
+    ? ['snackbarState', 'appState']
+    : ['snackbarState']
 
 const persistConfig = {
   key: 'root',

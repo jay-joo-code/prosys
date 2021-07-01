@@ -7,7 +7,8 @@ import Space from 'src/components/layout/Space'
 import TaskItem from 'src/components/task-item/TaskItem'
 import { default as useKeypress, default as useKeyPress } from 'src/hooks/useKeyPress'
 import usePreviousValue from 'src/hooks/usePreviousValue'
-import { showSnackbar } from 'src/redux/snackbar'
+import { toggleHide } from 'src/redux/appSlice'
+import { showSnackbar } from 'src/redux/snackbarSlice'
 import { IInboxState, ITask } from 'src/types/task.type'
 import { getDateStamp, getDay } from 'src/util/date'
 import { isTaskTimeSet } from 'src/util/task'
@@ -175,6 +176,16 @@ const TaskList = ({ focusId, setFocusId, inboxState, setInboxState, tasks }: Tas
           message: 'Recovered task',
         })
       )
+    }
+  })
+
+  // hide screen
+  useKeypress(['h', 'ㅗ'], (event) => {
+    if (inboxState === 'NAVIGATE') {
+      event.stopPropagation()
+      event.stopImmediatePropagation()
+      event.preventDefault()
+      dispatch(toggleHide())
     }
   })
 

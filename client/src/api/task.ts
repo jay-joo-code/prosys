@@ -2,7 +2,7 @@ import { useDispatch } from 'react-redux'
 import useCustomMutation from 'src/hooks/useCustomMutation'
 import useCustomQuery from 'src/hooks/useCustomQuery'
 import useRouter from 'src/hooks/useRouter'
-import { showSnackbar } from 'src/redux/snackbar'
+import { showSnackbar } from 'src/redux/snackbarSlice'
 import { ITask, IUseUpdateInboxTaskByIdOptions } from 'src/types/task.type'
 import { sortTasks } from 'src/util/task'
 

@@ -3,7 +3,7 @@ import { TransitionProps } from '@material-ui/core/transitions'
 import { Alert } from '@material-ui/lab'
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { exitSnackbar, handleShowSnackbar, hideSnackbar, popSnack } from 'src/redux/snackbar'
+import { exitSnackbar, handleShowSnackbar, hideSnackbar, popSnack } from 'src/redux/snackbarSlice'
 import { IRootState } from 'src/types/redux.type'
 
 const TransitionUp = (props: TransitionProps) => <Slide {...props} direction='up' />

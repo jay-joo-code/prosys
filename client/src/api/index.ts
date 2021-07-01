@@ -2,7 +2,7 @@ import axios from 'axios'
 import history from 'src/util/history'
 import { objectToQueryString } from 'src/util/url'
 import store from 'src/redux/store'
-import { logout } from 'src/redux/auth'
+import { logout } from 'src/redux/authSlice'
 import { showToast } from 'src/util/toast'
 
 const BASE_URL = '/api'

@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { queryCache } from 'src/app/App'
 import useRouter from 'src/hooks/useRouter'
-import { logout } from 'src/redux/auth'
+import { logout } from 'src/redux/authSlice'
 
 const Logout = () => {
   const router = useRouter()

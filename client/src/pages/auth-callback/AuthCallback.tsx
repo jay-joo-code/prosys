@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import useRouter from 'src/hooks/useRouter'
-import { setAccessToken } from 'src/redux/auth'
+import { setAccessToken } from 'src/redux/authSlice'
 import { IRootState } from 'src/types/redux.type'
 
 const AuthCallback = () => {
@@ -12,7 +12,7 @@ const AuthCallback = () => {
 
   // set access token
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       if (token) {
         dispatch(setAccessToken(token))
       } else {
@@ -22,7 +22,7 @@ const AuthCallback = () => {
   }, [router, token])
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       if (accessToken) {
         router.push('/')
       }
