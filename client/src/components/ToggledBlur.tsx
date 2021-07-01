@@ -16,10 +16,6 @@ const ToggleBlur = ({ children }: ToggleBlurProps) => {
     dispatch(setHide(true))
   }
 
-  const handleClick = () => {
-    dispatch(setHide(false))
-  }
-
   useEffect(() => {
     window.addEventListener('blur', handleBlur)
 
@@ -28,11 +24,7 @@ const ToggleBlur = ({ children }: ToggleBlurProps) => {
     }
   })
 
-  return (
-    <Container isHide={isHide} onClick={handleClick}>
-      {children}
-    </Container>
-  )
+  return <Container isHide={isHide}>{children}</Container>
 }
 
 interface ContainerProps {
