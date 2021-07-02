@@ -72,16 +72,20 @@ const TaskNotes = ({ isFocused, task, inboxState, setInboxState }: TaskNotesProp
     }
   })
 
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
+
+  useEffect(() => {
+    if (isFocused && inboxState === 'EDIT_NOTES' && textareaRef?.current) {
+      textareaRef.current.selectionStart = textareaValue?.length
+      textareaRef.current.selectionEnd = textareaValue?.length
+    }
+  }, [textareaRef, isFocused, inboxState])
+
   return (
     <>
       {isFocused && inboxState === 'EDIT_NOTES' ? (
         <NotesTextarea
-          ref={(input) => {
-            if (input) {
-              input.selectionStart = textareaValue?.length
-              input.selectionEnd = textareaValue?.length
-            }
-          }}
+          ref={textareaRef}
           value={textareaValue}
           onChange={(e) => setTextareaValue(e.target.value)}
           autoFocus
