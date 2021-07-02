@@ -177,7 +177,7 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
 
-  @media (min-width: ${(props) => props.theme.large}) {
+  @media (min-width: ${(props) => props.theme.tablet}) {
     width: 110px;
     padding-top: 0.1rem;
   }
@@ -200,7 +200,7 @@ const TimeStampInput = styled.input`
     -webkit-text-fill-color: ${(props) => props.theme.text.light} !important;
   }
 
-  @media (min-width: ${(props) => props.theme.large}) {
+  @media (min-width: ${(props) => props.theme.tablet}) {
     width: 50px;
   }
 `

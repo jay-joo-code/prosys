@@ -32,8 +32,10 @@ interface ContainerProps {
 }
 
 const Container = styled.div<ContainerProps>`
-  // isHide
-  filter: ${(props) => props.isHide && 'blur(4px)'};
+  @media (min-width: ${(props) => props.theme.tablet}) {
+    // isHide
+    filter: ${(props) => props.isHide && 'blur(4px)'};
+  }
 `
 
 export default ToggledBlur
