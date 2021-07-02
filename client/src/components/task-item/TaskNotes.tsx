@@ -123,13 +123,14 @@ const NotesTextarea = styled(TextareaAutosize)`
   letter-spacing: 0.5px;
   font-size: 14px;
   color: ${(props) => props.theme.text.light};
-
-  border: 2px solid ${(props) => props.theme.grey[100]};
+  background: ${(props) => props.theme.brand[50]};
   border-radius: 4px;
   resize: none;
+  padding: 0;
+  border: none;
 
   &:focus {
-    border-color: transparent;
+    background: ${(props) => props.theme.bg.default};
   }
 `
 

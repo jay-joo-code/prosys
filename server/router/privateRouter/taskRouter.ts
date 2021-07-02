@@ -80,7 +80,11 @@ taskRouter.get('/inbox', async (req, res) => {
 // get user's archived
 taskRouter.get('/archive', async (req, res) => {
   try {
-    const docs = await Task.find({ userId: req.user?._id, isArchived: true, isComplete: false })
+    const docs = await Task.find({
+      userId: req.user?._id,
+      isArchived: true,
+      isComplete: false,
+    }).sort({ createdAt: -1 })
     res.send(docs)
   } catch (e) {
     res.status(500).send(e)

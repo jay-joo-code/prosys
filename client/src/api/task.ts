@@ -51,8 +51,8 @@ export const useArchivedTasks = () => {
   }
 }
 
-export const useCreateTask = () => {
-  const { mutate: createTask, ...rest } = useCustomMutation<ITask>({
+export const useCreateInboxTask = () => {
+  const { mutate: createInboxTask, ...rest } = useCustomMutation<ITask>({
     url: '/private/task',
     method: 'post',
     updateLocal: {
@@ -63,7 +63,23 @@ export const useCreateTask = () => {
 
   return {
     ...rest,
-    createTask,
+    createInboxTask,
+  }
+}
+
+export const useCreateArchiveTask = () => {
+  const { mutate: createArchiveTask, ...rest } = useCustomMutation<ITask>({
+    url: '/private/task',
+    method: 'post',
+    updateLocal: {
+      queryConfigs: [fetchArchivedTasks()],
+      type: 'appendStart',
+    },
+  })
+
+  return {
+    ...rest,
+    createArchiveTask,
   }
 }
 

@@ -1,6 +1,11 @@
 import mongoose from 'mongoose'
 import React, { memo } from 'react'
-import { useToggleArchive, useCreateTask, useUpdateInboxTaskById } from 'src/api/task'
+import {
+  useToggleArchive,
+  useCreateInboxTask,
+  useUpdateInboxTaskById,
+  useCreateArchiveTask,
+} from 'src/api/task'
 import useIsTablet from 'src/hooks/useIsTablet'
 import useKeypress from 'src/hooks/useKeyPress'
 import { IInboxState, ITask } from 'src/types/task.type'
@@ -39,7 +44,8 @@ const TaskItem = ({
   focusPrevTask,
 }: TaskItemProps) => {
   const isTablet = useIsTablet()
-  const { createTask } = useCreateTask()
+  const { createInboxTask } = useCreateInboxTask()
+  const { createArchiveTask } = useCreateArchiveTask()
   const { updateInboxTask } = useUpdateInboxTaskById(task?._id)
   const { toggleArchive } = useToggleArchive(task?._id)
 
@@ -61,15 +67,30 @@ const TaskItem = ({
       event.stopImmediatePropagation()
       event.preventDefault()
       const newTaskId = mongoose.Types.ObjectId().toString()
-      createTask({
-        _id: newTaskId,
-        name: '',
-        due: task?.due,
-        createdAt: new Date(),
-        startTime: incrementTimeStamp(task?.startTime),
-        endTime: incrementTimeStamp(task?.endTime),
-      })
+
+      if (task?.isArchived) {
+        createArchiveTask({
+          _id: newTaskId,
+          name: '',
+          due: task?.due,
+          createdAt: new Date(),
+          startTime: incrementTimeStamp(task?.startTime),
+          endTime: incrementTimeStamp(task?.endTime),
+          isArchived: true,
+        })
+      } else {
+        createInboxTask({
+          _id: newTaskId,
+          name: '',
+          due: task?.due,
+          createdAt: new Date(),
+          startTime: incrementTimeStamp(task?.startTime),
+          endTime: incrementTimeStamp(task?.endTime),
+        })
+      }
+
       setFocusId(newTaskId)
+
       if (isTaskTimeSet(task)) {
         setInboxState('EDIT_TIME')
       } else {

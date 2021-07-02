@@ -24,7 +24,11 @@ const ToggledBlur = ({ children }: ToggleBlurProps) => {
     }
   })
 
-  return <Container isHide={isHide}>{children}</Container>
+  return (
+    <Container isHide={import.meta.env.VITE_NODE_ENV !== 'development' && isHide}>
+      {children}
+    </Container>
+  )
 }
 
 interface ContainerProps {
