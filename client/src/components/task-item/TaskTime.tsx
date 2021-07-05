@@ -23,9 +23,6 @@ const TaskTime = ({ task, isFocused, inboxState, setInboxState }: TaskTimeProps)
   const startTimeInputRef = useRef<HTMLInputElement>(null)
   const endTimeInputRef = useRef<HTMLInputElement>(null)
 
-  if (isFocused) console.log('localStartTime, localEndTime', localStartTime, localEndTime)
-  if (isFocused) console.log('task', task)
-
   const updateTime = () => {
     setInboxState('NAVIGATE')
     window?.getSelection()?.removeAllRanges()

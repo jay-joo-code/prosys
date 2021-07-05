@@ -13,7 +13,6 @@ import { incrementTimeStamp, isTaskTimeSet } from 'src/util/task'
 import styled from 'styled-components'
 import { FlexRow } from '../layout/Flex'
 import Space from '../layout/Space'
-import TaskCalendarIcon from './TaskCalendarIcon'
 import TaskDue from './TaskDue'
 import TaskIsComplete from './TaskIsComplete'
 import TaskName from './TaskName'
@@ -149,17 +148,13 @@ const TaskItem = ({
       <FlexRow alignStart>
         <div>
           <Space padding='.15rem 0' />
-          {task?.provider === 'google' ? (
-            <TaskCalendarIcon />
-          ) : (
-            <TaskIsComplete
-              task={task}
-              isFocused={isFocused}
-              inboxState={inboxState}
-              setInboxState={setInboxState}
-              focusNextTask={focusNextTask}
-            />
-          )}
+          <TaskIsComplete
+            task={task}
+            isFocused={isFocused}
+            inboxState={inboxState}
+            setInboxState={setInboxState}
+            focusNextTask={focusNextTask}
+          />
         </div>
         <Space padding='0 .2rem' />
         <FullWidth>

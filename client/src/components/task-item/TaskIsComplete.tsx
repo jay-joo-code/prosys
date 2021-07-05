@@ -5,6 +5,7 @@ import { IInboxState, ITask } from 'src/types/task.type'
 import styled from 'styled-components'
 import LoopIcon from '@material-ui/icons/Loop'
 import useIsArchive from 'src/hooks/useIsArchive'
+import TaskCalendarIcon from './TaskCalendarIcon'
 
 interface TaskIsCompleteProps {
   task: ITask
@@ -60,7 +61,9 @@ const TaskIsComplete = ({
 
   return (
     <Container>
-      {task?.isRecur ? (
+      {task?.provider === 'google' ? (
+        <TaskCalendarIcon />
+      ) : task?.isRecur ? (
         <StyledLoopIcon />
       ) : (
         <IsCompleteCheckbox
@@ -74,8 +77,8 @@ const TaskIsComplete = ({
 }
 
 const Container = styled.div`
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
 `
 
 interface isCompleteCheckboxProps {

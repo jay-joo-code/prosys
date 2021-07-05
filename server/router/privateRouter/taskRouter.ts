@@ -116,11 +116,9 @@ taskRouter.put('/undo', async (req, res) => {
 
 taskRouter.put('/:id', async (req, res) => {
   try {
-    console.log('req.body', req.body)
     const doc = await Task.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
     })
-    console.log('doc', doc)
     res.send(doc)
   } catch (e) {
     res.status(500).send(e)
