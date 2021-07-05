@@ -40,36 +40,27 @@ taskRouter.get('/inbox', async (req, res) => {
       ],
     }).sort({ due: 1 })
 
-    const validatedTasks = docs
-      .filter((task) => {
-        // filter calendar events that are in the past
-        if (task.due && isDateBeforeToday(task.due) && task.provider === 'google') {
-          Task.findByIdAndUpdate(task?._id, { isComplete: true })
-          return false
+    const validatedTasks = docs.map((task) => {
+      // set overdue task due date as today
+      if (task.due && isDateBeforeToday(task.due) && task.provider !== 'google') {
+        // don't reset time if task is recurring
+        const updatedFields = task?.isRecur
+          ? {
+              due: new Date(),
+            }
+          : {
+              due: new Date(),
+              startTime: '0000',
+              endTime: '0000',
+            }
+        Task.findByIdAndUpdate(task?._id, updatedFields)
+        return {
+          ...task.toObject(),
+          ...updatedFields,
         }
-        return true
-      })
-      .map((task) => {
-        // set overdue task due date as today
-        if (task.due && isDateBeforeToday(task.due) && task.provider !== 'google') {
-          // reset time if task is not recurring
-          const updatedFields = task?.isRecur
-            ? {
-                due: new Date(),
-              }
-            : {
-                due: new Date(),
-                startTime: '0000',
-                endTime: '0000',
-              }
-          Task.findByIdAndUpdate(task?._id, updatedFields)
-          return {
-            ...task.toObject(),
-            ...updatedFields,
-          }
-        }
-        return task
-      })
+      }
+      return task
+    })
 
     res.send(validatedTasks)
   } catch (e) {
@@ -125,9 +116,11 @@ taskRouter.put('/undo', async (req, res) => {
 
 taskRouter.put('/:id', async (req, res) => {
   try {
+    console.log('req.body', req.body)
     const doc = await Task.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
     })
+    console.log('doc', doc)
     res.send(doc)
   } catch (e) {
     res.status(500).send(e)

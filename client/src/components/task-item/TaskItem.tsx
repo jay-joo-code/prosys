@@ -61,6 +61,7 @@ const TaskItem = ({
     }
   }
 
+  // create task below or above
   useKeypress('Enter', (event) => {
     if (isFocused && inboxState === 'NAVIGATE' && (event.metaKey || event.ctrlKey)) {
       event.stopPropagation()

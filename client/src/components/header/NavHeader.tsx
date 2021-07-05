@@ -5,10 +5,12 @@ import useRouter from 'src/hooks/useRouter'
 import { Link } from 'react-router-dom'
 import InboxOutlinedIcon from '@material-ui/icons/InboxOutlined'
 import FolderOutlinedIcon from '@material-ui/icons/FolderOutlined'
+import SchoolOutlinedIcon from '@material-ui/icons/SchoolOutlined'
 import useIsTablet from 'src/hooks/useIsTablet'
 import useKeypress from 'src/hooks/useKeyPress'
 import { IInboxState } from 'src/types/task.type'
 import useIsInbox from 'src/hooks/useIsInbox'
+import useIsCards from 'src/hooks/useIsCards'
 import useIsArchive from 'src/hooks/useIsArchive'
 
 interface NavHeaderProps {
@@ -19,10 +21,10 @@ const NavHeader = ({ inboxState }: NavHeaderProps) => {
   const { push } = useRouter()
   const isInbox = useIsInbox()
   const isArchive = useIsArchive()
-  const isTablet = useIsTablet()
+  const isCards = useIsCards()
 
   useKeypress('Tab', (event) => {
-    if (inboxState === 'NAVIGATE') {
+    if (['NAVIGATE', 'CREATE'].includes(inboxState)) {
       event.stopPropagation()
       event.stopImmediatePropagation()
       event.preventDefault()
@@ -33,8 +35,6 @@ const NavHeader = ({ inboxState }: NavHeaderProps) => {
       }
     }
   })
-
-  if (isTablet) return null
 
   return (
     <Container>
@@ -51,6 +51,14 @@ const NavHeader = ({ inboxState }: NavHeaderProps) => {
           <FolderOutlinedIcon />
           <Label variant='h5' isSelected={isArchive}>
             Archive
+          </Label>
+        </NavItem>
+      </Link>
+      <Link to='/cards'>
+        <NavItem isSelected={isCards}>
+          <SchoolOutlinedIcon />
+          <Label variant='h5' isSelected={isCards}>
+            Cards
           </Label>
         </NavItem>
       </Link>
