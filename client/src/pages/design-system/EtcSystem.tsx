@@ -1,7 +1,7 @@
 import { Chip } from '@material-ui/core'
 import React from 'react'
 import theme from 'src/app/theme'
-import Flag from 'src/components/Flag'
+import Flag from 'src/components/flags/Flag'
 import ExpandableSection from 'src/components/layout/ExpandableSection'
 import { FlexRow } from 'src/components/layout/Flex'
 import styled from 'styled-components'
@@ -16,31 +16,13 @@ const EtcSystem = () => {
           background={theme.brand[50]}
           size='small'
         />
-        <Flag
-          label='Default flag'
-          color={theme.brand[500]}
-          background={theme.brand[50]}
-        />
-        <Chip
-          label='Small chip'
-          size='small'
-        />
-        <Chip
-          label='Deletable'
-          onDelete={() => {}}
-        />
-        <Chip
-          label='Clickable'
-          clickable
-        />
-        <StyledChip
-          label='Custom color'
-          onDelete={() => {}}
-        />
+        <Flag label='Default flag' color={theme.brand[500]} background={theme.brand[50]} />
+        <Chip label='Small chip' size='small' />
+        <Chip label='Deletable' onDelete={() => {}} />
+        <Chip label='Clickable' clickable />
+        <StyledChip label='Custom color' onDelete={() => {}} />
       </Row>
-      <ExpandableSection heading='heading'>
-        content
-      </ExpandableSection>
+      <ExpandableSection heading='heading'>content</ExpandableSection>
       {/* TODO: menu */}
     </Container>
   )
@@ -56,13 +38,13 @@ const Container = styled.div`
 
 const Row = styled(FlexRow)`
   & > * {
-    margin-right: .5rem !important;
+    margin-right: 0.5rem !important;
   }
 `
 
 const StyledChip = styled(Chip)`
   color: white !important;
-  background: ${props => props.theme.brand[500]} !important;
+  background: ${(props) => props.theme.brand[500]} !important;
 
   & * {
     color: white !important;

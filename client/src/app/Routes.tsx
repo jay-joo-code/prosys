@@ -13,6 +13,7 @@ const FormTest = React.lazy(() => import('src/pages/form-test/FormTest'))
 const DesignSystem = React.lazy(() => import('src/pages/design-system/DesignSystem'))
 const InboxPage = React.lazy(() => import('src/pages/inbox/InboxPage'))
 const ArchivePage = React.lazy(() => import('src/pages/archive/ArchivePage'))
+const CardsPage = React.lazy(() => import('src/pages/cards/CardsPage'))
 
 interface IRoute {
   path: string
@@ -99,6 +100,15 @@ export const routes: IRoute[] = [
     isPrivateNav: false,
     isPrivateRoute: true,
     isDesktopOnly: true,
+  },
+  {
+    path: '/cards',
+    component: CardsPage,
+    label: 'Cards',
+    isPublicNav: false,
+    isPrivateNav: false,
+    isPrivateRoute: true,
+    isDesktopOnly: false,
   },
   {
     path: '/',

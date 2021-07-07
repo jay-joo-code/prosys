@@ -6,7 +6,6 @@ import { Link } from 'react-router-dom'
 import InboxOutlinedIcon from '@material-ui/icons/InboxOutlined'
 import FolderOutlinedIcon from '@material-ui/icons/FolderOutlined'
 import SchoolOutlinedIcon from '@material-ui/icons/SchoolOutlined'
-import useIsTablet from 'src/hooks/useIsTablet'
 import useKeypress from 'src/hooks/useKeyPress'
 import { IInboxState } from 'src/types/task.type'
 import useIsInbox from 'src/hooks/useIsInbox'
@@ -28,10 +27,23 @@ const NavHeader = ({ inboxState }: NavHeaderProps) => {
       event.stopPropagation()
       event.stopImmediatePropagation()
       event.preventDefault()
-      if (isInbox) {
-        push('/archive')
-      } else if (isArchive) {
-        push('/inbox')
+
+      if (event.shiftKey) {
+        if (isInbox) {
+          push('/cards')
+        } else if (isArchive) {
+          push('/inbox')
+        } else if (isCards) {
+          push('/archive')
+        }
+      } else {
+        if (isInbox) {
+          push('/archive')
+        } else if (isArchive) {
+          push('/cards')
+        } else if (isCards) {
+          push('/inbox')
+        }
       }
     }
   })

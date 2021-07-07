@@ -1,5 +1,5 @@
-import React, { forwardRef } from 'react'
-import { useFormContext, UseFormRegisterReturn } from 'react-hook-form'
+import React from 'react'
+import { useFormContext } from 'react-hook-form'
 import ResizedTextarea, { TextareaAutosizeProps } from 'react-textarea-autosize'
 import ErrorMsg from 'src/components/fonts/ErrorMsg'
 import Label from 'src/components/fonts/Label'
@@ -10,16 +10,15 @@ interface TextareaProps extends TextareaAutosizeProps {
   minRows?: number
   label?: string
   error?: string
+  className?: string
 }
 
 const Textarea = (props: TextareaProps) => {
   return (
-    <div>
-      <Label {...props}>{props.label}</Label>
+    <div className={props.className}>
+      {props.label && <Label {...props}>{props.label}</Label>}
       <div>
-        <StyledTextarea
-          {...props}
-        />
+        <StyledTextarea {...props} />
       </div>
       <ErrorMsg error={props.error} />
     </div>
@@ -34,16 +33,16 @@ interface HookedInputProps {
 }
 
 export const HookedTextarea = (props: HookedInputProps) => {
-  const { register, formState: { errors } } = useFormContext()
+  const {
+    register,
+    formState: { errors },
+  } = useFormContext()
 
   return (
     <div>
       <Label {...props}>{props.label}</Label>
       <div>
-        <StyledTextarea
-          {...register(props.name)}
-          {...props}
-        />
+        <StyledTextarea {...register(props.name)} {...props} />
       </div>
       <ErrorMsg error={errors[props.name]?.message} />
     </div>
@@ -67,10 +66,14 @@ const StyledTextarea = styled(ResizedTextarea)<TextareaProps>`
   background: ${(props) => props.disabled && props.theme.bg.wash};
 
   // error
-  border-color: ${(props) => (props.error != null) && props.theme.danger[500]};
-  
+  border-color: ${(props) => props.error != null && props.theme.danger[500]};
+
   &:placeholder {
     color: ${(props) => props.theme.textPlaceholder};
+  }
+
+  &:focus {
+    border-color: ${(props) => props.theme.brand[500]};
   }
 `
 
