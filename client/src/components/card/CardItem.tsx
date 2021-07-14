@@ -34,15 +34,7 @@ const CardItem = ({ card, initStatus }: CardItemProps) => {
     }
   }
 
-  const handleClick = () => {
-    if (status === 'EXPANDED') {
-      setStatus('FLIPPED')
-    } else if (status === 'FLIPPED') {
-      setStatus('EXPANDED')
-    }
-  }
-
-  return <Container onClick={handleClick}>{getComponent()}</Container>
+  return <Container>{getComponent()}</Container>
 }
 
 const Container = styled.div`

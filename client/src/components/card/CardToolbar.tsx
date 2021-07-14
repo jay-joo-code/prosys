@@ -1,18 +1,21 @@
 import { IconButton } from '@material-ui/core'
-import React, { useEffect, useState } from 'react'
-import { useTags } from 'src/api/tag'
-import { ICard, ICardStatus, ICodableTextareaBlock } from 'src/types/card.type'
-import styled from 'styled-components'
-import { FlexRow } from '../layout/Flex'
-import Button from 'src/components/Button'
-import TagList from '../tag/TagList'
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined'
-import MoreVertOutlinedIcon from '@material-ui/icons/MoreVertOutlined'
-import theme from 'src/app/theme'
+import moment from 'moment'
+import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { showSnackbar } from 'src/redux/snackbarSlice'
-import { isBlocksEmpty } from 'src/util/card'
 import { useUpdateCardById } from 'src/api/card'
+import { useTags } from 'src/api/tag'
+import theme from 'src/app/theme'
+import Button from 'src/components/Button'
+import { showSnackbar } from 'src/redux/snackbarSlice'
+import { ICard, ICardStatus, ICodableTextareaBlock } from 'src/types/card.type'
+import { isBlocksEmpty } from 'src/util/card'
+import { isDateBeforeToday, isDateTodayOrBefore } from 'src/util/date'
+import styled from 'styled-components'
+import Text from '../fonts/Text'
+import { FlexRow } from '../layout/Flex'
+import Space from '../layout/Space'
+import TagList from '../tag/TagList'
 import CardMenu from './CardMenu'
 
 interface CardToolBarProps {
@@ -41,7 +44,8 @@ const CardToolBar = ({
     }
   }, [card])
 
-  const toggleStatus = () => {
+  const toggleStatus = (event: React.MouseEvent) => {
+    event.stopPropagation()
     if (status === 'EDITING') {
       if (isBlocksEmpty(questionBlocks)) {
         dispatch(
@@ -70,14 +74,28 @@ const CardToolBar = ({
     }
   }
 
+  const hasTags = card?.tags?.length > 0 || status === 'EDITING'
+
   return (
-    <Container alignCenter justifySpaceBetween>
-      <TagList
-        isCreate
-        tags={tags || []}
-        selectedTagIds={selectedTagIds}
-        setSelectedTagIds={setSelectedTagIds}
-      />
+    <Container alignStart={hasTags} alignCenter={!hasTags} justifySpaceBetween>
+      <div>
+        <TagList
+          isCreate={status === 'EDITING'}
+          isFiltered={status !== 'EDITING'}
+          tags={tags || []}
+          selectedTagIds={selectedTagIds}
+          setSelectedTagIds={setSelectedTagIds}
+        />
+        {hasTags && <Space padding='.3rem' />}
+        {card?.repAt && (
+          <Text variant='h5' color={theme.text.muted}>
+            {isDateTodayOrBefore(new Date(card.repAt))
+              ? 'Qued'
+              : `Next rep in ${moment(card?.repAt).fromNow()}`}{' '}
+            • {card?.repSpace} days of rep space • {card?.repCount} total reps
+          </Text>
+        )}
+      </div>
       <ButtonsContainer alignCenter>
         <IconButton size='small' color='inherit' onClick={toggleStatus}>
           {status === 'EDITING' ? (
@@ -93,7 +111,7 @@ const CardToolBar = ({
 }
 
 const Container = styled(FlexRow)`
-  margin-bottom: 1.5rem;
+  margin-top: 2rem;
 `
 
 const ButtonsContainer = styled(FlexRow)`
@@ -103,10 +121,6 @@ const ButtonsContainer = styled(FlexRow)`
 `
 
 const StyledEditIcon = styled(EditOutlinedIcon)`
-  fill: ${(props) => props.theme.grey[700]} !important;
-`
-
-const StyledMoreIcon = styled(MoreVertOutlinedIcon)`
   fill: ${(props) => props.theme.grey[700]} !important;
 `
 

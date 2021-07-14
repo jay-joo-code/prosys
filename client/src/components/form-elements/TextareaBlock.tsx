@@ -8,22 +8,26 @@ import Textarea from './Textarea'
 interface TextareaBlockProps {
   idx: number
   value: string
-  setBlocks: React.Dispatch<React.SetStateAction<ICodableTextareaBlock[]>>
+  setBlocks?: React.Dispatch<React.SetStateAction<ICodableTextareaBlock[]>>
 }
 
 const TextareaBlock = ({ idx, value, setBlocks }: TextareaBlockProps) => {
   const ref = useRef<HTMLTextAreaElement>(null)
 
   const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setBlocks((blocks) =>
-      blocks.map((block, i) => (idx === i ? { type: 'TEXT', value: event.target.value } : block))
-    )
+    if (setBlocks) {
+      setBlocks((blocks) =>
+        blocks.map((block, i) =>
+          idx === i ? { type: 'TEXT', value: event.target.value } : block
+        )
+      )
+    }
   }
 
   useKeypress('Enter', (event) => {
     const isFocused = document.activeElement === ref.current
 
-    if (isFocused) {
+    if (setBlocks && isFocused) {
       if (event.ctrlKey) {
         event.stopPropagation()
         event.stopImmediatePropagation()
@@ -53,7 +57,12 @@ const TextareaBlock = ({ idx, value, setBlocks }: TextareaBlockProps) => {
   return (
     <div>
       <BlockWrapper idx={idx} setBlocks={setBlocks} isCodeBlock={false}>
-        <StyledTextarea ref={ref} value={value} onChange={handleChange} />
+        <StyledTextarea
+          ref={ref}
+          value={value}
+          onChange={handleChange}
+          readOnly={!setBlocks}
+        />
       </BlockWrapper>
     </div>
   )

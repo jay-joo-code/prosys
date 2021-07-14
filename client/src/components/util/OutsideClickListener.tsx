@@ -2,16 +2,17 @@ import React, { useEffect, useRef } from 'react'
 
 const useOutsideAlerter = (
   ref: React.RefObject<HTMLDivElement>,
-  onOutsideClick: () => void,
+  onOutsideClick: (event: Event) => void,
   isListening: boolean
 ) => {
-  const handleClickOutside = (event: any) => {
+  const handleClickOutside = (event: Event) => {
     if (
       ref.current &&
-      !ref.current.contains(event.target) &&
-      event.target.tagName.toLowerCase() !== 'button'
+      !ref.current.contains(event.target as Node) &&
+      (event.target as HTMLElement).tagName.toLowerCase() !== 'button'
     ) {
-      onOutsideClick()
+      event.stopPropagation()
+      onOutsideClick(event)
     } else {
       return false
     }
@@ -30,7 +31,7 @@ const useOutsideAlerter = (
 }
 
 interface OutsideClickListenerProps {
-  onOutsideClick: () => void
+  onOutsideClick: (event: Event) => void
   children: React.ReactNode
   isListening?: boolean
 }

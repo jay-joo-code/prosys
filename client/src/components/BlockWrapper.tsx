@@ -7,19 +7,26 @@ import styled from 'styled-components'
 interface BlockWrapperProps {
   idx: number
   isCodeBlock: boolean
-  setBlocks: React.Dispatch<React.SetStateAction<ICodableTextareaBlock[]>>
+  setBlocks?: React.Dispatch<React.SetStateAction<ICodableTextareaBlock[]>>
   children: React.ReactNode
 }
 
-const BlockWrapper = ({ idx, isCodeBlock, setBlocks, children }: BlockWrapperProps) => {
+const BlockWrapper = ({
+  idx,
+  isCodeBlock,
+  setBlocks,
+  children,
+}: BlockWrapperProps) => {
   const handleClose = () => {
-    setBlocks((blocks) => blocks.filter((block, i) => i !== idx))
+    if (setBlocks) {
+      setBlocks((blocks) => blocks.filter((block, i) => i !== idx))
+    }
   }
 
   return (
     <Container>
       {children}
-      {idx !== 0 && (
+      {idx !== 0 && setBlocks && (
         <IconContainer isCodeBlock={isCodeBlock}>
           <IconButton size='small' color='inherit' onClick={handleClose}>
             <CloseIcon fontSize='small' />

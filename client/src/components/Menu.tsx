@@ -27,6 +27,12 @@ const Menu = ({ options, children, offset }: MenuProps) => {
     setOpen((prevOpen) => !prevOpen)
   }
 
+  const handleOutsideClick = (event: Event) => {
+    event.stopPropagation()
+    console.log('close menu')
+    handleClose()
+  }
+
   const handleClose = () => {
     setOpen(false)
   }
@@ -55,7 +61,9 @@ const Menu = ({ options, children, offset }: MenuProps) => {
                 placement === 'bottom' ? 'center top' : 'center bottom',
             }}>
             <Paper>
-              <OutsideClickListener onOutsideClick={handleClose} isListening>
+              <OutsideClickListener
+                onOutsideClick={handleOutsideClick}
+                isListening>
                 <MenuList>
                   {options.map((option) => (
                     <MenuItem

@@ -8,6 +8,7 @@ interface TagListProps {
   selectedTagIds: string[]
   setSelectedTagIds?: React.Dispatch<React.SetStateAction<string[]>>
   isCreate?: boolean
+  isFiltered?: boolean
 }
 
 const TagList = ({
@@ -15,6 +16,7 @@ const TagList = ({
   selectedTagIds,
   setSelectedTagIds,
   isCreate,
+  isFiltered,
 }: TagListProps) => {
   const handleTagClick = (tid: string) => {
     if (setSelectedTagIds) {
@@ -34,14 +36,16 @@ const TagList = ({
 
   return (
     <Container>
-      {tags?.map((tag) => (
-        <TagItem
-          key={tag?._id}
-          label={tag?.label}
-          isSelected={selectedTagIds.includes(tag?._id)}
-          onClick={() => handleTagClick(tag?._id)}
-        />
-      ))}
+      {tags
+        ?.filter((tag) => !isFiltered || selectedTagIds.includes(tag?._id))
+        ?.map((tag) => (
+          <TagItem
+            key={tag?._id}
+            label={tag?.label}
+            isSelected={selectedTagIds.includes(tag?._id)}
+            onClick={() => handleTagClick(tag?._id)}
+          />
+        ))}
       {!!isCreate && <TagItem isCreate />}
     </Container>
   )

@@ -23,13 +23,6 @@ const EditingCard = ({ card, setStatus }: EditingCardProps) => {
 
   return (
     <Container>
-      <CardToolBar
-        card={card}
-        status='EDITING'
-        setStatus={setStatus}
-        questionBlocks={questionBlocks}
-        answerBlocks={answerBlocks}
-      />
       <Section>
         <SectionTitle variant='h4'>Question</SectionTitle>
         <CodableTextarea
@@ -41,6 +34,13 @@ const EditingCard = ({ card, setStatus }: EditingCardProps) => {
         <SectionTitle variant='h4'>Answer</SectionTitle>
         <CodableTextarea blocks={answerBlocks} setBlocks={setAnswerBlocks} />
       </Section>
+      <CardToolBar
+        card={card}
+        status='EDITING'
+        setStatus={setStatus}
+        questionBlocks={questionBlocks}
+        answerBlocks={answerBlocks}
+      />
     </Container>
   )
 }

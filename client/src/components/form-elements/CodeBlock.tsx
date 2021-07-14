@@ -1,52 +1,28 @@
+import 'ace-builds/src-noconflict/ext-language_tools'
+import 'ace-builds/src-noconflict/mode-typescript'
+import 'ace-builds/src-noconflict/theme-monokai'
 import React, { memo } from 'react'
 import AceEditor from 'react-ace'
 import { ICodableTextareaBlock } from 'src/types/card.type'
 import styled from 'styled-components'
 import BlockWrapper from '../BlockWrapper'
-import useKeypress from 'src/hooks/useKeyPress'
-
-import 'ace-builds/src-noconflict/ext-language_tools'
-import 'ace-builds/src-noconflict/mode-typescript'
-import 'ace-builds/src-noconflict/theme-monokai'
 
 interface CodeBlockProps {
   idx: number
   value: string
-  setBlocks: React.Dispatch<React.SetStateAction<ICodableTextareaBlock[]>>
+  setBlocks?: React.Dispatch<React.SetStateAction<ICodableTextareaBlock[]>>
 }
 
 const CodeBlock = ({ idx, value, setBlocks }: CodeBlockProps) => {
   const handleChange = (newValue: string) => {
-    setBlocks((blocks) =>
-      blocks.map((block, i) => (idx === i ? { type: 'CODE', value: newValue } : block))
-    )
-  }
-
-  useKeypress('Enter', (event) => {
-    if (event.ctrlKey) {
-      event.stopPropagation()
-      event.stopImmediatePropagation()
-      event.preventDefault()
-      setBlocks((blocks) => [
-        ...blocks,
-        {
-          type: 'CODE',
-          value: '',
-        },
-      ])
-    } else if (event.metaKey) {
-      event.stopPropagation()
-      event.stopImmediatePropagation()
-      event.preventDefault()
-      setBlocks((blocks) => [
-        ...blocks,
-        {
-          type: 'TEXT',
-          value: '',
-        },
-      ])
+    if (setBlocks) {
+      setBlocks((blocks) =>
+        blocks.map((block, i) =>
+          idx === i ? { type: 'CODE', value: newValue } : block
+        )
+      )
     }
-  })
+  }
 
   return (
     <BlockWrapper idx={idx} setBlocks={setBlocks} isCodeBlock={true}>
@@ -71,7 +47,9 @@ const CodeBlock = ({ idx, value, setBlocks }: CodeBlockProps) => {
             enableSnippets: true,
             showLineNumbers: true,
             tabSize: 2,
+            readOnly: !setBlocks,
           }}
+          readOnly={!setBlocks}
           maxLines={Infinity}
         />
       </Container>

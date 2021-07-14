@@ -6,12 +6,12 @@ import TextareaBlock from './TextareaBlock'
 
 interface CodableTextareaProps {
   blocks: ICodableTextareaBlock[]
-  setBlocks: React.Dispatch<React.SetStateAction<ICodableTextareaBlock[]>>
+  setBlocks?: React.Dispatch<React.SetStateAction<ICodableTextareaBlock[]>>
 }
 
 const CodableTextarea = ({ blocks, setBlocks }: CodableTextareaProps) => {
   useEffect(() => {
-    if (blocks?.length === 0) {
+    if (setBlocks && blocks?.length === 0) {
       setBlocks([
         {
           type: 'TEXT',
@@ -22,7 +22,7 @@ const CodableTextarea = ({ blocks, setBlocks }: CodableTextareaProps) => {
   }, [blocks, setBlocks])
 
   return (
-    <Container>
+    <Container isReadOnly={!setBlocks}>
       {blocks?.map((block, idx) => {
         if (block.type === 'TEXT') {
           return (
@@ -48,13 +48,25 @@ const CodableTextarea = ({ blocks, setBlocks }: CodableTextareaProps) => {
   )
 }
 
-const Container = styled.div`
+interface ContainerProps {
+  isReadOnly: boolean
+}
+
+const Container = styled.div<ContainerProps>`
   padding: 0.5rem 0.5rem 0 0.5rem;
   border: 2px solid ${(props) => props.theme.border.default};
   border-radius: 6px;
 
   & > * {
     margin-bottom: 0.5rem;
+  }
+
+  // isReadOnly
+  cursor: ${(props) => props.isReadOnly && 'pointer'};
+  border-color: ${(props) => props.isReadOnly && 'transparent'};
+
+  & * {
+    cursor: ${(props) => props.isReadOnly && 'pointer'} !important;
   }
 `
 
