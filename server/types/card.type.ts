@@ -1,20 +1,19 @@
 import { Document } from 'mongoose'
+import { ITagDocument } from './tag.type'
 
-export interface ITaskDocument extends Document {
-  userId: string
-  isComplete: boolean
-  startTime: string
-  endTime: string
-  name: string
-  due: Date | null
-  notes: string
-  isRecur: boolean
-  isArchived: boolean
-  provider?: 'google'
-  providerTaskId?: string
-  providerData?: any
+export interface ICodableTextareaBlock {
+  type: 'TEXT' | 'CODE'
+  value: string
 }
 
-export interface IScheduleTasks {
-  [id: string]: ITaskDocument[]
+export interface ICardDocument extends Document {
+  userId: string
+  question: ICodableTextareaBlock[]
+  answer: ICodableTextareaBlock[]
+  isLearning: boolean
+  isDeleted: boolean
+  tags: ITagDocument[]
+  repAt: Date
+  repSpace: number
+  repCount: number
 }

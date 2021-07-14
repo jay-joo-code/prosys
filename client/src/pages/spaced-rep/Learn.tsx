@@ -1,6 +1,6 @@
 import React from 'react'
+import CardItem from 'src/components/card/CardItem'
 import styled from 'styled-components'
-import CardItem from './CardItem'
 
 interface LearnProps {}
 

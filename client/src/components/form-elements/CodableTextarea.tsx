@@ -1,5 +1,4 @@
-import React from 'react'
-import useKeypress from 'src/hooks/useKeyPress'
+import React, { useEffect } from 'react'
 import { ICodableTextareaBlock } from 'src/types/card.type'
 import styled from 'styled-components'
 import CodeBlock from './CodeBlock'
@@ -11,41 +10,20 @@ interface CodableTextareaProps {
 }
 
 const CodableTextarea = ({ blocks, setBlocks }: CodableTextareaProps) => {
-  // add code block
-  useKeypress(['c', 'ㅊ'], (event) => {
-    if (event.ctrlKey) {
-      event.stopPropagation()
-      event.stopImmediatePropagation()
-      event.preventDefault()
-      setBlocks((blocks) => [
-        ...blocks,
-        {
-          type: 'CODE',
-          value: '',
-        },
-      ])
-    }
-  })
-
-  // add text block
-  useKeypress(['t', 'ㅅ'], (event) => {
-    if (event.ctrlKey) {
-      event.stopPropagation()
-      event.stopImmediatePropagation()
-      event.preventDefault()
-      setBlocks((blocks) => [
-        ...blocks,
+  useEffect(() => {
+    if (blocks?.length === 0) {
+      setBlocks([
         {
           type: 'TEXT',
           value: '',
         },
       ])
     }
-  })
+  }, [blocks, setBlocks])
 
   return (
     <Container>
-      {blocks.map((block, idx) => {
+      {blocks?.map((block, idx) => {
         if (block.type === 'TEXT') {
           return (
             <TextareaBlock

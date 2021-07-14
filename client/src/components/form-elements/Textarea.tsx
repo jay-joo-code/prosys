@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { forwardRef } from 'react'
 import { useFormContext } from 'react-hook-form'
 import ResizedTextarea, { TextareaAutosizeProps } from 'react-textarea-autosize'
 import ErrorMsg from 'src/components/fonts/ErrorMsg'
@@ -13,17 +13,19 @@ interface TextareaProps extends TextareaAutosizeProps {
   className?: string
 }
 
-const Textarea = (props: TextareaProps) => {
+const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>((props: TextareaProps, ref) => {
   return (
     <div className={props.className}>
       {props.label && <Label {...props}>{props.label}</Label>}
       <div>
-        <StyledTextarea {...props} />
+        <StyledTextarea {...props} ref={ref} />
       </div>
       <ErrorMsg error={props.error} />
     </div>
   )
-}
+})
+
+Textarea.displayName = 'Textarea'
 
 interface HookedInputProps {
   maxRows?: number

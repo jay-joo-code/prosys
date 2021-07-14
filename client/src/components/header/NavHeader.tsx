@@ -6,11 +6,14 @@ import { Link } from 'react-router-dom'
 import InboxOutlinedIcon from '@material-ui/icons/InboxOutlined'
 import FolderOutlinedIcon from '@material-ui/icons/FolderOutlined'
 import SchoolOutlinedIcon from '@material-ui/icons/SchoolOutlined'
+import LibraryBooksOutlinedIcon from '@material-ui/icons/LibraryBooksOutlined'
 import useKeypress from 'src/hooks/useKeyPress'
 import { IInboxState } from 'src/types/task.type'
 import useIsInbox from 'src/hooks/useIsInbox'
-import useIsCards from 'src/hooks/useIsCards'
 import useIsArchive from 'src/hooks/useIsArchive'
+import useIsSpacedRep from 'src/hooks/useIsSpacedRep'
+import useIsWiki from 'src/hooks/useIsWiki'
+import useIsCreateCard from 'src/hooks/useIsCreateCard'
 
 interface NavHeaderProps {
   inboxState: IInboxState
@@ -20,7 +23,9 @@ const NavHeader = ({ inboxState }: NavHeaderProps) => {
   const { push } = useRouter()
   const isInbox = useIsInbox()
   const isArchive = useIsArchive()
-  const isCards = useIsCards()
+  const isSpacedRep = useIsSpacedRep()
+  const isWiki = useIsWiki()
+  const isCreateCard = useIsCreateCard()
 
   useKeypress('Tab', (event) => {
     if (['NAVIGATE', 'CREATE'].includes(inboxState)) {
@@ -29,19 +34,25 @@ const NavHeader = ({ inboxState }: NavHeaderProps) => {
       event.preventDefault()
 
       if (event.shiftKey) {
+        // backward navigation
         if (isInbox) {
-          push('/cards')
+          push('/wiki')
         } else if (isArchive) {
           push('/inbox')
-        } else if (isCards) {
+        } else if (isSpacedRep) {
           push('/archive')
+        } else if (isWiki) {
+          push('/spaced-rep')
         }
       } else {
+        // forward navigation
         if (isInbox) {
           push('/archive')
         } else if (isArchive) {
-          push('/cards')
-        } else if (isCards) {
+          push('/spaced-rep')
+        } else if (isSpacedRep) {
+          push('/wiki')
+        } else if (isWiki) {
           push('/inbox')
         }
       }
@@ -66,11 +77,19 @@ const NavHeader = ({ inboxState }: NavHeaderProps) => {
           </Label>
         </NavItem>
       </Link>
-      <Link to='/cards'>
-        <NavItem isSelected={isCards}>
+      <Link to='/spaced-rep'>
+        <NavItem isSelected={isSpacedRep}>
           <SchoolOutlinedIcon />
-          <Label variant='h5' isSelected={isCards}>
-            Cards
+          <Label variant='h5' isSelected={isSpacedRep}>
+            Spaced Repetition
+          </Label>
+        </NavItem>
+      </Link>
+      <Link to='/wiki'>
+        <NavItem isSelected={isWiki || isCreateCard}>
+          <LibraryBooksOutlinedIcon />
+          <Label variant='h5' isSelected={isWiki || isCreateCard}>
+            Wiki
           </Label>
         </NavItem>
       </Link>

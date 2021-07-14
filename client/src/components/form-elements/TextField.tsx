@@ -14,6 +14,8 @@ interface TextFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   placeholder?: string
   autoFocus?: boolean
   error?: string
+  className?: string
+  isSmall?: boolean
 }
 
 const TextField = forwardRef<HTMLInputElement, TextFieldProps>((props: TextFieldProps, ref) => {
@@ -26,7 +28,7 @@ const TextField = forwardRef<HTMLInputElement, TextFieldProps>((props: TextField
 
   return (
     <TextFieldContainer>
-      <Label {...props}>{props.label}</Label>
+      {props.label && <Label {...props}>{props.label}</Label>}
       <div>
         <StyledTextField
           {...props}
@@ -50,16 +52,16 @@ interface HookedTextFieldProps {
 }
 
 export const HookedInput = (props: HookedTextFieldProps) => {
-  const { register, formState: { errors } } = useFormContext()
+  const {
+    register,
+    formState: { errors },
+  } = useFormContext()
 
   return (
     <TextFieldContainer>
       <Label {...props}>{props.label}</Label>
       <div>
-        <StyledTextField
-          {...register(props.name)}
-          error={errors[props.name] != null}
-        />
+        <StyledTextField {...register(props.name)} error={errors[props.name] != null} />
       </div>
       <ErrorMsg error={errors[props.name]?.message} />
     </TextFieldContainer>
@@ -75,6 +77,7 @@ const TextFieldContainer = styled.div`
 interface StyledTextFieldProps {
   fullWidth?: boolean
   error?: boolean
+  isSmall?: boolean
 }
 
 const StyledTextField = styled.input<StyledTextFieldProps>`
@@ -107,6 +110,9 @@ const StyledTextField = styled.input<StyledTextFieldProps>`
   &::placeholder {
     color: ${(props) => props.theme.textPlaceholder};
   }
+
+  // isSmall
+  padding: ${(props) => props.isSmall && '1px 4px'};
 `
 
 export default TextField

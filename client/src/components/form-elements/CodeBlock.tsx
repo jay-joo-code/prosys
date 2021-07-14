@@ -2,11 +2,12 @@ import React, { memo } from 'react'
 import AceEditor from 'react-ace'
 import { ICodableTextareaBlock } from 'src/types/card.type'
 import styled from 'styled-components'
+import BlockWrapper from '../BlockWrapper'
+import useKeypress from 'src/hooks/useKeyPress'
 
 import 'ace-builds/src-noconflict/ext-language_tools'
 import 'ace-builds/src-noconflict/mode-typescript'
 import 'ace-builds/src-noconflict/theme-monokai'
-import BlockWrapper from '../BlockWrapper'
 
 interface CodeBlockProps {
   idx: number
@@ -20,6 +21,32 @@ const CodeBlock = ({ idx, value, setBlocks }: CodeBlockProps) => {
       blocks.map((block, i) => (idx === i ? { type: 'CODE', value: newValue } : block))
     )
   }
+
+  useKeypress('Enter', (event) => {
+    if (event.ctrlKey) {
+      event.stopPropagation()
+      event.stopImmediatePropagation()
+      event.preventDefault()
+      setBlocks((blocks) => [
+        ...blocks,
+        {
+          type: 'CODE',
+          value: '',
+        },
+      ])
+    } else if (event.metaKey) {
+      event.stopPropagation()
+      event.stopImmediatePropagation()
+      event.preventDefault()
+      setBlocks((blocks) => [
+        ...blocks,
+        {
+          type: 'TEXT',
+          value: '',
+        },
+      ])
+    }
+  })
 
   return (
     <BlockWrapper idx={idx} setBlocks={setBlocks} isCodeBlock={true}>

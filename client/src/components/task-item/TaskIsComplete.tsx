@@ -4,7 +4,7 @@ import useKeyPress from 'src/hooks/useKeyPress'
 import { IInboxState, ITask } from 'src/types/task.type'
 import styled from 'styled-components'
 import LoopIcon from '@material-ui/icons/Loop'
-import useIsArchive from 'src/hooks/useIsArchive'
+import useIsSpacedRep from 'src/hooks/useIsSpacedRep'
 import TaskCalendarIcon from './TaskCalendarIcon'
 
 interface TaskIsCompleteProps {
@@ -55,7 +55,7 @@ const TaskIsComplete = ({
     }
   })
 
-  const isArchive = useIsArchive()
+  const isArchive = useIsSpacedRep()
 
   if (isArchive) return null
 

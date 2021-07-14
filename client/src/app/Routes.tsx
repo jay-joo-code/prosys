@@ -5,15 +5,24 @@ import useIsMobile from 'src/hooks/useIsMobile'
 import { IRootState } from 'src/types/redux.type'
 
 const Home = React.lazy(() => import('src/pages/home/Home'))
-const AuthCallback = React.lazy(() => import('src/pages/auth-callback/AuthCallback'))
+const AuthCallback = React.lazy(
+  () => import('src/pages/auth-callback/AuthCallback')
+)
 const Login = React.lazy(() => import('src/pages/login/Login'))
 const Logout = React.lazy(() => import('src/pages/logout/Logout'))
-const MobileBlock = React.lazy(() => import('src/pages/mobile-block/MobileBlock'))
+const MobileBlock = React.lazy(
+  () => import('src/pages/mobile-block/MobileBlock')
+)
 const FormTest = React.lazy(() => import('src/pages/form-test/FormTest'))
-const DesignSystem = React.lazy(() => import('src/pages/design-system/DesignSystem'))
+const DesignSystem = React.lazy(
+  () => import('src/pages/design-system/DesignSystem')
+)
 const InboxPage = React.lazy(() => import('src/pages/inbox/InboxPage'))
 const ArchivePage = React.lazy(() => import('src/pages/archive/ArchivePage'))
-const CardsPage = React.lazy(() => import('src/pages/cards/CardsPage'))
+const SpacedRepPage = React.lazy(
+  () => import('src/pages/spaced-rep/SpacedRepPage')
+)
+const WikiPage = React.lazy(() => import('src/pages/wiki/WikiPage'))
 
 interface IRoute {
   path: string
@@ -102,9 +111,18 @@ export const routes: IRoute[] = [
     isDesktopOnly: true,
   },
   {
-    path: '/cards',
-    component: CardsPage,
-    label: 'Cards',
+    path: '/spaced-rep',
+    component: SpacedRepPage,
+    label: 'Spaced Repetition',
+    isPublicNav: false,
+    isPrivateNav: false,
+    isPrivateRoute: true,
+    isDesktopOnly: false,
+  },
+  {
+    path: '/wiki',
+    component: WikiPage,
+    label: 'Wiki',
     isPublicNav: false,
     isPrivateNav: false,
     isPrivateRoute: true,
@@ -145,28 +163,29 @@ const Routes = () => {
   return (
     <Suspense fallback={<div />}>
       <Switch>
-        {routes.map(({ path, component, isPrivateRoute, isDesktopOnly, ...rest }) =>
-          isPrivateRoute ? (
-            <PrivateRoute
-              key={path}
-              path={path}
-              component={component}
-              isPrivateRoute={isPrivateRoute}
-              isDesktopOnly={isDesktopOnly}
-              {...rest}
-            />
-          ) : isDesktopOnly ? (
-            <DesktopRoute
-              key={path}
-              path={path}
-              component={component}
-              isPrivateRoute={isPrivateRoute}
-              isDesktopOnly={isDesktopOnly}
-              {...rest}
-            />
-          ) : (
-            <Route key={path} path={path} component={component} />
-          )
+        {routes.map(
+          ({ path, component, isPrivateRoute, isDesktopOnly, ...rest }) =>
+            isPrivateRoute ? (
+              <PrivateRoute
+                key={path}
+                path={path}
+                component={component}
+                isPrivateRoute={isPrivateRoute}
+                isDesktopOnly={isDesktopOnly}
+                {...rest}
+              />
+            ) : isDesktopOnly ? (
+              <DesktopRoute
+                key={path}
+                path={path}
+                component={component}
+                isPrivateRoute={isPrivateRoute}
+                isDesktopOnly={isDesktopOnly}
+                {...rest}
+              />
+            ) : (
+              <Route key={path} path={path} component={component} />
+            )
         )}
       </Switch>
     </Suspense>

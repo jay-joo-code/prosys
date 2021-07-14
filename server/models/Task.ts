@@ -5,7 +5,8 @@ import User from './User'
 const taskSchema = new Schema(
   {
     userId: {
-      type: String,
+      type: Schema.Types.ObjectId,
+      ref: 'User',
       required: true,
     },
     isComplete: {

@@ -5,40 +5,73 @@ import User from './User'
 const cardSchema = new Schema(
   {
     userId: {
-      type: String,
+      type: Schema.Types.ObjectId,
+      ref: 'User',
       required: true,
     },
 
     question: {
-      type: String,
-      required: true,
+      type: [
+        {
+          type: {
+            type: String,
+            required: true,
+          },
+          value: {
+            type: String,
+            default: '',
+          },
+        },
+      ],
+      default: [],
     },
     answer: {
-      type: String,
-      required: true,
+      type: [
+        {
+          type: {
+            type: String,
+            required: true,
+          },
+          value: {
+            type: String,
+            default: '',
+          },
+        },
+      ],
+      default: [],
     },
 
-    isComplete: {
+    isLearning: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     isDeleted: {
       type: Boolean,
       default: false,
     },
 
-    categories: {
-      type: [String],
+    tags: {
+      type: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: 'Tag',
+          autopopulate: true,
+        },
+      ],
       default: [],
     },
 
-    queAt: {
+    repAt: {
       type: Date,
       default: new Date(),
     },
     repSpace: {
       type: Number,
       default: 1,
+    },
+    repCount: {
+      type: Number,
+      default: 0,
     },
   },
   {

@@ -7,13 +7,13 @@ import React from 'react'
 import styled from 'styled-components'
 import OutsideClickListener from './util/OutsideClickListener'
 
-export interface Option {
+export interface IOption {
   label: string
   onClick: () => void
 }
 
 interface MenuProps {
-  options: Option[]
+  options: IOption[]
   children: React.ReactNode
   offset?: number
 }
@@ -22,7 +22,8 @@ const Menu = ({ options, children, offset }: MenuProps) => {
   const [open, setOpen] = React.useState(false)
   const anchorRef = React.useRef(null)
 
-  const handleToggle = () => {
+  const handleToggle = (event: React.MouseEvent) => {
+    event.stopPropagation()
     setOpen((prevOpen) => !prevOpen)
   }
 
@@ -35,7 +36,7 @@ const Menu = ({ options, children, offset }: MenuProps) => {
       <Anchor ref={anchorRef} onClick={handleToggle}>
         {children}
       </Anchor>
-      <Popper
+      <StyledPopper
         open={open}
         anchorEl={anchorRef.current}
         transition
@@ -49,14 +50,18 @@ const Menu = ({ options, children, offset }: MenuProps) => {
         {({ TransitionProps, placement }) => (
           <Grow
             {...TransitionProps}
-            style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}>
+            style={{
+              transformOrigin:
+                placement === 'bottom' ? 'center top' : 'center bottom',
+            }}>
             <Paper>
               <OutsideClickListener onOutsideClick={handleClose} isListening>
                 <MenuList>
                   {options.map((option) => (
                     <MenuItem
                       key={option.label}
-                      onClick={() => {
+                      onClick={(event) => {
+                        event.stopPropagation()
                         option.onClick()
                         handleClose()
                       }}>
@@ -68,13 +73,17 @@ const Menu = ({ options, children, offset }: MenuProps) => {
             </Paper>
           </Grow>
         )}
-      </Popper>
+      </StyledPopper>
     </>
   )
 }
 
 const Anchor = styled.div`
   display: inline-block;
+`
+
+const StyledPopper = styled(Popper)`
+  z-index: 99;
 `
 
 export default Menu

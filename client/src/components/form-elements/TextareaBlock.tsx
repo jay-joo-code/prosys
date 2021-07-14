@@ -1,4 +1,5 @@
-import React, { memo } from 'react'
+import React, { memo, useRef } from 'react'
+import useKeypress from 'src/hooks/useKeyPress'
 import { ICodableTextareaBlock } from 'src/types/card.type'
 import styled from 'styled-components'
 import BlockWrapper from '../BlockWrapper'
@@ -11,16 +12,50 @@ interface TextareaBlockProps {
 }
 
 const TextareaBlock = ({ idx, value, setBlocks }: TextareaBlockProps) => {
+  const ref = useRef<HTMLTextAreaElement>(null)
+
   const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setBlocks((blocks) =>
       blocks.map((block, i) => (idx === i ? { type: 'TEXT', value: event.target.value } : block))
     )
   }
 
+  useKeypress('Enter', (event) => {
+    const isFocused = document.activeElement === ref.current
+
+    if (isFocused) {
+      if (event.ctrlKey) {
+        event.stopPropagation()
+        event.stopImmediatePropagation()
+        event.preventDefault()
+        setBlocks((blocks) => [
+          ...blocks,
+          {
+            type: 'CODE',
+            value: '',
+          },
+        ])
+      } else if (event.metaKey) {
+        event.stopPropagation()
+        event.stopImmediatePropagation()
+        event.preventDefault()
+        setBlocks((blocks) => [
+          ...blocks,
+          {
+            type: 'TEXT',
+            value: '',
+          },
+        ])
+      }
+    }
+  })
+
   return (
-    <BlockWrapper idx={idx} setBlocks={setBlocks} isCodeBlock={false}>
-      <StyledTextarea value={value} onChange={handleChange} />
-    </BlockWrapper>
+    <div>
+      <BlockWrapper idx={idx} setBlocks={setBlocks} isCodeBlock={false}>
+        <StyledTextarea ref={ref} value={value} onChange={handleChange} />
+      </BlockWrapper>
+    </div>
   )
 }
 

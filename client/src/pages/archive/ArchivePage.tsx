@@ -1,10 +1,9 @@
 import React, { useState } from 'react'
 import { useArchivedTasks } from 'src/api/task'
 import NavHeader from 'src/components/header/NavHeader'
-import { FlexRow } from 'src/components/layout/Flex'
+import PageContainer from 'src/components/layout/PageContainer'
 import TaskList from 'src/components/TaskList'
 import { IInboxState } from 'src/types/task.type'
-import styled from 'styled-components'
 
 const ArchivePage = () => {
   const [focusId, setFocusId] = useState<string>()
@@ -12,28 +11,17 @@ const ArchivePage = () => {
   const { tasks } = useArchivedTasks()
 
   return (
-    <FlexRow justifyCenter>
-      <Container>
-        <NavHeader inboxState={inboxState} />
-        <TaskList
-          focusId={focusId}
-          setFocusId={setFocusId}
-          inboxState={inboxState}
-          setInboxState={setInboxState}
-          tasks={tasks}
-        />
-      </Container>
-    </FlexRow>
+    <PageContainer>
+      <NavHeader inboxState={inboxState} />
+      <TaskList
+        focusId={focusId}
+        setFocusId={setFocusId}
+        inboxState={inboxState}
+        setInboxState={setInboxState}
+        tasks={tasks}
+      />
+    </PageContainer>
   )
 }
-
-const Container = styled.div`
-  padding: 1rem;
-  width: 100%;
-
-  @media (min-width: ${(props) => props.theme.tablet}) {
-    max-width: 800px;
-  }
-`
 
 export default ArchivePage
