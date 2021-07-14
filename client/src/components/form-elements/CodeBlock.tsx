@@ -1,11 +1,12 @@
-import 'ace-builds/src-noconflict/ext-language_tools'
-import 'ace-builds/src-noconflict/mode-typescript'
-import 'ace-builds/src-noconflict/theme-monokai'
 import React, { memo } from 'react'
 import AceEditor from 'react-ace'
 import { ICodableTextareaBlock } from 'src/types/card.type'
 import styled from 'styled-components'
 import BlockWrapper from '../BlockWrapper'
+
+import 'ace-builds/src-noconflict/ext-language_tools'
+import 'ace-builds/src-noconflict/mode-typescript'
+import 'ace-builds/src-noconflict/theme-monokai'
 
 interface CodeBlockProps {
   idx: number
