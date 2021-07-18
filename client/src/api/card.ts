@@ -21,12 +21,21 @@ export const useCards = (selectedTagIds: string[]) => {
   }
 }
 
-export const fetchRepCards = (selectedTagIds?: string[]) => ({
-  url: `/private/card/reps?${stringify({ selectedTagIds })}`,
+export const fetchRepCards = () => ({
+  url: `/private/card/reps`,
   options: {
     refetchOnWindowFocus: 'always',
   },
 })
+
+export const useRepCards = () => {
+  const { data: cards, ...rest } = useCustomQuery<ICard[]>(fetchRepCards())
+
+  return {
+    ...rest,
+    cards,
+  }
+}
 
 export const useCreateCard = () => {
   const { mutateAsync: createCard, ...rest } = useCustomMutation<ICard>({
@@ -57,6 +66,24 @@ export const useUpdateCardById = (cid: string) => {
   return {
     ...rest,
     updateCard,
+  }
+}
+
+export const useUpdateAndDequeCardById = (cid: string) => {
+  const { mutateAsync: updateAndDequeCard, ...rest } = useCustomMutation<ICard>(
+    {
+      url: `/private/card/${cid}`,
+      method: 'put',
+      updateLocal: {
+        queryConfigs: [fetchRepCards()],
+        type: 'delete',
+      },
+    }
+  )
+
+  return {
+    ...rest,
+    updateAndDequeCard,
   }
 }
 

@@ -2,7 +2,7 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack'
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward'
 import React from 'react'
 import { useDispatch } from 'react-redux'
-import { useUpdateCardById } from 'src/api/card'
+import { useUpdateAndDequeCardById, useUpdateCardById } from 'src/api/card'
 import theme from 'src/app/theme'
 import { showSnackbar } from 'src/redux/snackbarSlice'
 import { ICard, ICardStatus } from 'src/types/card.type'
@@ -17,22 +17,34 @@ interface ExpandedCardProps {
   card: ICard
   status: ICardStatus
   setStatus: React.Dispatch<React.SetStateAction<ICardStatus>>
+  isLearning?: boolean
 }
 
-const ExpandedCard = ({ card, status, setStatus }: ExpandedCardProps) => {
+const ExpandedCard = ({
+  card,
+  status,
+  setStatus,
+  isLearning,
+}: ExpandedCardProps) => {
   const dispatch = useDispatch()
+  const { updateAndDequeCard } = useUpdateAndDequeCardById(card?._id)
   const { updateCard } = useUpdateCardById(card?._id)
 
   const handleOutsideClick = () => {
-    setStatus('COLLAPSED')
+    if (!isLearning) setStatus('COLLAPSED')
   }
 
   const handleRepeatRep = () => {
-    updateCard({
+    const updateObj = {
       _id: card?._id,
       repAt: new Date().setDate(new Date().getDate() + card?.repSpace),
       repCount: card?.repCount + 1,
-    })
+    }
+    if (isLearning) {
+      updateAndDequeCard(updateObj)
+    } else {
+      updateCard(updateObj)
+    }
     dispatch(
       showSnackbar({
         variant: 'info',
@@ -42,12 +54,17 @@ const ExpandedCard = ({ card, status, setStatus }: ExpandedCardProps) => {
   }
 
   const handleDoubleRep = () => {
-    updateCard({
+    const updateObj = {
       _id: card?._id,
       repSpace: card?.repSpace * 2,
       repAt: new Date().setDate(new Date().getDate() + card?.repSpace * 2),
       repCount: card?.repCount + 1,
-    })
+    }
+    if (isLearning) {
+      updateAndDequeCard(updateObj)
+    } else {
+      updateCard(updateObj)
+    }
     dispatch(
       showSnackbar({
         variant: 'success',
