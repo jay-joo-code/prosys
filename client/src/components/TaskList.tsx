@@ -6,7 +6,10 @@ import Text from 'src/components/fonts/Text'
 import Space from 'src/components/layout/Space'
 import TaskItem from 'src/components/task-item/TaskItem'
 import useIsInbox from 'src/hooks/useIsInbox'
-import { default as useKeypress, default as useKeyPress } from 'src/hooks/useKeyPress'
+import {
+  default as useKeypress,
+  default as useKeyPress,
+} from 'src/hooks/useKeyPress'
 import usePreviousValue from 'src/hooks/usePreviousValue'
 import { toggleHide } from 'src/redux/appSlice'
 import { showSnackbar } from 'src/redux/snackbarSlice'
@@ -23,13 +26,24 @@ interface TaskListProps {
   tasks?: ITask[]
 }
 
-const TaskList = ({ focusId, setFocusId, inboxState, setInboxState, tasks }: TaskListProps) => {
+const TaskList = ({
+  focusId,
+  setFocusId,
+  inboxState,
+  setInboxState,
+  tasks,
+}: TaskListProps) => {
   const previousTasks: ITask[] = usePreviousValue(tasks)
   const isInbox = useIsInbox()
 
   // focus first task after fetching tasks
   useEffect(() => {
-    if ((!previousTasks || previousTasks?.length === 0) && tasks && tasks?.length > 0 && !focusId) {
+    if (
+      (!previousTasks || previousTasks?.length === 0) &&
+      tasks &&
+      tasks?.length > 0 &&
+      !focusId
+    ) {
       setFocusId(tasks[0]?._id)
     }
   }, [tasks])
@@ -38,9 +52,12 @@ const TaskList = ({ focusId, setFocusId, inboxState, setInboxState, tasks }: Tas
   useEffect(() => {
     if (tasks && previousTasks) {
       const currentIdx = tasks.findIndex((task) => task._id === focusId)
-      const previousIdx = previousTasks.findIndex((task) => task._id === focusId)
+      const previousIdx = previousTasks.findIndex(
+        (task) => task._id === focusId
+      )
       if (currentIdx === -1 && previousIdx !== -1) {
-        const nearbyTask = tasks[previousIdx] || tasks[previousIdx - 1] || tasks[previousIdx + 1]
+        const nearbyTask =
+          tasks[previousIdx] || tasks[previousIdx - 1] || tasks[previousIdx + 1]
         setFocusId(nearbyTask?._id)
       }
     }
@@ -56,8 +73,10 @@ const TaskList = ({ focusId, setFocusId, inboxState, setInboxState, tasks }: Tas
 
     tasks?.forEach((task, idx) => {
       const isDateStampIdx =
-        idx === 0 || getDateStamp(task?.due) !== getDateStamp(tasks[idx - 1]?.due)
-      const isDividerIdx = idx !== 0 && isTaskTimeSet(task) && !isTaskTimeSet(tasks[idx - 1])
+        idx === 0 ||
+        getDateStamp(task?.due) !== getDateStamp(tasks[idx - 1]?.due)
+      const isDividerIdx =
+        idx !== 0 && isTaskTimeSet(task) && !isTaskTimeSet(tasks[idx - 1])
 
       if (isDateStampIdx) newFirstTaskOfDayIdxes.push(idx)
       if (isDividerIdx) newDividerIdxes.push(idx)
@@ -203,7 +222,8 @@ const TaskList = ({ focusId, setFocusId, inboxState, setInboxState, tasks }: Tas
               <>
                 <Space padding='.5rem 0' />
                 <Text variant='h4' color={theme.text.light}>
-                  {task?.due ? getDateStamp(task?.due) : 'Backlog'} {task?.due && getDay(task?.due)}
+                  {task?.due ? getDateStamp(task?.due) : 'Backlog'}{' '}
+                  {task?.due && getDay(task?.due)}
                 </Text>
               </>
             )}

@@ -2,6 +2,7 @@ import { Request, Response } from 'express'
 import { google } from 'googleapis'
 import Task from '../models/Task'
 import { getDateByDayDifference, getTimeStamp } from './date'
+import { ITask } from '../types/task.type'
 
 export const syncCalendar = async (req: Request, res: Response) => {
   try {
@@ -67,26 +68,40 @@ export const syncCalendar = async (req: Request, res: Response) => {
         taskData.endTime = getTimeStamp(new Date(event.end.dateTime))
       }
 
-      // check if event exists
-      const matchIdx = calendarTasks.findIndex(
-        (task) => task?.providerTaskId === event.id
-      )
-
-      if (matchIdx >= 0 && event?.id) {
-        // update existing task
-        await Task.findOneAndUpdate({ providerTaskId: event?.id }, taskData)
-        if (event.id) {
-          updatedTasks.push(event.id)
+      const matchedTasks: ITask[] = []
+      calendarTasks?.forEach((task) => {
+        if (task?.providerTaskId === event.id) {
+          matchedTasks.push(task)
         }
+      })
+
+      if (matchedTasks?.length >= 1 && event?.id) {
+        // update existing tasks
+        const updatePromises = matchedTasks.map(async (task, idx) => {
+          if (event?.id) {
+            if (idx === 0) {
+              // update one
+              await Task.findOneAndUpdate(
+                { providerTaskId: event?.id },
+                taskData
+              )
+              updatedTasks.push(event.id)
+            } else {
+              // delete duplicates
+              await Task.findOneAndDelete({ providerTaskId: event?.id })
+            }
+          }
+        })
+        await Promise.all(updatePromises)
       } else {
         // create new task
-        new Task(taskData).save()
+        await new Task(taskData).save()
       }
     })
 
     await Promise.all(syncPromises)
 
-    // delete all calendar tasks that weren't updated (likely deleted)
+    // delete all calendar tasks that weren't updated (likely deleted in google calendar)
     const tasksToDelete = calendarTasks.filter(
       (task) =>
         task.providerTaskId && !updatedTasks.includes(task.providerTaskId)

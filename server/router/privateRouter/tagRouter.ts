@@ -49,7 +49,6 @@ tagRouter.put('/:id', async (req, res) => {
 
 tagRouter.delete('/', async (req, res) => {
   try {
-    console.log('req.body', req.body)
     const result = await Tag.findByIdAndDelete(req.body)
     res.send(result)
   } catch (e) {

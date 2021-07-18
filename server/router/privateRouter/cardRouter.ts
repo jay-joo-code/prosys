@@ -25,7 +25,6 @@ cardRouter.get('/reps', async (req, res) => {
       isLearning: true,
       repAt: { $lte: moment(new Date()).endOf('day').toDate() },
     }).sort({ createdAt: -1 })
-    console.log('cards', cards)
     res.send(cards)
   } catch (e) {
     res.status(500).send(e)

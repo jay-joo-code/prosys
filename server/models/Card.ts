@@ -5,8 +5,7 @@ import User from './User'
 const cardSchema = new Schema(
   {
     userId: {
-      type: Schema.Types.ObjectId,
-      ref: 'User',
+      type: String,
       required: true,
     },
 

@@ -42,7 +42,11 @@ taskRouter.get('/inbox', async (req, res) => {
 
     // set overdue task due date as today
     const validatedTasks = docs.map((task) => {
-      if (task.due && isDateBeforeToday(task.due) && task.provider !== 'google') {
+      if (
+        task.due &&
+        isDateBeforeToday(task.due) &&
+        task.provider !== 'google'
+      ) {
         // don't reset time if task is recurring
         const updatedFields = task?.isRecur
           ? {
