@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 import { google } from 'googleapis'
 import Task from '../models/Task'
 import { getDateByDayDifference, getTimeStamp } from './date'
-import { ITask } from '../types/task.type'
+import { ITaskDocument } from '../types/task.type'
 
 export const syncCalendar = async (req: Request, res: Response) => {
   try {
@@ -68,7 +68,7 @@ export const syncCalendar = async (req: Request, res: Response) => {
         taskData.endTime = getTimeStamp(new Date(event.end.dateTime))
       }
 
-      const matchedTasks: ITask[] = []
+      const matchedTasks: ITaskDocument[] = []
       calendarTasks?.forEach((task) => {
         if (task?.providerTaskId === event.id) {
           matchedTasks.push(task)
