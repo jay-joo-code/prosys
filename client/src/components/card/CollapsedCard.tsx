@@ -32,7 +32,7 @@ const CollapsedCard = ({ card, setStatus }: CollapsedCardProps) => {
           />
         </div>
         <RightSide alignCenter>
-          <CardIsLearning isLearning={card?.isLearning} />
+          <CardIsLearning isLearning={card?.isLearning} cid={card?._id} />
           <CardMenu card={card} setStatus={setStatus} status='COLLAPSED' />
         </RightSide>
       </FlexRow>
