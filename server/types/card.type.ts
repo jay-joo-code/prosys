@@ -1,4 +1,4 @@
-import { Document } from 'mongoose'
+import { Document, Types } from 'mongoose'
 import { ITagDocument } from './tag.type'
 
 export interface ICodableTextareaBlock {
@@ -12,7 +12,7 @@ export interface ICardDocument extends Document {
   answer: ICodableTextareaBlock[]
   isLearning: boolean
   isDeleted: boolean
-  tags: ITagDocument[]
+  tags: Types.ObjectId[]
   repAt: Date
   repSpace: number
   repCount: number

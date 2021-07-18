@@ -3,10 +3,12 @@ import { useCards } from 'src/api/card'
 import CardItem from 'src/components/card/CardItem'
 import styled from 'styled-components'
 
-interface CardListProps {}
+interface CardListProps {
+  selectedTagIds: string[]
+}
 
-const CardList = ({}: CardListProps) => {
-  const { cards } = useCards()
+const CardList = ({ selectedTagIds }: CardListProps) => {
+  const { cards } = useCards(selectedTagIds)
 
   return (
     <Container>

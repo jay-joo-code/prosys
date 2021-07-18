@@ -1,7 +1,9 @@
 import moment from 'moment'
 
 export const isDateTodayOrBefore = (date: Date) => {
-  return moment(date).isSame(moment(new Date()), 'day')
+  return (
+    moment(date).isSame(moment(new Date()), 'day') || isDateBeforeToday(date)
+  )
 }
 
 export const isDateBeforeToday = (date: Date): boolean => {

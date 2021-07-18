@@ -1,22 +1,32 @@
+import { stringify } from 'query-string'
 import useCustomMutation from 'src/hooks/useCustomMutation'
 import useCustomQuery from 'src/hooks/useCustomQuery'
 import { ICard } from 'src/types/card.type'
 
-export const fetchCards = () => ({
-  url: '/private/card',
+export const fetchCards = (selectedTagIds?: string[]) => ({
+  url: `/private/card?${stringify({ selectedTagIds })}`,
   options: {
     refetchOnWindowFocus: 'always',
   },
 })
 
-export const useCards = () => {
-  const { data: cards, ...rest } = useCustomQuery<ICard[]>(fetchCards())
+export const useCards = (selectedTagIds: string[]) => {
+  const { data: cards, ...rest } = useCustomQuery<ICard[]>(
+    fetchCards(selectedTagIds)
+  )
 
   return {
     ...rest,
     cards,
   }
 }
+
+export const fetchRepCards = (selectedTagIds?: string[]) => ({
+  url: `/private/card/reps?${stringify({ selectedTagIds })}`,
+  options: {
+    refetchOnWindowFocus: 'always',
+  },
+})
 
 export const useCreateCard = () => {
   const { mutateAsync: createCard, ...rest } = useCustomMutation<ICard>({

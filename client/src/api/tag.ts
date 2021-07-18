@@ -34,14 +34,12 @@ export const useCreateTag = () => {
   }
 }
 
-// TODO:
 export const useDeleteTagById = () => {
   const { mutateAsync: deleteTagById, ...rest } = useCustomMutation<ITag>({
     url: '/private/tag',
     method: 'delete',
     updateLocal: {
       queryConfigs: [fetchTags()],
-      type: 'delete',
     },
   })
 

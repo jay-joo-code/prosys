@@ -1,13 +1,23 @@
 import React from 'react'
+import { useUpdateCardById } from 'src/api/card'
 import styled from 'styled-components'
 
 interface CardIsLearningProps {
+  cid: string
   isLearning: boolean
 }
 
-const CardIsLearning = ({ isLearning }: CardIsLearningProps) => {
+const CardIsLearning = ({ cid, isLearning }: CardIsLearningProps) => {
+  const { updateCard } = useUpdateCardById(cid)
+  const handleClick = () => {
+    updateCard({
+      _id: cid,
+      isLearning: !isLearning,
+    })
+  }
+
   return (
-    <Container isLearning={isLearning}>
+    <Container isLearning={isLearning} onClick={handleClick}>
       {isLearning ? 'Learning' : 'Archived'}
     </Container>
   )

@@ -29,7 +29,6 @@ const Menu = ({ options, children, offset }: MenuProps) => {
 
   const handleOutsideClick = (event: Event) => {
     event.stopPropagation()
-    console.log('close menu')
     handleClose()
   }
 

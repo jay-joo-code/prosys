@@ -10,12 +10,13 @@ import Button from 'src/components/Button'
 import { showSnackbar } from 'src/redux/snackbarSlice'
 import { ICard, ICardStatus, ICodableTextareaBlock } from 'src/types/card.type'
 import { isBlocksEmpty } from 'src/util/card'
-import { isDateBeforeToday, isDateTodayOrBefore } from 'src/util/date'
+import { isDateTodayOrBefore } from 'src/util/date'
 import styled from 'styled-components'
 import Text from '../fonts/Text'
 import { FlexRow } from '../layout/Flex'
 import Space from '../layout/Space'
 import TagList from '../tag/TagList'
+import CardIsLearning from './CardIsLearning'
 import CardMenu from './CardMenu'
 
 interface CardToolBarProps {
@@ -87,16 +88,22 @@ const CardToolBar = ({
           setSelectedTagIds={setSelectedTagIds}
         />
         {hasTags && <Space padding='.3rem' />}
-        {card?.repAt && (
-          <Text variant='h5' color={theme.text.muted}>
-            {isDateTodayOrBefore(new Date(card.repAt))
-              ? 'Qued'
-              : `Next rep in ${moment(card?.repAt).fromNow()}`}{' '}
-            • {card?.repSpace} days of rep space • {card?.repCount} total reps
-          </Text>
-        )}
+        {card?.repAt &&
+          (card?.isLearning ? (
+            <Text variant='h5' color={theme.text.muted}>
+              {isDateTodayOrBefore(new Date(card.repAt))
+                ? 'Qued'
+                : `Next rep ${moment(card?.repAt).fromNow()}`}{' '}
+              • {card?.repSpace} days rep space • {card?.repCount} total reps
+            </Text>
+          ) : (
+            <Text variant='h5' color={theme.text.muted}>
+              Archived • {card?.repCount} total reps
+            </Text>
+          ))}
       </div>
       <ButtonsContainer alignCenter>
+        <CardIsLearning isLearning={card?.isLearning} cid={card?._id} />
         <IconButton size='small' color='inherit' onClick={toggleStatus}>
           {status === 'EDITING' ? (
             <Button color={theme.success[500]}>Save</Button>

@@ -34,7 +34,7 @@ const WikiPage = () => {
           New card
         </Button>
       </TopRow>
-      <CardList />
+      <CardList selectedTagIds={selectedTagIds} />
     </PageContainer>
   )
 }
