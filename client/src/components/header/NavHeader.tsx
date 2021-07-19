@@ -64,7 +64,10 @@ const NavHeader = ({ inboxState }: NavHeaderProps) => {
 
   // hide screen
   useKeypress(['h', 'ㅗ'], (event) => {
-    if (['NAVIGATE', 'CREATE'].includes(inboxState)) {
+    if (
+      document.activeElement?.tagName !== 'TEXTAREA' &&
+      document.activeElement?.tagName !== 'INPUT'
+    ) {
       event.stopPropagation()
       event.stopImmediatePropagation()
       event.preventDefault()
