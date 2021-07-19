@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+import ObjectID from 'bson-objectid'
 import React, { memo } from 'react'
 import {
   useToggleArchive,
@@ -62,11 +62,15 @@ const TaskItem = ({
 
   // create task below or above
   useKeypress('Enter', (event) => {
-    if (isFocused && inboxState === 'NAVIGATE' && (event.metaKey || event.ctrlKey)) {
+    if (
+      isFocused &&
+      inboxState === 'NAVIGATE' &&
+      (event.metaKey || event.ctrlKey)
+    ) {
       event.stopPropagation()
       event.stopImmediatePropagation()
       event.preventDefault()
-      const newTaskId = mongoose.Types.ObjectId().toString()
+      const newTaskId = new ObjectID().toHexString()
 
       if (task?.isArchived) {
         createArchiveTask({

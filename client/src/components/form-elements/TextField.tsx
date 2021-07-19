@@ -18,29 +18,34 @@ interface TextFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   isSmall?: boolean
 }
 
-const TextField = forwardRef<HTMLInputElement, TextFieldProps>((props: TextFieldProps, ref) => {
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && props?.onEnterPress) {
-      e.preventDefault()
-      props?.onEnterPress()
+const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
+  (props: TextFieldProps, ref) => {
+    const handleKeyPress = (e: React.KeyboardEvent) => {
+      if (e.key === 'Enter' && props?.onEnterPress) {
+        e.preventDefault()
+        props?.onEnterPress()
+      }
     }
-  }
 
-  return (
-    <TextFieldContainer>
-      {props.label && <Label {...props}>{props.label}</Label>}
-      <div>
-        <StyledTextField
-          {...props}
-          ref={ref}
-          onKeyPress={handleKeyPress}
-          error={props.error != null}
-        />
-      </div>
-      <ErrorMsg error={props.error} />
-    </TextFieldContainer>
-  )
-})
+    const passedProps = { ...props }
+    delete passedProps.onEnterPress
+
+    return (
+      <TextFieldContainer>
+        {props.label && <Label {...props}>{props.label}</Label>}
+        <div>
+          <StyledTextField
+            {...passedProps}
+            ref={ref}
+            onKeyPress={handleKeyPress}
+            error={props.error != null}
+          />
+        </div>
+        <ErrorMsg error={props.error} />
+      </TextFieldContainer>
+    )
+  }
+)
 
 TextField.displayName = 'TextField'
 
@@ -61,7 +66,10 @@ export const HookedInput = (props: HookedTextFieldProps) => {
     <TextFieldContainer>
       <Label {...props}>{props.label}</Label>
       <div>
-        <StyledTextField {...register(props.name)} error={errors[props.name] != null} />
+        <StyledTextField
+          {...register(props.name)}
+          error={errors[props.name] != null}
+        />
       </div>
       <ErrorMsg error={errors[props.name]?.message} />
     </TextFieldContainer>

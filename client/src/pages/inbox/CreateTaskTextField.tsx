@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+import ObjectID from 'bson-objectid'
 import React, { useEffect, useRef, useState } from 'react'
 import { useCreateInboxTask } from 'src/api/task'
 import TextField from 'src/components/form-elements/TextField'
@@ -30,7 +30,7 @@ const CreateTaskTextField = ({
   const handleCreateTask = async () => {
     try {
       if (document.activeElement === inputRef?.current && name !== '') {
-        const newTaskId = mongoose.Types.ObjectId().toString()
+        const newTaskId = new ObjectID().toHexString()
         createInboxTask({
           _id: newTaskId,
           name,
