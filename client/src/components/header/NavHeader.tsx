@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import styled from 'styled-components'
 import Text from '../fonts/Text'
 import useRouter from 'src/hooks/useRouter'
@@ -114,9 +114,16 @@ const Container = styled.div`
   margin: 1rem 0;
   display: flex;
   align-items: center;
+  overflow-x: auto;
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  scrollbar-width: none; /* Firefox */
 
   & > * {
     margin-right: 0.5rem;
+  }
+
+  &::-webkit-scrollbar {
+    display: none; /* Safari and Chrome */
   }
 `
 
@@ -160,9 +167,10 @@ interface LabelProps {
 const Label = styled(Text)<LabelProps>`
   font-weight: 700;
   color: ${(props) => props.theme.grey[600]};
+  white-space: nowrap;
 
   // isSelected
   color: ${(props) => props.isSelected && props.theme.brand[500]};
 `
 
-export default NavHeader
+export default memo(NavHeader)
