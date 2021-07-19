@@ -44,6 +44,7 @@ export const useCreateCard = () => {
     updateLocal: {
       queryConfigs: [fetchCards()],
       type: 'appendStart',
+      isNotRefetchOnSettle: true,
     },
   })
 

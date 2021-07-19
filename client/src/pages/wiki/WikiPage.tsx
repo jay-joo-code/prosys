@@ -1,3 +1,4 @@
+import ObjectID from 'bson-objectid'
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined'
 import React, { useState } from 'react'
 import { useCreateCard } from 'src/api/card'
@@ -16,8 +17,10 @@ const WikiPage = () => {
 
   const handleCreateCard = () => {
     createCard({
+      _id: new ObjectID().toHexString(),
       question: [],
       answer: [],
+      isLearning: true,
     })
   }
 

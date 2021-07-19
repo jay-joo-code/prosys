@@ -1,3 +1,4 @@
+import ObjectId from 'bson-objectid'
 import React, { useState } from 'react'
 import theme from 'src/app/theme'
 import Flag from '../flags/Flag'
@@ -37,6 +38,7 @@ const TagItem = ({ label, isSelected, isCreate, onClick }: TagItemProps) => {
   const handleCreateTag = () => {
     if (localLabel?.length > 0) {
       createTag({
+        _id: new ObjectId().toHexString(),
         label: localLabel,
       })
       setLocalLabel('')
