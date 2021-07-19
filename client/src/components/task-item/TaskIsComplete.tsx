@@ -1,10 +1,9 @@
+import LoopIcon from '@material-ui/icons/Loop'
 import React from 'react'
-import { useUpdateInboxTaskById } from 'src/api/task'
+import { useUpdateArchiveTaskById, useUpdateInboxTaskById } from 'src/api/task'
 import useKeyPress from 'src/hooks/useKeyPress'
 import { IInboxState, ITask } from 'src/types/task.type'
 import styled from 'styled-components'
-import LoopIcon from '@material-ui/icons/Loop'
-import useIsSpacedRep from 'src/hooks/useIsSpacedRep'
 import TaskCalendarIcon from './TaskCalendarIcon'
 
 interface TaskIsCompleteProps {
@@ -25,17 +24,27 @@ const TaskIsComplete = ({
   const { updateInboxTask } = useUpdateInboxTaskById(task?._id, {
     refetchOnSettle: true,
   })
+  const { updateArchiveTask } = useUpdateArchiveTaskById(task?._id, {
+    refetchOnSettle: true,
+  })
 
   const toggleIsComplete = () => {
-    updateInboxTask({
-      _id: task?._id,
-      isComplete: !task?.isComplete,
-    })
+    if (task?.isArchived) {
+      updateArchiveTask({
+        _id: task?._id,
+        isComplete: !task?.isComplete,
+      })
+    } else {
+      updateInboxTask({
+        _id: task?._id,
+        isComplete: !task?.isComplete,
+      })
+    }
     setInboxState('NAVIGATE')
   }
 
   useKeyPress(' ', (event) => {
-    if (isFocused && inboxState === 'NAVIGATE' && !task?.isRecur && !task?.isArchived) {
+    if (isFocused && inboxState === 'NAVIGATE' && !task?.isRecur) {
       event.stopPropagation()
       event.stopImmediatePropagation()
       event.preventDefault()
@@ -44,7 +53,13 @@ const TaskIsComplete = ({
   })
 
   useKeyPress(['r', 'ㄱ'], (event) => {
-    if (isFocused && inboxState === 'NAVIGATE' && !(event.metaKey || event.ctrlKey) && task?.due) {
+    if (
+      isFocused &&
+      inboxState === 'NAVIGATE' &&
+      !(event.metaKey || event.ctrlKey) &&
+      task?.due &&
+      !task?.isArchived
+    ) {
       event.stopPropagation()
       event.stopImmediatePropagation()
       event.preventDefault()
@@ -54,10 +69,6 @@ const TaskIsComplete = ({
       })
     }
   })
-
-  const isArchive = useIsSpacedRep()
-
-  if (isArchive) return null
 
   return (
     <Container>
