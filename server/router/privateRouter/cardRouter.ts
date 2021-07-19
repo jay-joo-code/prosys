@@ -24,6 +24,7 @@ cardRouter.get('/reps', async (req, res) => {
       isDeleted: false,
       isLearning: true,
       repAt: { $lte: moment(new Date()).endOf('day').toDate() },
+      'question.0': { $exists: true },
     }).sort({ createdAt: -1 })
     res.send(cards)
   } catch (e) {
