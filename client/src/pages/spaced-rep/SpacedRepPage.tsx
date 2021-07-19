@@ -7,7 +7,7 @@ import Learn from './Learn'
 const SpacedRepPage = () => {
   return (
     <PageContainer>
-      <NavHeader inboxState={'CREATE'} />
+      <NavHeader inboxState='CREATE' />
       <Space padding='1rem 0' />
       <Learn />
     </PageContainer>

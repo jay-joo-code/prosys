@@ -23,7 +23,7 @@ const WikiPage = () => {
 
   return (
     <PageContainer>
-      <NavHeader inboxState={'CREATE'} />
+      <NavHeader inboxState='CREATE' />
       <TopRow>
         <TagList
           tags={tags || []}

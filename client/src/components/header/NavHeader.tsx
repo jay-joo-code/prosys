@@ -14,6 +14,8 @@ import useIsArchive from 'src/hooks/useIsArchive'
 import useIsSpacedRep from 'src/hooks/useIsSpacedRep'
 import useIsWiki from 'src/hooks/useIsWiki'
 import useIsCreateCard from 'src/hooks/useIsCreateCard'
+import { useDispatch } from 'react-redux'
+import { toggleHide } from 'src/redux/appSlice'
 
 interface NavHeaderProps {
   inboxState: IInboxState
@@ -26,6 +28,7 @@ const NavHeader = ({ inboxState }: NavHeaderProps) => {
   const isSpacedRep = useIsSpacedRep()
   const isWiki = useIsWiki()
   const isCreateCard = useIsCreateCard()
+  const dispatch = useDispatch()
 
   useKeypress('Tab', (event) => {
     if (['NAVIGATE', 'CREATE'].includes(inboxState)) {
@@ -56,6 +59,16 @@ const NavHeader = ({ inboxState }: NavHeaderProps) => {
           push('/inbox')
         }
       }
+    }
+  })
+
+  // hide screen
+  useKeypress(['h', 'ㅗ'], (event) => {
+    if (['NAVIGATE', 'CREATE'].includes(inboxState)) {
+      event.stopPropagation()
+      event.stopImmediatePropagation()
+      event.preventDefault()
+      dispatch(toggleHide())
     }
   })
 

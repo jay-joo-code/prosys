@@ -11,7 +11,6 @@ import {
   default as useKeyPress,
 } from 'src/hooks/useKeyPress'
 import usePreviousValue from 'src/hooks/usePreviousValue'
-import { toggleHide } from 'src/redux/appSlice'
 import { showSnackbar } from 'src/redux/snackbarSlice'
 import { IInboxState, ITask } from 'src/types/task.type'
 import { getDateStamp, getDay } from 'src/util/date'
@@ -197,16 +196,6 @@ const TaskList = ({
           message: 'Recovered task',
         })
       )
-    }
-  })
-
-  // hide screen
-  useKeypress(['h', 'ㅗ'], (event) => {
-    if (inboxState === 'NAVIGATE') {
-      event.stopPropagation()
-      event.stopImmediatePropagation()
-      event.preventDefault()
-      dispatch(toggleHide())
     }
   })
 
