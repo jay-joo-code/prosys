@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import useIsSpacedRep from 'src/hooks/useIsSpacedRep'
+import useIsWiki from 'src/hooks/useIsWiki'
 import { setHide } from 'src/redux/appSlice'
 import { IRootState } from 'src/types/redux.type'
 import styled from 'styled-components'
@@ -24,8 +26,17 @@ const ToggledBlur = ({ children }: ToggleBlurProps) => {
     }
   })
 
+  const isSpacedRep = useIsSpacedRep()
+  const isWiki = useIsWiki()
+
   return (
-    <Container isHide={import.meta.env.VITE_NODE_ENV !== 'development' && isHide}>
+    <Container
+      isHide={
+        import.meta.env.VITE_NODE_ENV === 'development' &&
+        !isSpacedRep &&
+        !isWiki &&
+        isHide
+      }>
       {children}
     </Container>
   )

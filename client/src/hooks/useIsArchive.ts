@@ -1,8 +1,8 @@
 import useRouter from './useRouter'
 
-const useIsSpacedRep = () => {
+const useIsArchive = () => {
   const { pathname } = useRouter()
   return pathname === '/archive'
 }
 
-export default useIsSpacedRep
+export default useIsArchive

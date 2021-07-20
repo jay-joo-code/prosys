@@ -3,10 +3,7 @@ import { ICodableTextareaBlock } from 'src/types/card.type'
 import styled from 'styled-components'
 import BlockWrapper from '../BlockWrapper'
 
-const AceEditor = React.lazy(() => import('react-ace'))
-React.lazy(() => import('ace-builds/src-noconflict/ext-language_tools'))
-React.lazy(() => import('ace-builds/src-noconflict/mode-typescript'))
-React.lazy(() => import('ace-builds/src-noconflict/theme-monokai'))
+const AceEditor = React.lazy(() => import('src/components/AceEditorComponent'))
 
 interface CodeBlockProps {
   idx: number
