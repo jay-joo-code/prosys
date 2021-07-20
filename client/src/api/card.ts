@@ -56,7 +56,7 @@ export const useCreateCard = () => {
 
 export const useUpdateCardById = (
   cid: string,
-  options: IUseUpdateCardByIdOptions
+  options?: IUseUpdateCardByIdOptions
 ) => {
   const { mutateAsync: updateCard, ...rest } = useCustomMutation<ICard>({
     url: `/private/card/${cid}`,
