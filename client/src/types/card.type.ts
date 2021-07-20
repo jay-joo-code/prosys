@@ -19,3 +19,8 @@ export interface ICard extends Document {
   repSpace: number
   repCount: number
 }
+
+export interface IUseUpdateCardByIdOptions {
+  isNotRefetchOnSettle?: boolean
+  isNotUpdateLocal?: boolean
+}

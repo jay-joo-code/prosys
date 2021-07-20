@@ -1,7 +1,7 @@
 import { stringify } from 'query-string'
 import useCustomMutation from 'src/hooks/useCustomMutation'
 import useCustomQuery from 'src/hooks/useCustomQuery'
-import { ICard } from 'src/types/card.type'
+import { ICard, IUseUpdateCardByIdOptions } from 'src/types/card.type'
 
 export const fetchCards = (selectedTagIds?: string[]) => ({
   url: `/private/card?${stringify({ selectedTagIds })}`,
@@ -54,14 +54,20 @@ export const useCreateCard = () => {
   }
 }
 
-export const useUpdateCardById = (cid: string) => {
+export const useUpdateCardById = (
+  cid: string,
+  options: IUseUpdateCardByIdOptions
+) => {
   const { mutateAsync: updateCard, ...rest } = useCustomMutation<ICard>({
     url: `/private/card/${cid}`,
     method: 'put',
-    updateLocal: {
-      queryConfigs: [fetchCards()],
-      type: 'update',
-    },
+    updateLocal: options?.isNotUpdateLocal
+      ? undefined
+      : {
+          queryConfigs: [fetchCards()],
+          type: 'update',
+          isNotRefetchOnSettle: options?.isNotRefetchOnSettle,
+        },
   })
 
   return {
