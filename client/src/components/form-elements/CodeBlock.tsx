@@ -1,12 +1,12 @@
-import React, { memo } from 'react'
-import AceEditor from 'react-ace'
+import React, { memo, Suspense } from 'react'
 import { ICodableTextareaBlock } from 'src/types/card.type'
 import styled from 'styled-components'
 import BlockWrapper from '../BlockWrapper'
 
-import 'ace-builds/src-noconflict/ext-language_tools'
-import 'ace-builds/src-noconflict/mode-typescript'
-import 'ace-builds/src-noconflict/theme-monokai'
+const AceEditor = React.lazy(() => import('react-ace'))
+React.lazy(() => import('ace-builds/src-noconflict/ext-language_tools'))
+React.lazy(() => import('ace-builds/src-noconflict/mode-typescript'))
+React.lazy(() => import('ace-builds/src-noconflict/theme-monokai'))
 
 interface CodeBlockProps {
   idx: number
@@ -26,35 +26,37 @@ const CodeBlock = ({ idx, value, setBlocks }: CodeBlockProps) => {
   }
 
   return (
-    <BlockWrapper idx={idx} setBlocks={setBlocks} isCodeBlock={true}>
-      <Container>
-        <StyledAceEditor
-          mode='typescript'
-          theme='monokai'
-          name={`codeblock-${idx}`}
-          onChange={handleChange}
-          onLoad={(editor) => {
-            editor.renderer.setPadding(10)
-            editor.renderer.setScrollMargin(5, 10, 10, 10)
-          }}
-          fontSize={14}
-          showPrintMargin={true}
-          showGutter={true}
-          highlightActiveLine={true}
-          value={value}
-          setOptions={{
-            enableBasicAutocompletion: true,
-            enableLiveAutocompletion: true,
-            enableSnippets: true,
-            showLineNumbers: true,
-            tabSize: 2,
-            readOnly: !setBlocks,
-          }}
-          readOnly={!setBlocks}
-          maxLines={Infinity}
-        />
-      </Container>
-    </BlockWrapper>
+    <Suspense fallback={<div>Loading</div>}>
+      <BlockWrapper idx={idx} setBlocks={setBlocks} isCodeBlock={true}>
+        <Container>
+          <StyledAceEditor
+            mode='typescript'
+            theme='monokai'
+            name={`codeblock-${idx}`}
+            onChange={handleChange}
+            onLoad={(editor) => {
+              editor.renderer.setPadding(10)
+              editor.renderer.setScrollMargin(5, 10, 10, 10)
+            }}
+            fontSize={14}
+            showPrintMargin={true}
+            showGutter={true}
+            highlightActiveLine={true}
+            value={value}
+            setOptions={{
+              enableBasicAutocompletion: true,
+              enableLiveAutocompletion: true,
+              enableSnippets: true,
+              showLineNumbers: true,
+              tabSize: 2,
+              readOnly: !setBlocks,
+            }}
+            readOnly={!setBlocks}
+            maxLines={Infinity}
+          />
+        </Container>
+      </BlockWrapper>
+    </Suspense>
   )
 }
 
