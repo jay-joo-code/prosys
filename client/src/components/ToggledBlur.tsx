@@ -32,7 +32,7 @@ const ToggledBlur = ({ children }: ToggleBlurProps) => {
   return (
     <Container
       isHide={
-        import.meta.env.VITE_NODE_ENV === 'development' &&
+        import.meta.env.VITE_NODE_ENV !== 'development' &&
         !isSpacedRep &&
         !isWiki &&
         isHide
