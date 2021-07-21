@@ -45,7 +45,7 @@ const CardToolBar = ({ card, status }: CardToolBarProps) => {
         isFiltered={status !== 'EDITING'}
         tags={tags || []}
         selectedTagIds={selectedTagIds}
-        setSelectedTagIds={setSelectedTagIds}
+        setSelectedTagIds={status === 'EDITING' ? setSelectedTagIds : undefined}
       />
       <Space padding='.3rem 0' />
       <InfoTextContainer>

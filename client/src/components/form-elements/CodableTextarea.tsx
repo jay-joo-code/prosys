@@ -62,12 +62,7 @@ const Container = styled.div<ContainerProps>`
   }
 
   // isReadOnly
-  cursor: ${(props) => props.isReadOnly && 'pointer'};
   border-color: ${(props) => props.isReadOnly && 'transparent'};
-
-  & * {
-    cursor: ${(props) => props.isReadOnly && 'pointer'} !important;
-  }
 `
 
 export default CodableTextarea

@@ -73,6 +73,7 @@ const StyledTextarea = styled(Textarea)`
   padding: 0;
   padding-left: 1px;
   resize: none;
+  cursor: normal;
 `
 
 export default memo(TextareaBlock)

@@ -20,33 +20,35 @@ interface SelectProps {
   maxMenuHeight?: number
 }
 
-const Select = forwardRef<HTMLInputElement, SelectProps>((props: SelectProps, ref) => {
-  const valueObject = props.options.find(
-    (option) => option.value === props.value
-  )
-  return (
-    <div>
-      <Label {...props}>{props.label}</Label>
-      <StyledSelect
-        ref={ref}
-        isDisabled={props.disabled}
-        theme={(defaultStyles: any) => ({
-          ...defaultStyles,
-          colors: {
-            ...defaultStyles.colors,
-            primary25: theme.brand[50],
-            primary50: theme.bg.grey,
-            primary: theme.brand[500],
-          },
-        })}
-        {...props}
-        value={valueObject}
-        key={`select-key-${JSON.stringify(valueObject)}`}
-        isSearchable={false}
-      />
-    </div>
-  )
-})
+const Select = forwardRef<HTMLInputElement, SelectProps>(
+  (props: SelectProps, ref) => {
+    const valueObject = props.options.find(
+      (option) => option.value === props.value
+    )
+    return (
+      <div>
+        <Label {...props}>{props.label}</Label>
+        <StyledSelect
+          ref={ref}
+          isDisabled={props.disabled}
+          theme={(defaultStyles: any) => ({
+            ...defaultStyles,
+            colors: {
+              ...defaultStyles.colors,
+              primary25: theme.brand[50],
+              primary50: theme.bg.grey,
+              primary: theme.brand[500],
+            },
+          })}
+          {...props}
+          value={valueObject}
+          key={`select-key-${JSON.stringify(valueObject)}`}
+          isSearchable={false}
+        />
+      </div>
+    )
+  }
+)
 
 interface HookedSelectProps {
   name: string
@@ -54,17 +56,17 @@ interface HookedSelectProps {
 }
 
 export const HookedSelect = (props: HookedSelectProps) => {
-  const { control, formState: { errors } } = useFormContext()
+  const {
+    control,
+    formState: { errors },
+  } = useFormContext()
 
   return (
     <div>
       <Controller
         name={props.name}
         control={control}
-        render={({ field }) => <Select
-          {...field}
-          options={props.options}
-                               />}
+        render={({ field }) => <Select {...field} options={props.options} />}
       />
       <ErrorMsg error={errors[props.name]?.message} />
     </div>

@@ -45,7 +45,9 @@ const TagList = ({
               key={tag?._id}
               label={tag?.label}
               isSelected={selectedTagIds.includes(tag?._id)}
-              onClick={() => handleTagClick(tag?._id)}
+              onClick={
+                setSelectedTagIds ? () => handleTagClick(tag?._id) : undefined
+              }
             />
           ))}
         {!!isCreate && <TagItem isCreate />}

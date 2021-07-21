@@ -9,7 +9,8 @@ interface CardIsLearningProps {
 
 const CardIsLearning = ({ cid, isLearning }: CardIsLearningProps) => {
   const { updateCard } = useUpdateCardById(cid)
-  const handleClick = () => {
+  const handleClick = (event: React.MouseEvent) => {
+    event.stopPropagation()
     updateCard({
       _id: cid,
       isLearning: !isLearning,
@@ -34,6 +35,7 @@ const Container = styled.div<ContainerProps>`
   border-radius: 4px;
   padding: 0.2rem 0.5rem;
   color: ${(props) => props.theme.danger[400]};
+  cursor: pointer;
 
   // isLearning
   color: ${(props) => props.isLearning && props.theme.success[400]};
