@@ -60,7 +60,6 @@ const Container = styled.div`
   border-radius: 8px;
   border: 2px solid ${(props) => props.theme.grey[300]};
   margin-bottom: 1rem;
-  cursor: pointer;
 `
 
 export default memo(CardItem)

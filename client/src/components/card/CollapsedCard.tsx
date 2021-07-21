@@ -38,6 +38,7 @@ const CollapsedCard = ({ card, setStatus }: CollapsedCardProps) => {
 
 const Container = styled.div`
   padding: 0.5rem 0 0.5rem 0.8rem;
+  cursor: pointer;
 `
 
 const RightSide = styled(FlexRow)`

@@ -1,4 +1,5 @@
 import ArrowBackIcon from '@material-ui/icons/ArrowBack'
+import LoopOutlinedIcon from '@material-ui/icons/LoopOutlined'
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward'
 import React from 'react'
 import { useDispatch } from 'react-redux'
@@ -13,6 +14,7 @@ import { FlexRow } from '../layout/Flex'
 import OutsideClickListener from '../util/OutsideClickListener'
 import CardActionButtons from './CardActionButtons'
 import CardToolBar from './CardToolbar'
+import useIsMobile from 'src/hooks/useIsMobile'
 
 interface ExpandedCardProps {
   card: ICard
@@ -27,10 +29,10 @@ const ExpandedCard = ({
   setStatus,
   isLearning,
 }: ExpandedCardProps) => {
-  console.log('card', card)
   const dispatch = useDispatch()
   const { updateAndDequeCard } = useUpdateAndDequeCardById(card?._id)
   const { updateCard } = useUpdateCardById(card?._id)
+  const isMobile = useIsMobile()
 
   const handleOutsideClick = () => {
     if (!isLearning) setStatus('COLLAPSED')
@@ -77,7 +79,7 @@ const ExpandedCard = ({
     )
   }
 
-  const handleContentClick = () => {
+  const flipCard = () => {
     if (status === 'EXPANDED') {
       setStatus('FLIPPED')
     } else if (status === 'FLIPPED') {
@@ -85,11 +87,20 @@ const ExpandedCard = ({
     }
   }
 
+  const flipButton = (
+    <FlipButton onClick={flipCard}>
+      <LoopOutlinedIcon />
+      <Text variant='p' fontWeight={700} color={theme.text.muted}>
+        Flip
+      </Text>
+    </FlipButton>
+  )
+
   return (
     <OutsideClickListener onOutsideClick={handleOutsideClick}>
       <Container>
         <CardActionButtons card={card} status={status} setStatus={setStatus} />
-        <LearnSection justifySpaceBetween>
+        <LearnSection justifySpaceBetween alignCenter>
           <RepButtonContainer onClick={handleRepeatRep}>
             <FlexRow alignStart>
               <ArrowBackIcon className='left' />
@@ -103,6 +114,7 @@ const ExpandedCard = ({
               </div>
             </FlexRow>
           </RepButtonContainer>
+          {!isMobile && flipButton}
           <RepButtonContainer onClick={handleDoubleRep}>
             <FlexRow alignStart>
               <div>
@@ -120,7 +132,8 @@ const ExpandedCard = ({
             </FlexRow>
           </RepButtonContainer>
         </LearnSection>
-        <Content onClick={handleContentClick}>
+        <Content>
+          <FlexRow justifyCenter>{isMobile && flipButton}</FlexRow>
           <CodableTextarea
             blocks={status === 'EXPANDED' ? card?.question : card?.answer}
           />
@@ -148,6 +161,7 @@ const StyledText = styled(Text)`
 const RepButtonContainer = styled.div`
   padding: 0.5rem;
   border-radius: 8px;
+  cursor: pointer;
 
   & svg {
     fill: ${(props) => props.theme.grey[700]} !important;
@@ -163,6 +177,24 @@ const RepButtonContainer = styled.div`
 
   &:hover {
     background: ${(props) => props.theme.grey[50]};
+  }
+`
+
+const FlipButton = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 0.2rem 0.7rem 0.2rem 0.4rem;
+  border-radius: 8px;
+  cursor: pointer;
+  background: ${(props) => props.theme.grey[100]};
+
+  & svg {
+    margin-right: 0.5rem;
+    fill: ${(props) => props.theme.grey[500]};
+  }
+
+  &:hover {
+    background: ${(props) => props.theme.grey[200]};
   }
 `
 
