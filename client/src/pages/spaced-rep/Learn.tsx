@@ -6,10 +6,8 @@ import CardItem from 'src/components/card/CardItem'
 import Text from 'src/components/fonts/Text'
 import styled from 'styled-components'
 
-interface LearnProps {}
-
-const Learn = ({}: LearnProps) => {
-  const { cards } = useRepCards()
+const Learn = () => {
+  const { cards, refetch: refetchCards } = useRepCards()
 
   return (
     <Container>
@@ -21,7 +19,12 @@ const Learn = ({}: LearnProps) => {
               {cards?.length} remaining
             </Text>
           </CardsCounter>
-          <CardItem card={cards[0]} initStatus='EXPANDED' isLearning />
+          <CardItem
+            card={cards[0]}
+            initStatus='EXPANDED'
+            isLearning
+            refetchCards={refetchCards}
+          />
         </>
       ) : (
         <Text variant='p'>Done for today!</Text>
