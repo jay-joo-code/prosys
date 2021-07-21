@@ -11,6 +11,7 @@ import Text from '../fonts/Text'
 import CodableTextarea from '../form-elements/CodableTextarea'
 import { FlexRow } from '../layout/Flex'
 import OutsideClickListener from '../util/OutsideClickListener'
+import CardActionButtons from './CardActionButtons'
 import CardToolBar from './CardToolbar'
 
 interface ExpandedCardProps {
@@ -26,6 +27,7 @@ const ExpandedCard = ({
   setStatus,
   isLearning,
 }: ExpandedCardProps) => {
+  console.log('card', card)
   const dispatch = useDispatch()
   const { updateAndDequeCard } = useUpdateAndDequeCardById(card?._id)
   const { updateCard } = useUpdateCardById(card?._id)
@@ -86,6 +88,7 @@ const ExpandedCard = ({
   return (
     <OutsideClickListener onOutsideClick={handleOutsideClick}>
       <Container>
+        <CardActionButtons card={card} status={status} setStatus={setStatus} />
         <LearnSection justifySpaceBetween>
           <RepButtonContainer onClick={handleRepeatRep}>
             <FlexRow alignStart>
@@ -122,19 +125,15 @@ const ExpandedCard = ({
             blocks={status === 'EXPANDED' ? card?.question : card?.answer}
           />
         </Content>
-        <CardToolBar
-          card={card}
-          status={status}
-          setStatus={setStatus}
-          questionBlocks={card?.question}
-          answerBlocks={card?.answer}
-        />
+        <CardToolBar card={card} status={status} />
       </Container>
     </OutsideClickListener>
   )
 }
 
-const Container = styled.div``
+const Container = styled.div`
+  padding: 0.5rem 0.2rem;
+`
 
 const LearnSection = styled(FlexRow)``
 

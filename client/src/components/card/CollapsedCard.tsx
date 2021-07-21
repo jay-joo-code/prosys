@@ -1,10 +1,9 @@
 import React from 'react'
+import useIsTablet from 'src/hooks/useIsTablet'
 import { ICard, ICardStatus } from 'src/types/card.type'
 import styled from 'styled-components'
 import Text from '../fonts/Text'
 import { FlexRow } from '../layout/Flex'
-import Space from '../layout/Space'
-import TagList from '../tag/TagList'
 import CardIsLearning from './CardIsLearning'
 import CardMenu from './CardMenu'
 
@@ -18,21 +17,18 @@ const CollapsedCard = ({ card, setStatus }: CollapsedCardProps) => {
     setStatus('EXPANDED')
   }
 
+  const isTablet = useIsTablet()
+
   return (
     <Container onClick={handleClick}>
       <FlexRow justifySpaceBetween alignStart>
-        <div>
-          <Text variant='p' maxLines={2}>
-            {card?.question[0]?.value}
-          </Text>
-          {card?.tags?.length > 0 && <Space padding='.5rem 0' />}
-          <TagList
-            tags={card?.tags || []}
-            selectedTagIds={card?.tags?.map((tag) => tag?._id) || []}
-          />
-        </div>
+        <Text variant='p' maxLines={2}>
+          {card?.question[0]?.value}
+        </Text>
         <RightSide alignCenter>
-          <CardIsLearning isLearning={card?.isLearning} cid={card?._id} />
+          {!isTablet && (
+            <CardIsLearning isLearning={card?.isLearning} cid={card?._id} />
+          )}
           <CardMenu card={card} setStatus={setStatus} status='COLLAPSED' />
         </RightSide>
       </FlexRow>
@@ -40,7 +36,9 @@ const CollapsedCard = ({ card, setStatus }: CollapsedCardProps) => {
   )
 }
 
-const Container = styled.div``
+const Container = styled.div`
+  padding: 0.5rem 0 0.5rem 0.8rem;
+`
 
 const RightSide = styled(FlexRow)`
   & > * {

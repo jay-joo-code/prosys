@@ -2,6 +2,7 @@ import React from 'react'
 import { ITag } from 'src/types/tag.type'
 import styled from 'styled-components'
 import TagItem from './TagItem'
+import ScrollContainer from 'react-indiana-drag-scroll'
 
 interface TagListProps {
   tags: ITag[]
@@ -35,26 +36,27 @@ const TagList = ({
   }
 
   return (
-    <Container>
-      {tags
-        ?.filter((tag) => !isFiltered || selectedTagIds.includes(tag?._id))
-        ?.map((tag) => (
-          <TagItem
-            key={tag?._id}
-            label={tag?.label}
-            isSelected={selectedTagIds.includes(tag?._id)}
-            onClick={() => handleTagClick(tag?._id)}
-          />
-        ))}
-      {!!isCreate && <TagItem isCreate />}
-    </Container>
+    <ScrollContainer>
+      <Container>
+        {tags
+          ?.filter((tag) => !isFiltered || selectedTagIds.includes(tag?._id))
+          ?.map((tag) => (
+            <TagItem
+              key={tag?._id}
+              label={tag?.label}
+              isSelected={selectedTagIds.includes(tag?._id)}
+              onClick={() => handleTagClick(tag?._id)}
+            />
+          ))}
+        {!!isCreate && <TagItem isCreate />}
+      </Container>
+    </ScrollContainer>
   )
 }
 
 const Container = styled.div`
   display: flex;
   align-items: center;
-  overflow-x: auto;
 
   & > * {
     margin-right: 0.5rem;

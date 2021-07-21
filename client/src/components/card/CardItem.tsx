@@ -9,10 +9,16 @@ import ExpandedCard from './ExpandedCard'
 interface CardItemProps {
   card: ICard
   initStatus: ICardStatus
+  refetchCards: () => void
   isLearning?: boolean
 }
 
-const CardItem = ({ card, initStatus, isLearning }: CardItemProps) => {
+const CardItem = ({
+  card,
+  initStatus,
+  isLearning,
+  refetchCards,
+}: CardItemProps) => {
   const canSave = !isBlocksEmpty(card?.question)
   const [status, setStatus] = useState<ICardStatus>(
     canSave ? initStatus || 'COLLAPSED' : 'EDITING'
@@ -23,7 +29,14 @@ const CardItem = ({ card, initStatus, isLearning }: CardItemProps) => {
       case 'COLLAPSED':
         return <CollapsedCard card={card} setStatus={setStatus} />
       case 'EDITING':
-        return <EditingCard card={card} setStatus={setStatus} />
+        return (
+          <EditingCard
+            card={card}
+            status={status}
+            setStatus={setStatus}
+            refetchCards={refetchCards}
+          />
+        )
       case 'EXPANDED':
         return (
           <ExpandedCard
@@ -46,7 +59,6 @@ const CardItem = ({ card, initStatus, isLearning }: CardItemProps) => {
 const Container = styled.div`
   border-radius: 8px;
   border: 2px solid ${(props) => props.theme.grey[300]};
-  padding: 1rem;
   margin-bottom: 1rem;
   cursor: pointer;
 `

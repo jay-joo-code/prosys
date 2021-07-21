@@ -1,5 +1,5 @@
 import ObjectId from 'bson-objectid'
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import theme from 'src/app/theme'
 import Flag from '../flags/Flag'
 import TextField from '../form-elements/TextField'
@@ -46,6 +46,8 @@ const TagItem = ({ label, isSelected, isCreate, onClick }: TagItemProps) => {
     }
   }
 
+  const textFieldRef = useRef<HTMLInputElement>(null)
+
   if (label && !isCreate) {
     return (
       <Flag
@@ -67,6 +69,9 @@ const TagItem = ({ label, isSelected, isCreate, onClick }: TagItemProps) => {
           value={localLabel}
           onChange={handleTextFieldChange}
           onEnterPress={handleCreateTag}
+          autoFocus
+          ref={textFieldRef}
+          onClick={() => textFieldRef.current?.focus()}
         />
         <StyledIconButton size='small' color='inherit' onClick={handleClose}>
           <CloseOutlinedIcon fontSize='small' />

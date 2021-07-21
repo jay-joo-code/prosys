@@ -30,8 +30,8 @@ const Button = (props: ContainedBtnProps) => {
       startIcon={props.startIcon}
       endIcon={props.endIcon}
       onClick={props.onClick}
-      type={props.type}
-    >{props.children}
+      type={props.type}>
+      {props.children}
     </StyledButton>
   )
 }
@@ -45,20 +45,35 @@ interface StyledButtonProps {
 
 const StyledButton = styled(MuiButton)<StyledButtonProps>`
   /* contained */
-  color: ${props => props.variant === 'contained' && 'white !important'};
-  background: ${props => (props.variant === 'contained' && !props.disabled) && `${props.overridecolor} !important`};
+  color: ${(props) => props.variant === 'contained' && 'white !important'};
+  background: ${(props) =>
+    props.variant === 'contained' &&
+    !props.disabled &&
+    `${props.overridecolor} !important`};
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
 
   /* text */
-  color: ${props => (props.variant === 'text' && !props.disabled) && `${props.overridecolor} !important`};
-  background: ${props => props.variant === 'text' && 'white !important'};
+  color: ${(props) =>
+    props.variant === 'text' &&
+    !props.disabled &&
+    `${props.overridecolor} !important`};
+  background: ${(props) => props.variant === 'text' && 'white !important'};
 
   &:hover {
-    background: ${props => props.variant === 'text' && `${props.background} !important`};
+    background: ${(props) =>
+      props.variant === 'text' && `${props.background} !important`};
   }
 
   /* outlined */
-  color: ${props => (props.variant === 'outlined' && !props.disabled) && `${props.overridecolor} !important`};
-  border-color: ${props => (props.variant === 'outlined' && !props.disabled) && `${props.overridecolor} !important`};
+  color: ${(props) =>
+    props.variant === 'outlined' &&
+    !props.disabled &&
+    `${props.overridecolor} !important`};
+  border-color: ${(props) =>
+    props.variant === 'outlined' &&
+    !props.disabled &&
+    `${props.overridecolor} !important`};
 `
 
 export default Button

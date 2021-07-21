@@ -5,14 +5,23 @@ import styled from 'styled-components'
 import { useDebounce } from 'use-debounce'
 import Text from '../fonts/Text'
 import CodableTextarea from '../form-elements/CodableTextarea'
+import Space from '../layout/Space'
+import CardActionButtons from './CardActionButtons'
 import CardToolBar from './CardToolbar'
 
 interface EditingCardProps {
   card: ICard
+  status: ICardStatus
   setStatus: React.Dispatch<React.SetStateAction<ICardStatus>>
+  refetchCards: () => void
 }
 
-const EditingCard = ({ card, setStatus }: EditingCardProps) => {
+const EditingCard = ({
+  card,
+  status,
+  setStatus,
+  refetchCards,
+}: EditingCardProps) => {
   const [questionBlocks, setQuestionBlocks] = useState<ICodableTextareaBlock[]>(
     []
   )
@@ -46,6 +55,15 @@ const EditingCard = ({ card, setStatus }: EditingCardProps) => {
   return (
     <Container>
       <Section>
+        <CardActionButtons
+          card={card}
+          status={status}
+          setStatus={setStatus}
+          questionBlocks={questionBlocks}
+          refetchCards={refetchCards}
+        />
+      </Section>
+      <Section>
         <SectionTitle variant='h4'>Question</SectionTitle>
         <CodableTextarea
           blocks={questionBlocks}
@@ -56,18 +74,15 @@ const EditingCard = ({ card, setStatus }: EditingCardProps) => {
         <SectionTitle variant='h4'>Answer</SectionTitle>
         <CodableTextarea blocks={answerBlocks} setBlocks={setAnswerBlocks} />
       </Section>
-      <CardToolBar
-        card={card}
-        status='EDITING'
-        setStatus={setStatus}
-        questionBlocks={questionBlocks}
-        answerBlocks={answerBlocks}
-      />
+      <Space padding='.5rem 0' />
+      <CardToolBar card={card} status='EDITING' />
     </Container>
   )
 }
 
-const Container = styled.div``
+const Container = styled.div`
+  padding: 0 0.5rem 0.5rem 0.5rem;
+`
 
 const Section = styled.div`
   margin: 1rem 0;

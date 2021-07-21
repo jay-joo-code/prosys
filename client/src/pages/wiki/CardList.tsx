@@ -8,12 +8,17 @@ interface CardListProps {
 }
 
 const CardList = ({ selectedTagIds }: CardListProps) => {
-  const { cards } = useCards(selectedTagIds)
+  const { cards, refetch: refetchCards } = useCards(selectedTagIds)
 
   return (
     <Container>
       {cards?.map((card) => (
-        <CardItem key={card?._id} card={card} initStatus='COLLAPSED' />
+        <CardItem
+          key={card?._id}
+          card={card}
+          initStatus='COLLAPSED'
+          refetchCards={refetchCards}
+        />
       ))}
     </Container>
   )
