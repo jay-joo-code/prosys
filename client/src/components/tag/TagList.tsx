@@ -23,7 +23,7 @@ const TagList = ({
     if (setSelectedTagIds) {
       if (selectedTagIds.includes(tid)) {
         // unselect
-        setSelectedTagIds((ids) => {
+        setSelectedTagIds((ids: string[] | undefined) => {
           if (ids) {
             const newIds = [...ids]
             newIds.splice(newIds.indexOf(tid), 1)

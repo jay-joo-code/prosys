@@ -8,14 +8,16 @@ const AceEditor = React.lazy(() => import('src/components/AceEditorComponent'))
 interface CodeBlockProps {
   idx: number
   value: string
-  setBlocks?: React.Dispatch<React.SetStateAction<ICodableTextareaBlock[]>>
+  setBlocks?: React.Dispatch<
+    React.SetStateAction<ICodableTextareaBlock[] | undefined>
+  >
 }
 
 const CodeBlock = ({ idx, value, setBlocks }: CodeBlockProps) => {
   const handleChange = (newValue: string) => {
     if (setBlocks) {
       setBlocks((blocks) =>
-        blocks.map((block, i) =>
+        blocks?.map((block, i) =>
           idx === i ? { type: 'CODE', value: newValue } : block
         )
       )

@@ -8,7 +8,9 @@ import Textarea from './Textarea'
 interface TextareaBlockProps {
   idx: number
   value: string
-  setBlocks?: React.Dispatch<React.SetStateAction<ICodableTextareaBlock[]>>
+  setBlocks?: React.Dispatch<
+    React.SetStateAction<ICodableTextareaBlock[] | undefined>
+  >
 }
 
 const TextareaBlock = ({ idx, value, setBlocks }: TextareaBlockProps) => {
@@ -17,7 +19,7 @@ const TextareaBlock = ({ idx, value, setBlocks }: TextareaBlockProps) => {
   const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (setBlocks) {
       setBlocks((blocks) =>
-        blocks.map((block, i) =>
+        blocks?.map((block, i) =>
           idx === i ? { type: 'TEXT', value: event.target.value } : block
         )
       )
@@ -33,7 +35,7 @@ const TextareaBlock = ({ idx, value, setBlocks }: TextareaBlockProps) => {
         event.stopImmediatePropagation()
         event.preventDefault()
         setBlocks((blocks) => [
-          ...blocks,
+          ...(blocks || []),
           {
             type: 'CODE',
             value: '',
@@ -44,7 +46,7 @@ const TextareaBlock = ({ idx, value, setBlocks }: TextareaBlockProps) => {
         event.stopImmediatePropagation()
         event.preventDefault()
         setBlocks((blocks) => [
-          ...blocks,
+          ...(blocks || []),
           {
             type: 'TEXT',
             value: '',

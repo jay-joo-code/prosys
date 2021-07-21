@@ -7,7 +7,9 @@ import styled from 'styled-components'
 interface BlockWrapperProps {
   idx: number
   isCodeBlock: boolean
-  setBlocks?: React.Dispatch<React.SetStateAction<ICodableTextareaBlock[]>>
+  setBlocks?: React.Dispatch<
+    React.SetStateAction<ICodableTextareaBlock[] | undefined>
+  >
   children: React.ReactNode
 }
 
@@ -19,7 +21,7 @@ const BlockWrapper = ({
 }: BlockWrapperProps) => {
   const handleClose = () => {
     if (setBlocks) {
-      setBlocks((blocks) => blocks.filter((block, i) => i !== idx))
+      setBlocks((blocks) => blocks?.filter((block, i) => i !== idx))
     }
   }
 

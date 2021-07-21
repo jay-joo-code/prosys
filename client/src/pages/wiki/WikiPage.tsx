@@ -13,7 +13,7 @@ import CardList from './CardList'
 
 const WikiPage = () => {
   const { tags } = useTags()
-  const [selectedTagIds, setSelectedTagIds] = useState<string[]>([])
+  const [selectedTagIds, setSelectedTagIds] = useState<string[] | undefined>([])
   const { createCard } = useCreateCard()
 
   const handleCreateCard = () => {
@@ -29,19 +29,21 @@ const WikiPage = () => {
     <PageContainer>
       <NavHeader inboxState='CREATE' />
       <TopRow>
-        <TagList
-          tags={tags || []}
-          selectedTagIds={selectedTagIds}
-          setSelectedTagIds={setSelectedTagIds}
-          isCreate
-        />
+        {selectedTagIds && (
+          <TagList
+            tags={tags || []}
+            selectedTagIds={selectedTagIds}
+            setSelectedTagIds={setSelectedTagIds}
+            isCreate
+          />
+        )}
       </TopRow>
       <BottomRow justifyEnd>
         <Button onClick={handleCreateCard} startIcon={<AddOutlinedIcon />}>
           New card
         </Button>
       </BottomRow>
-      <CardList selectedTagIds={selectedTagIds} />
+      {selectedTagIds && <CardList selectedTagIds={selectedTagIds} />}
     </PageContainer>
   )
 }
