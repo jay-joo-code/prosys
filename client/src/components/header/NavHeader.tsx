@@ -121,12 +121,12 @@ const Container = styled.div`
   -ms-overflow-style: none; /* Internet Explorer 10+ */
   scrollbar-width: none; /* Firefox */
 
-  & > * {
-    margin-right: 0.5rem;
-  }
-
   &::-webkit-scrollbar {
     display: none; /* Safari and Chrome */
+  }
+
+  & > * {
+    margin-right: 0.5rem;
   }
 `
 
