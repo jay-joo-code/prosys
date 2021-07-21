@@ -6,7 +6,9 @@ import TextareaBlock from './TextareaBlock'
 
 interface CodableTextareaProps {
   blocks: ICodableTextareaBlock[]
-  setBlocks?: React.Dispatch<React.SetStateAction<ICodableTextareaBlock[]>>
+  setBlocks?: React.Dispatch<
+    React.SetStateAction<ICodableTextareaBlock[] | undefined>
+  >
 }
 
 const CodableTextarea = ({ blocks, setBlocks }: CodableTextareaProps) => {

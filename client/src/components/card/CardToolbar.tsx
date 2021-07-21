@@ -17,7 +17,7 @@ interface CardToolBarProps {
 }
 
 const CardToolBar = ({ card, status }: CardToolBarProps) => {
-  const [selectedTagIds, setSelectedTagIds] = useState<string[]>([])
+  const [selectedTagIds, setSelectedTagIds] = useState<string[]>()
   const { tags } = useTags()
   const { updateCard } = useUpdateCardById(card?._id, {
     isNotUpdateLocal: true,
@@ -40,13 +40,17 @@ const CardToolBar = ({ card, status }: CardToolBarProps) => {
 
   return (
     <Container>
-      <TagList
-        isCreate={status === 'EDITING'}
-        isFiltered={status !== 'EDITING'}
-        tags={tags || []}
-        selectedTagIds={selectedTagIds}
-        setSelectedTagIds={status === 'EDITING' ? setSelectedTagIds : undefined}
-      />
+      {selectedTagIds && (
+        <TagList
+          isCreate={status === 'EDITING'}
+          isFiltered={status !== 'EDITING'}
+          tags={tags || []}
+          selectedTagIds={selectedTagIds}
+          setSelectedTagIds={
+            status === 'EDITING' ? setSelectedTagIds : undefined
+          }
+        />
+      )}
       <Space padding='.3rem 0' />
       <InfoTextContainer>
         {card?.repAt &&

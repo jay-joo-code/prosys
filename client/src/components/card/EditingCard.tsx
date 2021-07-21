@@ -22,10 +22,12 @@ const EditingCard = ({
   setStatus,
   refetchCards,
 }: EditingCardProps) => {
-  const [questionBlocks, setQuestionBlocks] = useState<ICodableTextareaBlock[]>(
-    []
-  )
-  const [answerBlocks, setAnswerBlocks] = useState<ICodableTextareaBlock[]>([])
+  const [questionBlocks, setQuestionBlocks] = useState<
+    ICodableTextareaBlock[] | undefined
+  >()
+  const [answerBlocks, setAnswerBlocks] = useState<
+    ICodableTextareaBlock[] | undefined
+  >()
 
   useEffect(() => {
     setQuestionBlocks(card?.question)
@@ -41,38 +43,64 @@ const EditingCard = ({
   const [debouncedAnswer] = useDebounce(answerBlocks, 500)
 
   useEffect(() => {
-    updateCard({
-      question: debouncedQuestion,
-    })
+    if (debouncedQuestion) {
+      updateCard({
+        question: debouncedQuestion,
+      })
+    }
   }, [debouncedQuestion])
 
   useEffect(() => {
-    updateCard({
-      answer: debouncedAnswer,
-    })
+    return () => {
+      updateCard({
+        question: questionBlocks,
+      })
+    }
+  }, [questionBlocks])
+
+  useEffect(() => {
+    if (debouncedAnswer) {
+      updateCard({
+        answer: debouncedAnswer,
+      })
+    }
   }, [debouncedAnswer])
+
+  useEffect(() => {
+    return () => {
+      updateCard({
+        answer: answerBlocks,
+      })
+    }
+  }, [answerBlocks])
 
   return (
     <Container>
       <Section>
-        <CardActionButtons
-          card={card}
-          status={status}
-          setStatus={setStatus}
-          questionBlocks={questionBlocks}
-          refetchCards={refetchCards}
-        />
+        {questionBlocks && (
+          <CardActionButtons
+            card={card}
+            status={status}
+            setStatus={setStatus}
+            questionBlocks={questionBlocks}
+            refetchCards={refetchCards}
+          />
+        )}
       </Section>
       <Section>
         <SectionTitle variant='h4'>Question</SectionTitle>
-        <CodableTextarea
-          blocks={questionBlocks}
-          setBlocks={setQuestionBlocks}
-        />
+        {questionBlocks && setQuestionBlocks && (
+          <CodableTextarea
+            blocks={questionBlocks}
+            setBlocks={setQuestionBlocks}
+          />
+        )}
       </Section>
       <Section>
         <SectionTitle variant='h4'>Answer</SectionTitle>
-        <CodableTextarea blocks={answerBlocks} setBlocks={setAnswerBlocks} />
+        {answerBlocks && setAnswerBlocks && (
+          <CodableTextarea blocks={answerBlocks} setBlocks={setAnswerBlocks} />
+        )}
       </Section>
       <Space padding='.5rem 0' />
       <CardToolBar card={card} status='EDITING' />

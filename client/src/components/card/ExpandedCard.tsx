@@ -34,6 +34,8 @@ const ExpandedCard = ({
   const { updateCard } = useUpdateCardById(card?._id)
   const isMobile = useIsMobile()
 
+  console.log('card', card)
+
   const handleOutsideClick = () => {
     if (!isLearning) setStatus('COLLAPSED')
   }

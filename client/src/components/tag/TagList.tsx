@@ -7,7 +7,7 @@ import ScrollContainer from 'react-indiana-drag-scroll'
 interface TagListProps {
   tags: ITag[]
   selectedTagIds: string[]
-  setSelectedTagIds?: React.Dispatch<React.SetStateAction<string[]>>
+  setSelectedTagIds?: React.Dispatch<React.SetStateAction<string[] | undefined>>
   isCreate?: boolean
   isFiltered?: boolean
 }
@@ -24,13 +24,16 @@ const TagList = ({
       if (selectedTagIds.includes(tid)) {
         // unselect
         setSelectedTagIds((ids) => {
-          const newIds = [...ids]
-          newIds.splice(newIds.indexOf(tid), 1)
-          return newIds
+          if (ids) {
+            const newIds = [...ids]
+            newIds.splice(newIds.indexOf(tid), 1)
+            return newIds
+          }
+          return ids
         })
       } else {
         // select
-        setSelectedTagIds((ids) => [...ids, tid])
+        setSelectedTagIds((ids) => ids && [...ids, tid])
       }
     }
   }
