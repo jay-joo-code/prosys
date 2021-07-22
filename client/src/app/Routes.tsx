@@ -5,18 +5,14 @@ import useIsMobile from 'src/hooks/useIsMobile'
 import { IRootState } from 'src/types/redux.type'
 
 const Home = React.lazy(() => import('src/pages/home/Home'))
+const MobileBlock = React.lazy(
+  () => import('src/pages/mobile-block/MobileBlock')
+)
 const AuthCallback = React.lazy(
   () => import('src/pages/auth-callback/AuthCallback')
 )
 const Login = React.lazy(() => import('src/pages/login/Login'))
 const Logout = React.lazy(() => import('src/pages/logout/Logout'))
-const MobileBlock = React.lazy(
-  () => import('src/pages/mobile-block/MobileBlock')
-)
-const FormTest = React.lazy(() => import('src/pages/form-test/FormTest'))
-const DesignSystem = React.lazy(
-  () => import('src/pages/design-system/DesignSystem')
-)
 const InboxPage = React.lazy(() => import('src/pages/inbox/InboxPage'))
 const ArchivePage = React.lazy(() => import('src/pages/archive/ArchivePage'))
 const SpacedRepPage = React.lazy(
@@ -69,24 +65,6 @@ export const routes: IRoute[] = [
     path: '/mobile-block',
     component: MobileBlock,
     label: 'MobileBlock',
-    isPublicNav: false,
-    isPrivateNav: false,
-    isPrivateRoute: false,
-    isDesktopOnly: false,
-  },
-  {
-    path: '/form-test',
-    component: FormTest,
-    label: 'FormTest',
-    isPublicNav: false,
-    isPrivateNav: false,
-    isPrivateRoute: false,
-    isDesktopOnly: false,
-  },
-  {
-    path: '/design-system',
-    component: DesignSystem,
-    label: 'Design System',
     isPublicNav: false,
     isPrivateNav: false,
     isPrivateRoute: false,
