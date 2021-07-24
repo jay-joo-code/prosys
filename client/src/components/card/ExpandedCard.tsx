@@ -1,10 +1,11 @@
 import ArrowBackIcon from '@material-ui/icons/ArrowBack'
-import LoopOutlinedIcon from '@material-ui/icons/LoopOutlined'
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward'
+import LoopOutlinedIcon from '@material-ui/icons/LoopOutlined'
 import React from 'react'
 import { useDispatch } from 'react-redux'
 import { useUpdateAndDequeCardById, useUpdateCardById } from 'src/api/card'
 import theme from 'src/app/theme'
+import useIsMobile from 'src/hooks/useIsMobile'
 import { showSnackbar } from 'src/redux/snackbarSlice'
 import { ICard, ICardStatus } from 'src/types/card.type'
 import styled from 'styled-components'
@@ -14,7 +15,6 @@ import { FlexRow } from '../layout/Flex'
 import OutsideClickListener from '../util/OutsideClickListener'
 import CardActionButtons from './CardActionButtons'
 import CardToolBar from './CardToolbar'
-import useIsMobile from 'src/hooks/useIsMobile'
 
 interface ExpandedCardProps {
   card: ICard
@@ -87,15 +87,6 @@ const ExpandedCard = ({
     }
   }
 
-  const flipButton = (
-    <FlipButton onClick={flipCard}>
-      <LoopOutlinedIcon />
-      <Text variant='p' fontWeight={700} color={theme.text.muted}>
-        Flip
-      </Text>
-    </FlipButton>
-  )
-
   return (
     <OutsideClickListener onOutsideClick={handleOutsideClick}>
       <Container>
@@ -114,7 +105,14 @@ const ExpandedCard = ({
               </div>
             </FlexRow>
           </RepButtonContainer>
-          {!isMobile && flipButton}
+          <FlipButton onClick={flipCard}>
+            <LoopOutlinedIcon />
+            {!isMobile && (
+              <FlipLabel variant='p' fontWeight={700} color={theme.text.muted}>
+                Flip
+              </FlipLabel>
+            )}
+          </FlipButton>
           <RepButtonContainer onClick={handleDoubleRep}>
             <FlexRow alignStart>
               <div>
@@ -133,7 +131,6 @@ const ExpandedCard = ({
           </RepButtonContainer>
         </LearnSection>
         <Content>
-          <FlexRow justifyCenter>{isMobile && flipButton}</FlexRow>
           <CodableTextarea
             blocks={status === 'EXPANDED' ? card?.question : card?.answer}
           />
@@ -183,19 +180,23 @@ const RepButtonContainer = styled.div`
 const FlipButton = styled.div`
   display: flex;
   align-items: center;
-  padding: 0.2rem 0.7rem 0.2rem 0.4rem;
+  padding: 0.2rem 0.4rem;
   border-radius: 8px;
   cursor: pointer;
   background: ${(props) => props.theme.grey[100]};
 
   & svg {
-    margin-right: 0.5rem;
     fill: ${(props) => props.theme.grey[500]};
   }
 
   &:hover {
     background: ${(props) => props.theme.grey[200]};
   }
+`
+
+const FlipLabel = styled(Text)`
+  margin-left: 0.5rem;
+  margin-right: 0.3rem;
 `
 
 export default ExpandedCard
