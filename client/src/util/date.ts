@@ -12,7 +12,7 @@ export const isDateBeforeToday = (date: Date): boolean => {
 
 export const getDateStamp = (date: Date | null): string => {
   if (!date) return ''
-  return moment(date).format('MM.DD')
+  return moment(date).format('MM/DD')
 }
 
 export const getDay = (date: Date) => {

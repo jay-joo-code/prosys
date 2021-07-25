@@ -98,7 +98,7 @@ interface isCompleteCheckboxProps {
 }
 
 const IsCompleteCheckbox = styled.div<isCompleteCheckboxProps>`
-  border: 2px solid ${(props) => props.theme.border.default};
+  border: 2px solid ${(props) => props.theme.grey[400]};
   border-radius: 50%;
   height: 15px;
   width: 15px;
@@ -107,7 +107,7 @@ const IsCompleteCheckbox = styled.div<isCompleteCheckboxProps>`
   background: ${(props) => props.isComplete && props.theme.brand[300]};
 
   // isInverted
-  border-color: ${(props) => props.isInverted && props.theme.bg.default};
+  border-color: ${(props) => props.isInverted && props.theme.grey[500]};
 `
 
 const StyledLoopIcon = styled(LoopIcon)`

@@ -16,6 +16,7 @@ import { IInboxState, ITask } from 'src/types/task.type'
 import { getDateStamp, getDay } from 'src/util/date'
 import { isTaskTimeSet } from 'src/util/task'
 import styled from 'styled-components'
+import { FlexRow } from './layout/Flex'
 
 interface TaskListProps {
   focusId: string | undefined
@@ -208,13 +209,15 @@ const TaskList = ({
         return (
           <div key={`${task?._id}${new Date(task?.createdAt).getTime()}`}>
             {isInbox && renderDateStamp && (
-              <>
-                <Space padding='.5rem 0' />
-                <Text variant='h4' color={theme.text.light}>
+              <DateHeader>
+                <Text variant='h3' color={theme.text.light} fontWeight={700}>
                   {task?.due ? getDateStamp(task?.due) : 'Backlog'}{' '}
+                </Text>
+                <Space padding='0 .3rem' />
+                <Text variant='h3' color={theme.text.muted} fontWeight={700}>
                   {task?.due && getDay(task?.due)}
                 </Text>
-              </>
+              </DateHeader>
             )}
             {renderDividingSpace && <Space padding='.5rem 0' />}
             <TaskItem
@@ -237,6 +240,10 @@ const TaskList = ({
 
 const Container = styled.div`
   width: 100%;
+`
+
+const DateHeader = styled(FlexRow)`
+  margin: 1.5rem 0 0.3rem 0;
 `
 
 export default TaskList

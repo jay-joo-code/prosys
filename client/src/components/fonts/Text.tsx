@@ -11,37 +11,21 @@ interface TextProps extends CoreTextProps {
 const Text = ({ variant, children, ...rest }: TextProps) => {
   switch (variant) {
     case 'h1':
-      return (
-        <H1 {...rest}>{children}</H1>
-      )
+      return <H1 {...rest}>{children}</H1>
     case 'h2':
-      return (
-        <H2 {...rest}>{children}</H2>
-      )
+      return <H2 {...rest}>{children}</H2>
     case 'h3':
-      return (
-        <H3 {...rest}>{children}</H3>
-      )
+      return <H3 {...rest}>{children}</H3>
     case 'h4':
-      return (
-        <H4 {...rest}>{children}</H4>
-      )
+      return <H4 {...rest}>{children}</H4>
     case 'h5':
-      return (
-        <H5 {...rest}>{children}</H5>
-      )
+      return <H5 {...rest}>{children}</H5>
     case 'h6':
-      return (
-        <H6 {...rest}>{children}</H6>
-      )
+      return <H6 {...rest}>{children}</H6>
     case 'h7':
-      return (
-        <H7 {...rest}>{children}</H7>
-      )
+      return <H7 {...rest}>{children}</H7>
     case 'p':
-      return (
-        <P {...rest}>{children}</P>
-      )
+      return <P {...rest}>{children}</P>
   }
 }
 
@@ -62,7 +46,7 @@ const CoreText = styled.p<CoreTextProps>`
   word-break: break-word;
   font-weight: 400;
   line-height: 1.5;
-  letter-spacing: .5px;
+  letter-spacing: 0.5px;
 
   // ellipsis
   text-overflow: ${(props) => (props.ellipsis ? 'ellipsis' : '')};
@@ -73,16 +57,17 @@ const CoreText = styled.p<CoreTextProps>`
   white-space: ${(props) => (props.nowrap ? 'nowrap' : '')};
 
   // color
-  color: ${(props) => (props.color && props.color)};
+  color: ${(props) => props.color && props.color};
 
   // fontWeight
-  font-weight: ${(props) => (props.fontWeight && props.fontWeight)};
+  font-weight: ${(props) =>
+    props.fontWeight && `${props.fontWeight} !important`};
 
   // maxWidth
   max-width: ${(props) => (props.maxWidth ? `${props.maxWidth}px` : '')};
 
   // margin
-  margin: ${(props) => props.margin ? props.margin : ''};
+  margin: ${(props) => (props.margin ? props.margin : '')};
 
   // uppercase
   text-transform: ${(props) => props.uppercase && 'uppercase'};
@@ -114,7 +99,7 @@ export const H2 = styled(CoreText)`
 `
 
 export const H3 = styled(CoreText)`
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 500;
 `
 
