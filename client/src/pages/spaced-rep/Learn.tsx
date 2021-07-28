@@ -23,7 +23,6 @@ const Learn = () => {
         <CardItem
           card={cards[0]}
           initStatus='EXPANDED'
-          isLearning
           refetchCards={refetchCards}
         />
       ) : (

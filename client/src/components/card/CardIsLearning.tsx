@@ -1,6 +1,9 @@
 import React from 'react'
-import { useUpdateCardById } from 'src/api/card'
+import { useUpdateAndDequeCardById, useUpdateCardById } from 'src/api/card'
 import styled from 'styled-components'
+import useIsSpacedRep from 'src/hooks/useIsSpacedRep'
+import { useDispatch } from 'react-redux'
+import { showSnackbar } from 'src/redux/snackbarSlice'
 
 interface CardIsLearningProps {
   cid: string
@@ -9,12 +12,30 @@ interface CardIsLearningProps {
 
 const CardIsLearning = ({ cid, isLearning }: CardIsLearningProps) => {
   const { updateCard } = useUpdateCardById(cid)
+  const { updateAndDequeCard } = useUpdateAndDequeCardById(cid)
+  const isSpacedRep = useIsSpacedRep()
+  const dispatch = useDispatch()
+
   const handleClick = (event: React.MouseEvent) => {
     event.stopPropagation()
-    updateCard({
-      _id: cid,
-      isLearning: !isLearning,
-    })
+    if (isSpacedRep) {
+      updateAndDequeCard({
+        _id: cid,
+        isLearning: false,
+      })
+
+      dispatch(
+        showSnackbar({
+          type: 'success',
+          message: 'Archived card.',
+        })
+      )
+    } else {
+      updateCard({
+        _id: cid,
+        isLearning: !isLearning,
+      })
+    }
   }
 
   return (

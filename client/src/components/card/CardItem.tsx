@@ -10,15 +10,9 @@ interface CardItemProps {
   card: ICard
   initStatus: ICardStatus
   refetchCards: () => void
-  isLearning?: boolean
 }
 
-const CardItem = ({
-  card,
-  initStatus,
-  isLearning,
-  refetchCards,
-}: CardItemProps) => {
+const CardItem = ({ card, initStatus, refetchCards }: CardItemProps) => {
   const canSave = !isBlocksEmpty(card?.question)
   const [status, setStatus] = useState<ICardStatus>(
     canSave ? initStatus || 'COLLAPSED' : 'EDITING'
@@ -39,12 +33,7 @@ const CardItem = ({
         )
       case 'EXPANDED':
         return (
-          <ExpandedCard
-            card={card}
-            status={status}
-            setStatus={setStatus}
-            isLearning={isLearning}
-          />
+          <ExpandedCard card={card} status={status} setStatus={setStatus} />
         )
       case 'FLIPPED':
         return (

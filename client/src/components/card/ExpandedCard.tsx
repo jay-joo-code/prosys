@@ -6,6 +6,8 @@ import { useDispatch } from 'react-redux'
 import { useUpdateAndDequeCardById, useUpdateCardById } from 'src/api/card'
 import theme from 'src/app/theme'
 import useIsMobile from 'src/hooks/useIsMobile'
+import useIsSpacedRep from 'src/hooks/useIsSpacedRep'
+import useKeypress from 'src/hooks/useKeyPress'
 import { showSnackbar } from 'src/redux/snackbarSlice'
 import { ICard, ICardStatus } from 'src/types/card.type'
 import styled from 'styled-components'
@@ -20,22 +22,17 @@ interface ExpandedCardProps {
   card: ICard
   status: ICardStatus
   setStatus: React.Dispatch<React.SetStateAction<ICardStatus>>
-  isLearning?: boolean
 }
 
-const ExpandedCard = ({
-  card,
-  status,
-  setStatus,
-  isLearning,
-}: ExpandedCardProps) => {
+const ExpandedCard = ({ card, status, setStatus }: ExpandedCardProps) => {
   const dispatch = useDispatch()
   const { updateAndDequeCard } = useUpdateAndDequeCardById(card?._id)
   const { updateCard } = useUpdateCardById(card?._id)
   const isMobile = useIsMobile()
+  const isSpacedRep = useIsSpacedRep()
 
   const handleOutsideClick = () => {
-    if (!isLearning) setStatus('COLLAPSED')
+    if (!isSpacedRep) setStatus('COLLAPSED')
   }
 
   const handleRepeatRep = () => {
@@ -44,7 +41,7 @@ const ExpandedCard = ({
       repAt: new Date().setDate(new Date().getDate() + card?.repSpace),
       repCount: card?.repCount + 1,
     }
-    if (isLearning) {
+    if (isSpacedRep) {
       updateAndDequeCard(updateObj)
     } else {
       updateCard(updateObj)
@@ -64,7 +61,7 @@ const ExpandedCard = ({
       repAt: new Date().setDate(new Date().getDate() + card?.repSpace * 2),
       repCount: card?.repCount + 1,
     }
-    if (isLearning) {
+    if (isSpacedRep) {
       updateAndDequeCard(updateObj)
     } else {
       updateCard(updateObj)
@@ -86,6 +83,24 @@ const ExpandedCard = ({
       setStatus('EXPANDED')
     }
   }
+
+  useKeypress('ArrowRight', (event) => {
+    if (isSpacedRep) {
+      event.stopPropagation()
+      event.stopImmediatePropagation()
+      event.preventDefault()
+      handleDoubleRep()
+    }
+  })
+
+  useKeypress('ArrowLeft', (event) => {
+    if (isSpacedRep) {
+      event.stopPropagation()
+      event.stopImmediatePropagation()
+      event.preventDefault()
+      handleRepeatRep()
+    }
+  })
 
   return (
     <OutsideClickListener onOutsideClick={handleOutsideClick}>
