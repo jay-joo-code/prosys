@@ -1,4 +1,4 @@
-import React, { memo, useState } from 'react'
+import React, { useState } from 'react'
 import { ICard, ICardStatus } from 'src/types/card.type'
 import { isBlocksEmpty } from 'src/util/card'
 import styled from 'styled-components'
@@ -51,4 +51,4 @@ const Container = styled.div`
   margin-bottom: 1rem;
 `
 
-export default memo(CardItem)
+export default CardItem
