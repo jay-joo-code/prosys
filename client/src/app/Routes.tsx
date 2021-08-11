@@ -3,6 +3,11 @@ import { useSelector } from 'react-redux'
 import { Redirect, Route, Switch } from 'react-router-dom'
 import useIsMobile from 'src/hooks/useIsMobile'
 import { IRootState } from 'src/types/redux.type'
+import InboxOutlinedIcon from '@material-ui/icons/InboxOutlined'
+import FolderOutlinedIcon from '@material-ui/icons/FolderOutlined'
+import SchoolOutlinedIcon from '@material-ui/icons/SchoolOutlined'
+import LibraryBooksOutlinedIcon from '@material-ui/icons/LibraryBooksOutlined'
+import HourglassEmptyOutlinedIcon from '@material-ui/icons/HourglassEmptyOutlined'
 
 const Home = React.lazy(() => import('src/pages/home/Home'))
 const MobileBlock = React.lazy(
@@ -15,6 +20,7 @@ const Login = React.lazy(() => import('src/pages/login/Login'))
 const Logout = React.lazy(() => import('src/pages/logout/Logout'))
 const InboxPage = React.lazy(() => import('src/pages/inbox/InboxPage'))
 const ArchivePage = React.lazy(() => import('src/pages/archive/ArchivePage'))
+const JournalPage = React.lazy(() => import('src/pages/journal/JournalPage'))
 const SpacedRepPage = React.lazy(
   () => import('src/pages/spaced-rep/SpacedRepPage')
 )
@@ -28,6 +34,7 @@ interface IRoute {
   isPrivateNav: boolean
   isPrivateRoute: boolean
   isDesktopOnly: boolean
+  icon?: React.ReactNode
 }
 
 export const routes: IRoute[] = [
@@ -75,36 +82,50 @@ export const routes: IRoute[] = [
     component: InboxPage,
     label: 'Inbox',
     isPublicNav: false,
-    isPrivateNav: false,
+    isPrivateNav: true,
     isPrivateRoute: true,
     isDesktopOnly: false,
+    icon: <InboxOutlinedIcon />,
   },
   {
     path: '/archive',
     component: ArchivePage,
     label: 'Archive',
     isPublicNav: false,
-    isPrivateNav: false,
+    isPrivateNav: true,
     isPrivateRoute: true,
-    isDesktopOnly: true,
+    isDesktopOnly: false,
+    icon: <FolderOutlinedIcon />,
+  },
+  {
+    path: '/journal',
+    component: JournalPage,
+    label: 'Journal',
+    isPublicNav: false,
+    isPrivateNav: true,
+    isPrivateRoute: true,
+    isDesktopOnly: false,
+    icon: <HourglassEmptyOutlinedIcon />,
   },
   {
     path: '/spaced-rep',
     component: SpacedRepPage,
     label: 'Spaced Repetition',
     isPublicNav: false,
-    isPrivateNav: false,
+    isPrivateNav: true,
     isPrivateRoute: true,
     isDesktopOnly: false,
+    icon: <SchoolOutlinedIcon />,
   },
   {
     path: '/wiki',
     component: WikiPage,
     label: 'Wiki',
     isPublicNav: false,
-    isPrivateNav: false,
+    isPrivateNav: true,
     isPrivateRoute: true,
     isDesktopOnly: false,
+    icon: <LibraryBooksOutlinedIcon />,
   },
   {
     path: '/',

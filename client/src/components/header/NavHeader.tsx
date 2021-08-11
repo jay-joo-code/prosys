@@ -3,10 +3,6 @@ import styled from 'styled-components'
 import Text from '../fonts/Text'
 import useRouter from 'src/hooks/useRouter'
 import { Link } from 'react-router-dom'
-import InboxOutlinedIcon from '@material-ui/icons/InboxOutlined'
-import FolderOutlinedIcon from '@material-ui/icons/FolderOutlined'
-import SchoolOutlinedIcon from '@material-ui/icons/SchoolOutlined'
-import LibraryBooksOutlinedIcon from '@material-ui/icons/LibraryBooksOutlined'
 import useKeypress from 'src/hooks/useKeyPress'
 import { IInboxState } from 'src/types/task.type'
 import useIsInbox from 'src/hooks/useIsInbox'
@@ -16,18 +12,20 @@ import useIsWiki from 'src/hooks/useIsWiki'
 import useIsCreateCard from 'src/hooks/useIsCreateCard'
 import { useDispatch } from 'react-redux'
 import { toggleHide } from 'src/redux/appSlice'
+import useIsJournal from 'src/hooks/useIsJournal'
+import { routes } from 'src/app/Routes'
 
 interface NavHeaderProps {
   inboxState: IInboxState
 }
 
 const NavHeader = ({ inboxState }: NavHeaderProps) => {
-  const { push } = useRouter()
+  const { push, pathname } = useRouter()
   const isInbox = useIsInbox()
   const isArchive = useIsArchive()
   const isSpacedRep = useIsSpacedRep()
   const isWiki = useIsWiki()
-  const isCreateCard = useIsCreateCard()
+  const isJournal = useIsJournal()
   const dispatch = useDispatch()
 
   useKeypress('Tab', (event) => {
@@ -36,28 +34,23 @@ const NavHeader = ({ inboxState }: NavHeaderProps) => {
       event.stopImmediatePropagation()
       event.preventDefault()
 
+      const paths = routes
+        ?.filter((route) => route?.isPrivateNav)
+        ?.map((route) => route.path)
+
       if (event.shiftKey) {
-        // backward navigation
-        if (isInbox) {
-          push('/wiki')
-        } else if (isArchive) {
-          push('/inbox')
-        } else if (isSpacedRep) {
-          push('/archive')
-        } else if (isWiki) {
-          push('/spaced-rep')
-        }
+        const nextPathIdx =
+          paths.indexOf(pathname) - 1 >= 0
+            ? paths.indexOf(pathname) - 1
+            : paths?.length - 1
+        push(paths[nextPathIdx])
       } else {
-        // forward navigation
-        if (isInbox) {
-          push('/archive')
-        } else if (isArchive) {
-          push('/spaced-rep')
-        } else if (isSpacedRep) {
-          push('/wiki')
-        } else if (isWiki) {
-          push('/inbox')
-        }
+        const nextPathIdx =
+          paths.indexOf(pathname) + 1 < paths?.length
+            ? paths.indexOf(pathname) + 1
+            : 0
+        console.log('nextPathIdx', nextPathIdx)
+        push(paths[nextPathIdx])
       }
     }
   })
@@ -77,38 +70,18 @@ const NavHeader = ({ inboxState }: NavHeaderProps) => {
 
   return (
     <Container>
-      <Link to='/inbox'>
-        <NavItem isSelected={isInbox}>
-          <InboxOutlinedIcon />
-          <Label variant='h5' isSelected={isInbox}>
-            Inbox
-          </Label>
-        </NavItem>
-      </Link>
-      <Link to='/archive'>
-        <NavItem isSelected={isArchive}>
-          <FolderOutlinedIcon />
-          <Label variant='h5' isSelected={isArchive}>
-            Archive
-          </Label>
-        </NavItem>
-      </Link>
-      <Link to='/spaced-rep'>
-        <NavItem isSelected={isSpacedRep}>
-          <SchoolOutlinedIcon />
-          <Label variant='h5' isSelected={isSpacedRep}>
-            Spaced Repetition
-          </Label>
-        </NavItem>
-      </Link>
-      <Link to='/wiki'>
-        <NavItem isSelected={isWiki || isCreateCard}>
-          <LibraryBooksOutlinedIcon />
-          <Label variant='h5' isSelected={isWiki || isCreateCard}>
-            Wiki
-          </Label>
-        </NavItem>
-      </Link>
+      {routes
+        ?.filter((route) => route?.isPrivateNav)
+        .map(({ path, icon, label }) => (
+          <Link key={path} to={path}>
+            <NavItem isSelected={pathname === path}>
+              {icon}
+              <Label variant='h5' isSelected={pathname === path}>
+                {label}
+              </Label>
+            </NavItem>
+          </Link>
+        ))}
     </Container>
   )
 }
