@@ -4,13 +4,13 @@ import { useUndoIsComplete } from 'src/api/task'
 import theme from 'src/app/theme'
 import Text from 'src/components/fonts/Text'
 import Space from 'src/components/layout/Space'
-import TaskItem from 'src/components/task-item/TaskItem'
 import useIsInbox from 'src/hooks/useIsInbox'
 import {
   default as useKeypress,
   default as useKeyPress,
 } from 'src/hooks/useKeyPress'
 import usePreviousValue from 'src/hooks/usePreviousValue'
+import TaskItem from 'src/pages/inbox/task-item/TaskItem'
 import { showSnackbar } from 'src/redux/snackbarSlice'
 import { IInboxState, ITask } from 'src/types/task.type'
 import { getDateStamp, getDay } from 'src/util/date'
@@ -51,21 +51,28 @@ const TaskList = ({
   // handle focusId missing in new tasks
   useEffect(() => {
     if (tasks && previousTasks) {
-      const currentIdx = tasks.findIndex((task) => task._id === focusId)
+      const currentIdx = tasks.findIndex(
+        (task) => task._id === focusId
+      )
       const previousIdx = previousTasks.findIndex(
         (task) => task._id === focusId
       )
       if (currentIdx === -1 && previousIdx !== -1) {
         const nearbyTask =
-          tasks[previousIdx] || tasks[previousIdx - 1] || tasks[previousIdx + 1]
+          tasks[previousIdx] ||
+          tasks[previousIdx - 1] ||
+          tasks[previousIdx + 1]
         setFocusId(nearbyTask?._id)
       }
     }
   }, [tasks, previousTasks])
 
   // store important idxes in local state
-  const [firstTaskOfDayIdxes, setFirstTaskOfDayIdxes] = useState<number[]>([])
-  const [dividerIdxes, setDividerIdxes] = useState<number[]>([])
+  const [firstTaskOfDayIdxes, setFirstTaskOfDayIdxes] =
+    useState<number[]>([])
+  const [dividerIdxes, setDividerIdxes] = useState<
+    number[]
+  >([])
 
   useEffect(() => {
     const newFirstTaskOfDayIdxes: number[] = []
@@ -74,9 +81,12 @@ const TaskList = ({
     tasks?.forEach((task, idx) => {
       const isDateStampIdx =
         idx === 0 ||
-        getDateStamp(task?.due) !== getDateStamp(tasks[idx - 1]?.due)
+        getDateStamp(task?.due) !==
+          getDateStamp(tasks[idx - 1]?.due)
       const isDividerIdx =
-        idx !== 0 && isTaskTimeSet(task) && !isTaskTimeSet(tasks[idx - 1])
+        idx !== 0 &&
+        isTaskTimeSet(task) &&
+        !isTaskTimeSet(tasks[idx - 1])
 
       if (isDateStampIdx) newFirstTaskOfDayIdxes.push(idx)
       if (isDividerIdx) newDividerIdxes.push(idx)
@@ -96,7 +106,9 @@ const TaskList = ({
       if ((event.metaKey || event.ctrlKey) && tasks) {
         // jump to first task of day
         let hasJumped = false
-        const focusIdx = tasks?.findIndex((task) => task?._id === focusId)
+        const focusIdx = tasks?.findIndex(
+          (task) => task?._id === focusId
+        )
         firstTaskOfDayIdxes.forEach((idx, i) => {
           if (!hasJumped && idx >= focusIdx) {
             const jumpIdx = firstTaskOfDayIdxes[i - 1 || 0]
@@ -107,7 +119,8 @@ const TaskList = ({
       } else if (event.altKey) {
         // move focus up by 2
         tasks?.forEach((task, idx) => {
-          const targetTask = tasks[idx - 2] || tasks[idx - 1]
+          const targetTask =
+            tasks[idx - 2] || tasks[idx - 1]
           if (task?._id === focusId && idx !== 0) {
             setFocusId(targetTask?._id)
           }
@@ -129,7 +142,9 @@ const TaskList = ({
       event.preventDefault()
       if ((event.metaKey || event.ctrlKey) && tasks) {
         let hasJumped = false
-        const focusIdx = tasks?.findIndex((task) => task?._id === focusId)
+        const focusIdx = tasks?.findIndex(
+          (task) => task?._id === focusId
+        )
         firstTaskOfDayIdxes.forEach((idx) => {
           if (!hasJumped && idx > focusIdx) {
             setFocusId(tasks[idx]?._id)
@@ -139,14 +154,21 @@ const TaskList = ({
       } else if (event.altKey) {
         // move focus down by 2
         tasks?.forEach((task, idx) => {
-          if (task?._id === focusId && idx + 1 !== tasks?.length) {
-            const targetTask = tasks[idx + 2] || tasks[idx + 1]
+          if (
+            task?._id === focusId &&
+            idx + 1 !== tasks?.length
+          ) {
+            const targetTask =
+              tasks[idx + 2] || tasks[idx + 1]
             setFocusId(targetTask?._id)
           }
         })
       } else {
         tasks?.forEach((task, idx) => {
-          if (task?._id === focusId && idx + 1 !== tasks?.length) {
+          if (
+            task?._id === focusId &&
+            idx + 1 !== tasks?.length
+          ) {
             setFocusId(tasks[idx + 1]?._id)
           }
         })
@@ -156,7 +178,10 @@ const TaskList = ({
 
   const focusNextTask = () => {
     tasks?.forEach((task, idx) => {
-      if (task?._id === focusId && idx + 1 !== tasks?.length) {
+      if (
+        task?._id === focusId &&
+        idx + 1 !== tasks?.length
+      ) {
         setFocusId(tasks[idx + 1]?._id)
       }
     })
@@ -178,7 +203,10 @@ const TaskList = ({
   const { undoIsComplete } = useUndoIsComplete()
   const dispatch = useDispatch()
   useKeypress(['z', 'ㅋ'], async (event) => {
-    if (inboxState === 'NAVIGATE' && (event.metaKey || event.ctrlKey)) {
+    if (
+      inboxState === 'NAVIGATE' &&
+      (event.metaKey || event.ctrlKey)
+    ) {
       event.stopPropagation()
       event.stopImmediatePropagation()
       event.preventDefault()
@@ -203,23 +231,38 @@ const TaskList = ({
   return (
     <Container>
       {tasks?.map((task, idx) => {
-        const renderDateStamp = firstTaskOfDayIdxes.includes(idx)
-        const renderDividingSpace = dividerIdxes.includes(idx)
+        const renderDateStamp =
+          firstTaskOfDayIdxes.includes(idx)
+        const renderDividingSpace =
+          dividerIdxes.includes(idx)
 
         return (
-          <div key={`${task?._id}${new Date(task?.createdAt).getTime()}`}>
+          <div
+            key={`${task?._id}${new Date(
+              task?.createdAt
+            ).getTime()}`}>
             {isInbox && renderDateStamp && (
               <DateHeader>
-                <Text variant='h3' color={theme.text.light} fontWeight={700}>
-                  {task?.due ? getDateStamp(task?.due) : 'Backlog'}{' '}
+                <Text
+                  variant='h3'
+                  color={theme.text.light}
+                  fontWeight={700}>
+                  {task?.due
+                    ? getDateStamp(task?.due)
+                    : 'Backlog'}{' '}
                 </Text>
                 <Space padding='0 .3rem' />
-                <Text variant='h3' color={theme.text.muted} fontWeight={700}>
+                <Text
+                  variant='h3'
+                  color={theme.text.muted}
+                  fontWeight={700}>
                   {task?.due && getDay(task?.due)}
                 </Text>
               </DateHeader>
             )}
-            {renderDividingSpace && <Space padding='.5rem 0' />}
+            {renderDividingSpace && (
+              <Space padding='.5rem 0' />
+            )}
             <TaskItem
               task={task}
               idx={idx}

@@ -1,0 +1,31 @@
+import React, { memo, useEffect, useState } from 'react'
+import { useDebounce } from 'use-debounce'
+import ResizedTextarea, { TextareaAutosizeProps } from 'react-textarea-autosize'
+
+interface DebouncedTextareaProps extends TextareaAutosizeProps {
+  onDebouncedChange: (value: string) => void
+  initValue?: string
+}
+
+const DebouncedTextarea = ({
+  initValue,
+  onDebouncedChange,
+  ...rest
+}: DebouncedTextareaProps) => {
+  const [value, setValue] = useState<string>(initValue || '')
+  const [debouncedValue] = useDebounce(value, 1000)
+
+  useEffect(() => {
+    onDebouncedChange(debouncedValue)
+  }, [debouncedValue])
+
+  return (
+    <ResizedTextarea
+      {...rest}
+      value={value}
+      onChange={(event) => setValue(event.target.value)}
+    />
+  )
+}
+
+export default memo(DebouncedTextarea)

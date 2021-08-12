@@ -7,7 +7,11 @@ import { showToast } from 'src/util/toast'
 
 const BASE_URL = '/api'
 
-const api = (method: 'get' | 'post' | 'put' | 'delete', url: string, variables: any) =>
+const api = (
+  method: 'get' | 'post' | 'put' | 'delete',
+  url: string,
+  variables: any
+) =>
   new Promise((resolve, reject) => {
     const { accessToken } = store.getState().authState
     const headers = {
@@ -27,8 +31,16 @@ const api = (method: 'get' | 'post' | 'put' | 'delete', url: string, variables: 
         resolve(response.data)
       },
       (error) => {
-        // TODO: refresh token handling
+        console.log('error?.response?.data', error?.response?.data)
         if (error.response) {
+          if (error?.response?.data === 'Google OAuth error') {
+            showToast({
+              id: 'google-session-expired',
+              variant: 'error',
+              msg: 'Google auth session expired',
+            })
+            history.push('/logout')
+          }
           const { code, message } = error.response.data
           if (code === 404) {
             if (message === 'Access token has expired') {

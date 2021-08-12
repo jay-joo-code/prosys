@@ -6,7 +6,7 @@ export interface ITask extends IDocument {
   startTime: string
   endTime: string
   name: string
-  due: Date | null
+  due: string | null
   notes: string
   isRecur: boolean
   isArchived: boolean
@@ -28,5 +28,6 @@ export type IInboxState =
   | 'EDIT_DUE'
 
 export interface IUseUpdateInboxTaskByIdOptions {
+  due: Date | null
   refetchOnSettle?: boolean
 }
