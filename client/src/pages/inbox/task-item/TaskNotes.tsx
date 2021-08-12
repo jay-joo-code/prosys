@@ -3,8 +3,11 @@ import useKeypress from 'src/hooks/useKeyPress'
 import { IInboxState, ITask } from 'src/types/task.type'
 import styled from 'styled-components'
 import TextareaAutosize from 'react-textarea-autosize'
-import Text from '../fonts/Text'
-import { useUpdateArchiveTaskById, useUpdateInboxTaskById } from 'src/api/task'
+import Text from 'src/components/fonts/Text'
+import {
+  useUpdateArchiveTaskById,
+  useUpdateInboxTaskById,
+} from 'src/api/task'
 import theme from 'src/app/theme'
 import useIsTablet from 'src/hooks/useIsTablet'
 
@@ -15,10 +18,20 @@ interface TaskNotesProps {
   setInboxState: (state: IInboxState) => void
 }
 
-const TaskNotes = ({ isFocused, task, inboxState, setInboxState }: TaskNotesProps) => {
-  const { updateInboxTask } = useUpdateInboxTaskById(task?._id)
-  const { updateArchiveTask } = useUpdateArchiveTaskById(task?._id)
-  const [textareaValue, setTextareaValue] = useState<string>(task?.notes)
+const TaskNotes = ({
+  isFocused,
+  task,
+  inboxState,
+  setInboxState,
+}: TaskNotesProps) => {
+  const { updateInboxTask } = useUpdateInboxTaskById(
+    task?._id
+  )
+  const { updateArchiveTask } = useUpdateArchiveTaskById(
+    task?._id
+  )
+  const [textareaValue, setTextareaValue] =
+    useState<string>(task?.notes)
   const isTablet = useIsTablet()
 
   const updateNotes = () => {
@@ -49,7 +62,9 @@ const TaskNotes = ({ isFocused, task, inboxState, setInboxState }: TaskNotesProp
     if (
       isFocused &&
       inboxState === 'EDIT_NOTES' &&
-      (event.key === 'Escape' || event.metaKey || event.ctrlKey)
+      (event.key === 'Escape' ||
+        event.metaKey ||
+        event.ctrlKey)
     ) {
       event.stopPropagation()
       event.stopImmediatePropagation()
@@ -75,9 +90,15 @@ const TaskNotes = ({ isFocused, task, inboxState, setInboxState }: TaskNotesProp
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   useEffect(() => {
-    if (isFocused && inboxState === 'EDIT_NOTES' && textareaRef?.current) {
-      textareaRef.current.selectionStart = textareaValue?.length
-      textareaRef.current.selectionEnd = textareaValue?.length
+    if (
+      isFocused &&
+      inboxState === 'EDIT_NOTES' &&
+      textareaRef?.current
+    ) {
+      textareaRef.current.selectionStart =
+        textareaValue?.length
+      textareaRef.current.selectionEnd =
+        textareaValue?.length
     }
   }, [textareaRef, isFocused, inboxState])
 

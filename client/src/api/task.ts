@@ -4,6 +4,7 @@ import useCustomQuery from 'src/hooks/useCustomQuery'
 import useRouter from 'src/hooks/useRouter'
 import { showSnackbar } from 'src/redux/snackbarSlice'
 import { ITask, IUseUpdateInboxTaskByIdOptions } from 'src/types/task.type'
+import { getFullDate } from 'src/util/date'
 import { sortTasks } from 'src/util/task'
 
 export const fetchInboxTasks = () => ({
@@ -14,7 +15,11 @@ export const fetchInboxTasks = () => ({
 })
 
 export const useInboxTasks = () => {
-  const { data: tasks, error, ...rest } = useCustomQuery<ITask[]>(fetchInboxTasks())
+  const {
+    data: tasks,
+    error,
+    ...rest
+  } = useCustomQuery<ITask[]>(fetchInboxTasks())
 
   const router = useRouter()
   const dispatch = useDispatch()
@@ -32,6 +37,42 @@ export const useInboxTasks = () => {
   return {
     ...rest,
     tasks: tasks && sortTasks(tasks),
+  }
+}
+
+export const fetchGcalTasks = (due: Date) => ({
+  url: `/private/task/inbox/gcal?due=${due.toISOString()}`,
+  options: {
+    refetchOnWindowFocus: 'always',
+  },
+})
+
+export const useGcalTasks = (due: Date) => {
+  const { data: gcalTasks, ...rest } = useCustomQuery<ITask[]>(
+    fetchGcalTasks(due)
+  )
+
+  return {
+    ...rest,
+    gcalTasks,
+  }
+}
+
+export const untimedTasksConfig = (due: Date) => ({
+  url: `/private/task/inbox/untimed?due=${getFullDate(due)}`,
+  options: {
+    refetchOnWindowFocus: 'always',
+  },
+})
+
+export const useUntimedTasks = (due: Date) => {
+  const { data: untimedTasks, ...rest } = useCustomQuery<ITask[]>(
+    untimedTasksConfig(due)
+  )
+
+  return {
+    ...rest,
+    untimedTasks,
   }
 }
 
@@ -86,16 +127,16 @@ export const useCreateArchiveTask = () => {
 export const useUpdateInboxTaskById = (
   _id: string,
   options: IUseUpdateInboxTaskByIdOptions = {
-    refetchOnSettle: false,
+    due: new Date(),
   }
 ) => {
   const { mutate: updateInboxTask, ...rest } = useCustomMutation<ITask>({
     url: `/private/task/${_id}`,
     method: 'put',
     updateLocal: {
-      queryConfigs: [fetchInboxTasks()],
+      queryConfigs: [untimedTasksConfig(options?.due || new Date())],
       type: 'update',
-      isNotRefetchOnSettle: !options?.refetchOnSettle,
+      isNotRefetchOnSettle: true,
     },
   })
 
@@ -108,6 +149,7 @@ export const useUpdateInboxTaskById = (
 export const useUpdateArchiveTaskById = (
   _id: string,
   options: IUseUpdateInboxTaskByIdOptions = {
+    due: new Date(),
     refetchOnSettle: false,
   }
 ) => {

@@ -4,44 +4,51 @@ import Task from '../models/Task'
 import { getDateByDayDifference, getTimeStamp } from './date'
 import { ITaskDocument } from '../types/task.type'
 
+const getEvents = async (req: Request, res: Response) => {
+  const OAuth2 = google.auth.OAuth2
+  const oAuth2Client = new OAuth2(
+    process.env.ID_GOOGLE,
+    process.env.SECRET_GOOGLE,
+    `${process.env.SERVER_DOMAIN}/api/public/auth/google/callback`
+  )
+
+  oAuth2Client.setCredentials({
+    refresh_token: req.user?.providerData.refreshToken,
+  })
+
+  const calendar = google.calendar({
+    version: 'v3',
+    auth: oAuth2Client,
+  })
+
+  const { data: primaryData } = await calendar.events.list({
+    calendarId: 'primary',
+    timeMin: new Date().toISOString(),
+    timeMax: getDateByDayDifference(new Date(), 14).toISOString(),
+    maxResults: 100,
+    singleEvents: true,
+    orderBy: 'startTime',
+  })
+  const { data: secondaryData } = await calendar.events.list({
+    calendarId: 'jj534@cornell.edu',
+    timeMin: new Date().toISOString(),
+    timeMax: getDateByDayDifference(new Date(), 14).toISOString(),
+    maxResults: 100,
+    singleEvents: true,
+    orderBy: 'startTime',
+  })
+
+  const events = [
+    ...(primaryData?.items || []),
+    ...(secondaryData?.items || []),
+  ]
+
+  return events
+}
+
 export const syncCalendar = async (req: Request, res: Response) => {
   try {
-    const OAuth2 = google.auth.OAuth2
-    const oAuth2Client = new OAuth2(
-      process.env.ID_GOOGLE,
-      process.env.SECRET_GOOGLE,
-      `${process.env.SERVER_DOMAIN}/api/public/auth/google/callback`
-    )
-    oAuth2Client.setCredentials({
-      refresh_token: req.user?.providerData.refreshToken,
-    })
-
-    const calendar = google.calendar({
-      version: 'v3',
-      auth: oAuth2Client,
-    })
-
-    const { data: primaryData } = await calendar.events.list({
-      calendarId: 'primary',
-      timeMin: new Date().toISOString(),
-      timeMax: getDateByDayDifference(new Date(), 14).toISOString(),
-      maxResults: 100,
-      singleEvents: true,
-      orderBy: 'startTime',
-    })
-    const { data: secondaryData } = await calendar.events.list({
-      calendarId: 'jaehyungjoo1@gmail.com',
-      timeMin: new Date().toISOString(),
-      timeMax: getDateByDayDifference(new Date(), 14).toISOString(),
-      maxResults: 100,
-      singleEvents: true,
-      orderBy: 'startTime',
-    })
-
-    const events = [
-      ...(primaryData?.items || []),
-      ...(secondaryData?.items || []),
-    ]
+    const events = await getEvents(req, res)
 
     const calendarTasks = await Task.find({
       userId: req.user?._id,
@@ -112,6 +119,7 @@ export const syncCalendar = async (req: Request, res: Response) => {
 
     await Promise.all(deletePromises)
   } catch (error) {
+    console.log('error', error)
     res.status(500).send('Google OAuth error')
   }
 }

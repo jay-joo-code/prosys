@@ -20,7 +20,11 @@ interface ISnapshot {
   previousValues: any
 }
 
-const useCustomMutation = <T>({ url, method, updateLocal }: IMutationOptions) => {
+const useCustomMutation = <T>({
+  url,
+  method,
+  updateLocal,
+}: IMutationOptions) => {
   const queryClient = useQueryClient()
   const updateLocalConfig = updateLocal
     ? {
@@ -142,6 +146,7 @@ const useCustomMutation = <T>({ url, method, updateLocal }: IMutationOptions) =>
       }),
     { ...updateLocalConfig }
   )
+
   return { mutate, ...mutationInfo }
 }
 

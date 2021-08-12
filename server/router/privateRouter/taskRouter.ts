@@ -1,4 +1,5 @@
 import express from 'express'
+import moment from 'moment'
 import Task from '../../models/Task'
 import { syncCalendar } from '../../util/calendar'
 import { isDateBeforeToday } from '../../util/date'
@@ -39,8 +40,8 @@ taskRouter.get('/inbox', async (req, res) => {
         },
       ],
     }).sort({ due: 1 })
-
     // set overdue task due date as today
+
     const validatedTasks = docs.map((task) => {
       if (
         task.due &&
@@ -69,6 +70,59 @@ taskRouter.get('/inbox', async (req, res) => {
     })
 
     res.send(validatedTasks)
+  } catch (e) {
+    res.status(500).send(e)
+  }
+})
+
+taskRouter.get('/inbox/gcal', async (req, res) => {
+  try {
+    await syncCalendar(req, res)
+
+    const rootQuery = {
+      userId: req.user?._id,
+      isComplete: false,
+      provider: 'google',
+      due: req?.query?.due ? new Date(req?.query?.due as string) : undefined,
+    }
+
+    const gcalTasks = await Task.find({
+      $or: [
+        {
+          ...rootQuery,
+          isArchived: false,
+        },
+        {
+          ...rootQuery,
+          isArchived: undefined,
+        },
+      ],
+    }).sort({ due: 1 })
+
+    res.send(gcalTasks)
+  } catch (e) {
+    res.status(500).send(e)
+  }
+})
+
+taskRouter.get('/inbox/untimed', async (req, res) => {
+  try {
+    const dueDate = new Date(req?.query?.due as string)
+    const query = {
+      userId: req.user?._id,
+      isComplete: false,
+      isArchived: false,
+      provider: undefined,
+      due: {
+        $gte: moment(dueDate).startOf('day').toDate(),
+        $lte: moment(dueDate).endOf('day').toDate(),
+      },
+      startTime: '0000',
+      endTime: '0000',
+    }
+    const tasks = await Task.find(query).sort({ due: 1 })
+
+    res.send(tasks)
   } catch (e) {
     res.status(500).send(e)
   }
@@ -122,6 +176,7 @@ taskRouter.put('/undo', async (req, res) => {
 
 taskRouter.put('/:id', async (req, res) => {
   try {
+    console.log('req.body', req.body)
     const doc = await Task.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
     })
