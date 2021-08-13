@@ -108,6 +108,22 @@ export const useCreateInboxTask = () => {
   }
 }
 
+export const useCreateInboxTaskAtDate = (due: Date) => {
+  const { mutate: createInboxTask, ...rest } = useCustomMutation<ITask>({
+    url: '/private/task',
+    method: 'post',
+    updateLocal: {
+      queryConfigs: [untimedTasksConfig(due)],
+      type: 'appendEnd',
+    },
+  })
+
+  return {
+    ...rest,
+    createInboxTask,
+  }
+}
+
 export const useCreateArchiveTask = () => {
   const { mutate: createArchiveTask, ...rest } = useCustomMutation<ITask>({
     url: '/private/task',

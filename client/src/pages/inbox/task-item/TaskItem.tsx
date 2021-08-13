@@ -1,18 +1,11 @@
-import ObjectID from 'bson-objectid'
 import React, { memo, useState } from 'react'
-import { useCreateInboxTask, useUpdateInboxTaskById } from 'src/api/task'
-import useIsTablet from 'src/hooks/useIsTablet'
-import useKeypress from 'src/hooks/useKeyPress'
-import { IInboxState, ITask } from 'src/types/task.type'
-import { incrementTimeStamp, isTaskTimeSet } from 'src/util/task'
-import styled from 'styled-components'
+import { useUpdateInboxTaskById } from 'src/api/task'
+import theme from 'src/app/theme'
+import Text from 'src/components/fonts/Text'
 import { FlexRow } from 'src/components/layout/Flex'
 import Space from 'src/components/layout/Space'
-import TaskDue from './TaskDue'
-import TaskIsComplete from './TaskIsComplete'
-import TaskName from './TaskName'
-import TaskNotes from './TaskNotes'
-import TaskTime from './TaskTime'
+import { ITask } from 'src/types/task.type'
+import styled from 'styled-components'
 import TaskBottomSheet from './TaskBottomSheet'
 
 interface TaskItemProps {
@@ -29,6 +22,14 @@ interface TaskItemProps {
 
 const TaskItem = ({ task }: TaskItemProps) => {
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState<boolean>(false)
+  const { updateInboxTask } = useUpdateInboxTaskById(task?._id)
+
+  const handleToggleComplete = () => {
+    updateInboxTask({
+      _id: task?._id,
+      isComplete: !task?.isComplete,
+    })
+  }
 
   const scrollToFocused = (instance: HTMLDivElement) => {
     // if (
@@ -95,90 +96,30 @@ const TaskItem = ({ task }: TaskItemProps) => {
   //   }
   // })
 
-  // send to archive
-  // useKeypress(['a', 'ㅁ'], (event) => {
-  //   if (
-  //     isFocused &&
-  //     inboxState === 'NAVIGATE' &&
-  //     task?.provider !== 'google'
-  //   ) {
-  //     event.stopPropagation()
-  //     event.stopImmediatePropagation()
-  //     event.preventDefault()
-  //     if (task?.isArchived) {
-  //       toggleArchive({
-  //         _id: task?._id,
-  //         isArchived: false,
-  //       })
-  //     } else {
-  //       toggleArchive({
-  //         _id: task?._id,
-  //         isArchived: true,
-  //         due: null,
-  //         startTime: '0000',
-  //         endTime: '0000',
-  //       })
-  //     }
-  //     focusNextTask()
-  //   }
-  // })
-
   return (
     <>
       <Container
         ref={scrollToFocused}
         isFocused={false}
         // isHighlighted={inboxState === 'NAVIGATE' && isFocused}
-        onClick={() => setIsBottomSheetOpen(true)}>
+      >
         <FlexRow alignStart>
-          <div>
+          <div onClick={handleToggleComplete}>
             <Space padding='.15rem 0' />
-            {/* <TaskIsComplete
-            task={task}
-            isFocused={isFocused}
-            inboxState={inboxState}
-            setInboxState={setInboxState}
-            focusNextTask={focusNextTask}
-          /> */}
+            <CheckboxContainer>
+              <IsCompleteCheckbox
+                isComplete={task?.isComplete}
+                isInverted={false}
+              />
+            </CheckboxContainer>
           </div>
           <Space padding='0 .2rem' />
-          <FullWidth>
-            <FlexRow alignStart fullWidth>
-              {/* <TaskTime
-              isFocused={isFocused}
-              task={task}
-              inboxState={inboxState}
-              setInboxState={setInboxState}
-            /> */}
-              <Space padding='0 .1rem' />
-              <FullWidth>
-                <TaskName task={task} />
-                {/* {!isTablet && (
-                // <TaskNotes
-                //   isFocused={isFocused}
-                //   task={task}
-                //   inboxState={inboxState}
-                //   setInboxState={setInboxState}
-                // />
-              )} */}
-              </FullWidth>
-            </FlexRow>
-            {/* {isTablet && (
-            // <TaskNotes
-            //   isFocused={isFocused}
-            //   task={task}
-            //   inboxState={inboxState}
-            //   setInboxState={setInboxState}
-            // />
-          )} */}
-            {/* <TaskDue
-            isFocused={isFocused}
-            task={task}
-            inboxState={inboxState}
-            setInboxState={setInboxState}
-            focusPrevTask={focusPrevTask}
-          /> */}
-          </FullWidth>
+          <TaskText onClick={() => setIsBottomSheetOpen(true)}>
+            <Text variant='p'>{task?.name}</Text>
+            <Text variant='h5' maxLines={2} color={theme.text.light}>
+              {task?.notes}
+            </Text>
+          </TaskText>
         </FlexRow>
       </Container>
       <TaskBottomSheet
@@ -195,18 +136,44 @@ interface ContainerProps {
 }
 
 const Container = styled.div<ContainerProps>`
-  padding: 0.5rem;
+  padding: 0.5rem 0;
   border-radius: 4px;
   cursor: pointer;
-  border-bottom: 1px solid ${(props) => props.theme.border.default};
 
   // isFocused
   background: ${(props) => props.isFocused && props.theme.brand[50]};
 `
 
-const FullWidth = styled.div`
-  flex: 2;
-  overflow: hidden;
+const TaskText = styled.div`
+  width: 100%;
+
+  & > *:first-of-type {
+    margin-bottom: 0.5rem;
+  }
+`
+
+const CheckboxContainer = styled.div`
+  width: 18px;
+  height: 18px;
+`
+
+interface IIsCompleteCheckboxProps {
+  isComplete: boolean
+  isInverted: boolean
+}
+
+const IsCompleteCheckbox = styled.div<IIsCompleteCheckboxProps>`
+  border: 2px solid ${(props) => props.theme.grey[500]};
+  border-radius: 50%;
+  height: 15px;
+  width: 15px;
+
+  // isComplete
+  background: ${(props) => props.isComplete && props.theme.brand[300]};
+  border-color: ${(props) => props.isComplete && props.theme.brand[300]};
+
+  // isInverted
+  border-color: ${(props) => props.isInverted && props.theme.grey[500]};
 `
 
 export default memo(TaskItem)

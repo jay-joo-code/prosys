@@ -12,7 +12,7 @@ interface IconButtonProps {
 
 const ButtonedIcon = ({
   icon,
-  buttonSize,
+  buttonSize = 'small',
   onClick,
   fill,
   className,
@@ -34,6 +34,8 @@ interface StyledIconButtonProps {
 }
 
 const StyledIconButton = styled(IconButton)<StyledIconButtonProps>`
+  background: ${(props) => props.theme.grey[100]} !important;
+
   & svg {
     fill: ${(props) => props.theme.grey[700]} !important;
 

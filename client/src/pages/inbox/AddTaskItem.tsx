@@ -1,7 +1,8 @@
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined'
-import React from 'react'
-import theme from 'src/app/theme'
-import Text from 'src/components/fonts/Text'
+import ObjectID from 'bson-objectid'
+import React, { useState } from 'react'
+import { useCreateInboxTaskAtDate } from 'src/api/task'
+import TextField from 'src/components/form-elements/TextField'
 import styled from 'styled-components'
 
 interface AddTaskItemProps {
@@ -9,14 +10,31 @@ interface AddTaskItemProps {
 }
 
 const AddTaskItem = ({ due }: AddTaskItemProps) => {
-  const handleClick = () => {}
+  const { createInboxTask } = useCreateInboxTaskAtDate(due)
+  const [name, setName] = useState<string>('')
+
+  const handleCreateTask = () => {
+    if (name !== '') {
+      const newTaskId = new ObjectID().toHexString()
+      createInboxTask({
+        _id: newTaskId,
+        name,
+        due,
+        createdAt: new Date(),
+      })
+      setName('')
+    }
+  }
 
   return (
-    <Container isFocused={false} onClick={handleClick}>
+    <Container isFocused={false}>
       <AddOutlinedIcon />
-      <Text variant='p' color={theme.text.light}>
-        Add task
-      </Text>
+      <NameTextField
+        placeholder='Add task'
+        onEnterPress={handleCreateTask}
+        value={name}
+        onChange={(event) => setName(event.target.value)}
+      />
     </Container>
   )
 }
@@ -26,6 +44,7 @@ interface IContainerProps {
 }
 
 const Container = styled.div<IContainerProps>`
+  margin-top: 0.5rem;
   padding: 0.5rem;
   border-radius: 4px;
   cursor: pointer;
@@ -34,13 +53,20 @@ const Container = styled.div<IContainerProps>`
   background: ${(props) => props.theme.grey[100]};
 
   // isFocused
-  background: ${(props) =>
-    props.isFocused && props.theme.brand[50]};
+  background: ${(props) => props.isFocused && props.theme.brand[50]};
 
   & svg {
-    margin-right: 0.2rem;
     fill: ${(props) => props.theme.text.light};
   }
+`
+
+const NameTextField = styled(TextField)`
+  width: 100%;
+  background: inherit;
+  font-size: 1rem;
+  padding: 0.2rem 0;
+  border: none;
+  margin-left: 0.5rem;
 `
 
 export default AddTaskItem
