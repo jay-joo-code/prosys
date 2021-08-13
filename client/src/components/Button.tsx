@@ -52,6 +52,7 @@ const StyledButton = styled(MuiButton)<StyledButtonProps>`
     `${props.overridecolor} !important`};
   white-space: nowrap !important;
   flex-shrink: 0 !important;
+  text-transform: unset !important;
 
   /* text */
   color: ${(props) =>

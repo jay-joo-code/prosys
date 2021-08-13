@@ -120,7 +120,7 @@ taskRouter.get('/inbox/untimed', async (req, res) => {
       startTime: '0000',
       endTime: '0000',
     }
-    const tasks = await Task.find(query).sort({ due: 1 })
+    const tasks = await Task.find(query).sort({ createdAt: 1 })
 
     res.send(tasks)
   } catch (e) {

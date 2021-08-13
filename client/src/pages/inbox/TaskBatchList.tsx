@@ -11,10 +11,7 @@ const TaskBatchList = ({}: TaskBatchListProps) => {
   return (
     <Container>
       {dates?.map((date) => (
-        <TaskBatchItem
-          key={date.toISOString()}
-          due={date}
-        />
+        <TaskBatchItem key={date.toISOString()} due={date} />
       ))}
     </Container>
   )

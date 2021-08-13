@@ -19,6 +19,10 @@ const UntimedTaskList = ({ due }: UntimedTaskListProps) => {
   )
 }
 
-const Container = styled.div``
+const Container = styled.div`
+  & > * {
+    border-bottom: 1px solid ${(props) => props.theme.border.default};
+  }
+`
 
 export default UntimedTaskList

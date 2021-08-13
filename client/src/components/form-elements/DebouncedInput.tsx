@@ -1,4 +1,5 @@
 import React, { memo, useEffect, useState } from 'react'
+import styled from 'styled-components'
 import { useDebounce } from 'use-debounce'
 
 interface DebouncedInputProps
@@ -15,9 +16,7 @@ const DebouncedInput = ({
   onDebouncedChange,
   ...rest
 }: DebouncedInputProps) => {
-  const [value, setValue] = useState<string>(
-    initValue || ''
-  )
+  const [value, setValue] = useState<string>(initValue || '')
   const [debouncedValue] = useDebounce(value, 1000)
 
   useEffect(() => {
@@ -29,12 +28,19 @@ const DebouncedInput = ({
   }, [debouncedValue])
 
   return (
-    <input
+    <StyledInput
       {...rest}
       value={value}
       onChange={(event) => setValue(event.target.value)}
     />
   )
 }
+
+const StyledInput = styled.input`
+  background: inherit;
+  font-size: 1rem;
+  font-family: inherit;
+  line-height: 1.5;
+`
 
 export default memo(DebouncedInput)

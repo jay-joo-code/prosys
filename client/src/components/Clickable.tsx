@@ -1,12 +1,12 @@
 import React from 'react'
 import styled from 'styled-components'
 
-interface ClickableProps {
+interface ClickableProps extends React.HTMLProps<HTMLDivElement> {
   children: React.ReactNode
 }
 
-const Clickable = ({ children }: ClickableProps) => {
-  return <Container>{children}</Container>
+const Clickable = ({ children, ...rest }: ClickableProps) => {
+  return <Container {...rest}>{children}</Container>
 }
 
 const Container = styled.div`

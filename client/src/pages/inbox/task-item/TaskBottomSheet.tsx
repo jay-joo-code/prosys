@@ -1,9 +1,16 @@
+import CloseIcon from '@material-ui/icons/Close'
+import RemoveIcon from '@material-ui/icons/Remove'
 import React from 'react'
 import { BottomSheet } from 'react-spring-bottom-sheet'
 import 'react-spring-bottom-sheet/dist/style.css'
 import { useUpdateInboxTaskById } from 'src/api/task'
+import ButtonedIcon from 'src/components/ButtonedIcon'
+import TextButton from 'src/components/buttons/TextButton'
 import Clickable from 'src/components/Clickable'
+import DebouncedInput from 'src/components/form-elements/DebouncedInput'
 import DebouncedTextarea from 'src/components/form-elements/DebouncedTextarea'
+import { FlexRow } from 'src/components/layout/Flex'
+import Space from 'src/components/layout/Space'
 import { ITask } from 'src/types/task.type'
 import styled from 'styled-components'
 
@@ -32,6 +39,24 @@ const TaskBottomSheet = ({ task, isOpen, onDismiss }: TaskBottomSheetProps) => {
     })
   }
 
+  const handleToggleComplete = () => {
+    updateInboxTask({
+      _id: task?._id,
+      isComplete: !task?.isComplete,
+    })
+    if (!task?.isComplete) onDismiss()
+  }
+
+  const handleSaveTime = (value: string, type: 'START' | 'END') => {
+    const updateObj =
+      type === 'START' ? { startTime: value } : { endTime: value }
+
+    updateInboxTask({
+      _id: task?._id,
+      ...updateObj,
+    })
+  }
+
   return (
     <BottomSheet
       open={isOpen}
@@ -40,6 +65,32 @@ const TaskBottomSheet = ({ task, isOpen, onDismiss }: TaskBottomSheetProps) => {
       onDismiss={onDismiss}
       expandOnContentDrag>
       <Container>
+        <FlexRow justifySpaceBetween>
+          <FlexRow alignCenter>
+            <TimeContainer>
+              <TimeTextarea
+                onDebouncedChange={(value) => handleSaveTime(value, 'START')}
+                placeholder='Start'
+                initValue={task?.startTime}
+              />
+            </TimeContainer>
+            <StyledLine fontSize='small' />
+            <TimeContainer>
+              <TimeTextarea
+                onDebouncedChange={(value) => handleSaveTime(value, 'END')}
+                placeholder='End'
+                initValue={task?.endTime}
+              />
+            </TimeContainer>
+          </FlexRow>
+          <FlexRow alignCenter>
+            <TextButton onClick={handleToggleComplete}>
+              {task?.isComplete ? 'Undo' : 'Complete'}
+            </TextButton>
+            <Space padding='0 .5rem' />
+            <ButtonedIcon onClick={() => onDismiss()} icon={<CloseIcon />} />
+          </FlexRow>
+        </FlexRow>
         <Clickable>
           <NameTextField
             onDebouncedChange={handleSaveName}
@@ -71,18 +122,22 @@ const Container = styled.div`
 const NameTextField = styled(DebouncedTextarea)`
   font-size: 1.2rem;
   font-weight: medium;
-  width: 100%;
-  background: inherit;
-  border: none;
-  font-family: inherit;
 `
 
-const NotesTextarea = styled(DebouncedTextarea)`
-  font-size: 1rem;
-  width: 100%;
-  border: none;
-  font-family: inherit;
-  background: inherit;
+const NotesTextarea = styled(DebouncedTextarea)``
+
+const TimeContainer = styled(Clickable)`
+  padding: 0.2rem;
+`
+
+const TimeTextarea = styled(DebouncedInput)`
+  width: 3rem;
+  text-align: center;
+`
+
+const StyledLine = styled(RemoveIcon)`
+  margin: 0 0.3rem;
+  fill: ${(props) => props.theme.grey[700]} !important;
 `
 
 export default TaskBottomSheet
