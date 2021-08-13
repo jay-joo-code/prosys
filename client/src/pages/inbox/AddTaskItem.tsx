@@ -10,7 +10,7 @@ interface AddTaskItemProps {
 }
 
 const AddTaskItem = ({ due }: AddTaskItemProps) => {
-  const { createInboxTask } = useCreateInboxTaskAtDate(due)
+  const { createInboxTask } = useCreateInboxTaskAtDate({ due, isTimed: false })
   const [name, setName] = useState<string>('')
 
   const handleCreateTask = () => {

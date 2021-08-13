@@ -1,5 +1,5 @@
 import React from 'react'
-import { useUntimedTasks } from 'src/api/task'
+import { useProsysTasks } from 'src/api/task'
 import styled from 'styled-components'
 import TaskItem from './task-item/TaskItem'
 
@@ -8,11 +8,11 @@ interface UntimedTaskListProps {
 }
 
 const UntimedTaskList = ({ due }: UntimedTaskListProps) => {
-  const { untimedTasks } = useUntimedTasks(due)
+  const { tasks } = useProsysTasks({ due, isTimed: false })
 
   return (
     <Container>
-      {untimedTasks?.map((task) => (
+      {tasks?.map((task) => (
         <TaskItem key={task?._id} task={task} />
       ))}
     </Container>

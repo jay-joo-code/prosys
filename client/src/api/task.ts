@@ -3,7 +3,11 @@ import useCustomMutation from 'src/hooks/useCustomMutation'
 import useCustomQuery from 'src/hooks/useCustomQuery'
 import useRouter from 'src/hooks/useRouter'
 import { showSnackbar } from 'src/redux/snackbarSlice'
-import { ITask, IUseUpdateInboxTaskByIdOptions } from 'src/types/task.type'
+import {
+  ITask,
+  IUseProsysTasksParams,
+  IUseUpdateInboxTaskByIdOptions,
+} from 'src/types/task.type'
 import { getFullDate } from 'src/util/date'
 import { sortTasks } from 'src/util/task'
 
@@ -58,21 +62,23 @@ export const useGcalTasks = (due: Date) => {
   }
 }
 
-export const untimedTasksConfig = (due: Date) => ({
-  url: `/private/task/inbox/untimed?due=${getFullDate(due)}`,
+export const prosysTasksConfig = (params: IUseProsysTasksParams) => ({
+  url: `/private/task/inbox/prosys?due=${getFullDate(params?.due)}&isTimed=${
+    params?.isTimed
+  }`,
   options: {
     refetchOnWindowFocus: 'always',
   },
 })
 
-export const useUntimedTasks = (due: Date) => {
-  const { data: untimedTasks, ...rest } = useCustomQuery<ITask[]>(
-    untimedTasksConfig(due)
+export const useProsysTasks = (params: IUseProsysTasksParams) => {
+  const { data: tasks, ...rest } = useCustomQuery<ITask[]>(
+    prosysTasksConfig(params)
   )
 
   return {
     ...rest,
-    untimedTasks,
+    tasks,
   }
 }
 
@@ -108,12 +114,12 @@ export const useCreateInboxTask = () => {
   }
 }
 
-export const useCreateInboxTaskAtDate = (due: Date) => {
+export const useCreateInboxTaskAtDate = (params: IUseProsysTasksParams) => {
   const { mutate: createInboxTask, ...rest } = useCustomMutation<ITask>({
     url: '/private/task',
     method: 'post',
     updateLocal: {
-      queryConfigs: [untimedTasksConfig(due)],
+      queryConfigs: [prosysTasksConfig(params)],
       type: 'appendEnd',
     },
   })
@@ -142,15 +148,13 @@ export const useCreateArchiveTask = () => {
 
 export const useUpdateInboxTaskById = (
   _id: string,
-  options: IUseUpdateInboxTaskByIdOptions = {
-    due: new Date(),
-  }
+  params: IUseProsysTasksParams
 ) => {
   const { mutate: updateInboxTask, ...rest } = useCustomMutation<ITask>({
     url: `/private/task/${_id}`,
     method: 'put',
     updateLocal: {
-      queryConfigs: [untimedTasksConfig(options?.due || new Date())],
+      queryConfigs: [prosysTasksConfig(params)],
       type: 'update',
       isNotRefetchOnSettle: true,
     },

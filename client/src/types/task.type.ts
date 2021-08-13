@@ -31,3 +31,8 @@ export interface IUseUpdateInboxTaskByIdOptions {
   due: Date | null
   refetchOnSettle?: boolean
 }
+
+export interface IUseProsysTasksParams {
+  due: Date
+  isTimed: boolean
+}
