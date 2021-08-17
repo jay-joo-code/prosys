@@ -30,7 +30,7 @@ export const syncCalendar = async (req: Request, res: Response) => {
       orderBy: 'startTime',
     })
     const { data: secondaryData } = await calendar.events.list({
-      calendarId: 'jj534@cornell.edu',
+      calendarId: 'jaehyungjoo1@gmail.com',
       timeMin: new Date().toISOString(),
       timeMax: getDateByDayDifference(new Date(), 14).toISOString(),
       maxResults: 100,
