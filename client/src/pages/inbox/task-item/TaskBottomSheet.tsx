@@ -13,6 +13,7 @@ import { FlexRow } from 'src/components/layout/Flex'
 import Space from 'src/components/layout/Space'
 import { ITask } from 'src/types/task.type'
 import styled from 'styled-components'
+import { isTaskTimeSet } from 'src/util/task'
 
 interface TaskBottomSheetProps {
   task: ITask
@@ -23,6 +24,7 @@ interface TaskBottomSheetProps {
 const TaskBottomSheet = ({ task, isOpen, onDismiss }: TaskBottomSheetProps) => {
   const { updateInboxTask } = useUpdateInboxTaskById(task?._id, {
     due: new Date(task?.due as string),
+    isTimed: isTaskTimeSet(task),
   })
 
   const handleSaveName = (value: string) => {
@@ -85,7 +87,7 @@ const TaskBottomSheet = ({ task, isOpen, onDismiss }: TaskBottomSheetProps) => {
           </FlexRow>
           <FlexRow alignCenter>
             <TextButton onClick={handleToggleComplete}>
-              {task?.isComplete ? 'Undo' : 'Complete'}
+              {task?.isComplete ? 'Incomplete' : 'Complete'}
             </TextButton>
             <Space padding='0 .5rem' />
             <ButtonedIcon onClick={() => onDismiss()} icon={<CloseIcon />} />
