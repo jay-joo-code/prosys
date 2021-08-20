@@ -108,27 +108,21 @@ taskRouter.get('/inbox/gcal', async (req, res) => {
 taskRouter.get('/inbox/prosys', async (req, res) => {
   try {
     const dueDate = new Date(req?.query?.due as string)
+    const due = {
+      $gte: moment(dueDate).utcOffset('+0400').startOf('day').toDate(),
+      $lte: moment(dueDate).utcOffset('+0400').endOf('day').toDate(),
+    }
+    const timeQuery = req?.query?.isTimed ? '0000' : { $ne: '0000' }
     const query = {
       userId: req.user?._id,
       isComplete: false,
       isArchived: false,
       provider: undefined,
-      due: {
-        $gte: moment(dueDate).startOf('day').toDate(),
-        $lte: moment(dueDate).endOf('day').toDate(),
-      },
-      startTime: req?.query?.isTimed ? { $ne: '0000' } : '0000',
-      endTime: req?.query?.isTimed ? { $ne: '0000' } : '0000',
+      due,
+      startTime: timeQuery,
+      endTime: timeQuery,
     }
-    // TODO: ternery condition not working as expected
-    console.log('req?.query?.isTimed', req?.query?.isTimed)
-    console.log(
-      'req?.query?.isTimed ',
-      req?.query?.isTimed ? { $ne: '0000' } : '0000'
-    )
-    console.log('query', query)
     const tasks = await Task.find(query).sort({ createdAt: 1 })
-
     res.send(tasks)
   } catch (e) {
     res.status(500).send(e)
@@ -183,7 +177,6 @@ taskRouter.put('/undo', async (req, res) => {
 
 taskRouter.put('/:id', async (req, res) => {
   try {
-    console.log('req.body', req.body)
     const doc = await Task.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
     })
