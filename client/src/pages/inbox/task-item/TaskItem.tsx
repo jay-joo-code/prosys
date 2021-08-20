@@ -5,6 +5,7 @@ import Text from 'src/components/fonts/Text'
 import { FlexRow } from 'src/components/layout/Flex'
 import Space from 'src/components/layout/Space'
 import { ITask } from 'src/types/task.type'
+import { isTaskTimeSet } from 'src/util/task'
 import styled from 'styled-components'
 import TaskBottomSheet from './TaskBottomSheet'
 
@@ -22,7 +23,10 @@ interface TaskItemProps {
 
 const TaskItem = ({ task }: TaskItemProps) => {
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState<boolean>(false)
-  const { updateInboxTask } = useUpdateInboxTaskById(task?._id)
+  const { updateInboxTask } = useUpdateInboxTaskById(task?._id, {
+    due: new Date(task?.due as string),
+    isTimed: isTaskTimeSet(task),
+  })
 
   const handleToggleComplete = () => {
     updateInboxTask({
