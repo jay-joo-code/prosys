@@ -65,7 +65,8 @@ const TaskBottomSheet = ({ task, isOpen, onDismiss }: TaskBottomSheetProps) => {
       defaultSnap={({ maxHeight }) => maxHeight / 2}
       snapPoints={({ maxHeight }) => [maxHeight * 0.8, maxHeight * 0.4]}
       onDismiss={onDismiss}
-      expandOnContentDrag>
+      expandOnContentDrag
+      initialFocusRef={false}>
       <Container>
         <FlexRow justifySpaceBetween>
           <FlexRow alignCenter>
