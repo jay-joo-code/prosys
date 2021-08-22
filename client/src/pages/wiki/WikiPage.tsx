@@ -1,9 +1,8 @@
-import AddOutlinedIcon from '@material-ui/icons/AddOutlined'
 import ObjectID from 'bson-objectid'
 import React, { useState } from 'react'
 import { useCreateCard } from 'src/api/card'
 import { useTags } from 'src/api/tag'
-import Button from 'src/components/Button'
+import ContainedButton from 'src/components/buttons/ContainedButton'
 import NavHeader from 'src/components/header/NavHeader'
 import { FlexRow } from 'src/components/layout/Flex'
 import PageContainer from 'src/components/layout/PageContainer'
@@ -39,9 +38,12 @@ const WikiPage = () => {
         )}
       </TopRow>
       <BottomRow justifyEnd>
-        <Button onClick={handleCreateCard} startIcon={<AddOutlinedIcon />}>
+        <ContainedButton
+          onClick={handleCreateCard}
+          // startIcon={<AddOutlinedIcon />}
+        >
           New card
-        </Button>
+        </ContainedButton>
       </BottomRow>
       {selectedTagIds && <CardList selectedTagIds={selectedTagIds} />}
     </PageContainer>

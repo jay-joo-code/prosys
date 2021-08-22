@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import Button from '../Button'
+import ContainedButton from '../buttons/ContainedButton'
 import { FlexRow } from '../layout/Flex'
 import { Link } from 'react-router-dom'
 import useRouter from 'src/hooks/useRouter'
@@ -41,12 +41,8 @@ const PageNavigator = () => {
     <Container>
       <FlexRow>
         {options.map(({ label, path }) => (
-          <Link
-            key={path}
-            to={path}
-          >
-            <Button variant={pathname === path ? 'contained' : 'text'}>{label}
-            </Button>
+          <Link key={path} to={path}>
+            <ContainedButton>{label}</ContainedButton>
           </Link>
         ))}
       </FlexRow>
@@ -55,7 +51,7 @@ const PageNavigator = () => {
 }
 
 const Container = styled.div`
-  padding: .5rem;
+  padding: 0.5rem;
 
   & button {
     margin-right: 1rem;

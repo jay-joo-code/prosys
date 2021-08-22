@@ -6,8 +6,8 @@ import styled from 'styled-components'
 import { getDateStamp, getDay } from 'src/util/date'
 import { FlexRow } from 'src/components/layout/Flex'
 import AddTaskItem from './AddTaskItem'
-import GcalTaskList from './GcalTaskList'
 import UntimedTaskList from './UntimedTaskList'
+import TimedTaskList from './TimedTaskList'
 
 interface TaskBatchItemProps {
   due: Date
@@ -17,22 +17,17 @@ const TaskBatchItem = ({ due }: TaskBatchItemProps) => {
   return (
     <Container>
       <DateHeader>
-        <Text
-          variant='h3'
-          color={theme.text.light}
-          fontWeight={700}>
+        <Text variant='h3' color={theme.text.light} fontWeight={700}>
           {getDateStamp(due)}
         </Text>
         <Space padding='0 .2rem' />
-        <Text
-          variant='h3'
-          color={theme.text.muted}
-          fontWeight={700}>
+        <Text variant='h3' color={theme.text.muted} fontWeight={700}>
           {getDay(due)}
         </Text>
       </DateHeader>
       <UntimedTaskList due={due} />
       <AddTaskItem due={due} />
+      <TimedTaskList due={due} />
     </Container>
   )
 }

@@ -112,16 +112,26 @@ taskRouter.get('/inbox/prosys', async (req, res) => {
       $gte: moment(dueDate).utcOffset('+0400').startOf('day').toDate(),
       $lte: moment(dueDate).utcOffset('+0400').endOf('day').toDate(),
     }
-    const timeQuery = req?.query?.isTimed ? '0000' : { $ne: '0000' }
+
+    const timeQuery =
+      req?.query?.isTimed === 'true'
+        ? {
+            $or: [{ startTime: { $ne: '0000' } }, { endTime: { $ne: '0000' } }],
+          }
+        : {
+            startTime: '0000',
+            endTime: '0000',
+          }
+
     const query = {
       userId: req.user?._id,
       isComplete: false,
       isArchived: false,
       provider: undefined,
       due,
-      startTime: timeQuery,
-      endTime: timeQuery,
+      ...timeQuery,
     }
+
     const tasks = await Task.find(query).sort({ createdAt: 1 })
     res.send(tasks)
   } catch (e) {
@@ -177,7 +187,16 @@ taskRouter.put('/undo', async (req, res) => {
 
 taskRouter.put('/:id', async (req, res) => {
   try {
-    const doc = await Task.findByIdAndUpdate(req.params.id, req.body, {
+    const updateObj = { ...req.body }
+    // if (
+    //   (updateObj?.startTime !== '0000' && updateObj?.endTime === '0000') ||
+    //   (updateObj?.endTime !== '0000' && updateObj?.startTime === '0000')
+    // ) {
+    //   console.log('reset times')
+    //   updateObj.startTime = '0000'
+    //   updateObj.endTime = '0000'
+    // }
+    const doc = await Task.findByIdAndUpdate(req.params.id, updateObj, {
       new: true,
     })
     res.send(doc)
