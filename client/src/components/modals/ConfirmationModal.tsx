@@ -3,7 +3,7 @@ import Modal from './Modal'
 import { FlexRow } from '../layout/Flex'
 import Space from '../layout/Space'
 import Text from '../fonts/Text'
-import Button from '../Button'
+import ContainedButton from '../buttons/ContainedButton'
 
 interface ConfirmationModalProps {
   isOpen: boolean
@@ -14,33 +14,26 @@ interface ConfirmationModalProps {
   description: string
 }
 
-const ConfirmationModal = ({ isOpen, onRequestClose, onConfirm, heading, description, confirmLabel }: ConfirmationModalProps) => {
+const ConfirmationModal = ({
+  isOpen,
+  onRequestClose,
+  onConfirm,
+  heading,
+  description,
+  confirmLabel,
+}: ConfirmationModalProps) => {
   return (
-    <Modal
-      isOpen={isOpen}
-      onRequestClose={onRequestClose}
-      heading={heading}
-    >
-      <Text
-        maxWidth={280}
-        variant='h5'
-      >{description}
+    <Modal isOpen={isOpen} onRequestClose={onRequestClose} heading={heading}>
+      <Text maxWidth={280} variant='h5'>
+        {description}
       </Text>
       <Space margin='1.5rem 0' />
-      <FlexRow
-        alignCenter
-        justifyEnd
-      >
-        <Button
-          variant='text'
-          onClick={() => onRequestClose()}
-        >Cancel
-        </Button>
+      <FlexRow alignCenter justifyEnd>
+        <ContainedButton onClick={() => onRequestClose()}>
+          Cancel
+        </ContainedButton>
         <Space margin='0 .5rem' />
-        <Button
-          onClick={onConfirm}
-        >{confirmLabel}
-        </Button>
+        <ContainedButton onClick={onConfirm}>{confirmLabel}</ContainedButton>
       </FlexRow>
     </Modal>
   )

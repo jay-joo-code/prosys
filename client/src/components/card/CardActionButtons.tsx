@@ -3,7 +3,7 @@ import EditOutlinedIcon from '@material-ui/icons/EditOutlined'
 import React from 'react'
 import { useDispatch } from 'react-redux'
 import theme from 'src/app/theme'
-import Button from 'src/components/Button'
+import ContainedButton from 'src/components/buttons/ContainedButton'
 import { showSnackbar } from 'src/redux/snackbarSlice'
 import { ICard, ICardStatus, ICodableTextareaBlock } from 'src/types/card.type'
 import { isBlocksEmpty } from 'src/util/card'
@@ -66,7 +66,9 @@ const CardActionButtons = ({
       <CardIsLearning isLearning={card?.isLearning} cid={card?._id} />
       <IconButton size='small' color='inherit' onClick={toggleStatus}>
         {status === 'EDITING' ? (
-          <Button color={theme.success[500]}>Save</Button>
+          <ContainedButton background={theme.success[500]}>
+            Save
+          </ContainedButton>
         ) : (
           <StyledEditIcon />
         )}

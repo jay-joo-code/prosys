@@ -4,16 +4,17 @@ import React from 'react'
 import { BottomSheet } from 'react-spring-bottom-sheet'
 import 'react-spring-bottom-sheet/dist/style.css'
 import { useUpdateInboxTaskById } from 'src/api/task'
+import theme from 'src/app/theme'
+import ContainedButton from 'src/components/buttons/ContainedButton'
 import ButtonedIcon from 'src/components/ButtonedIcon'
-import TextButton from 'src/components/buttons/TextButton'
 import Clickable from 'src/components/Clickable'
 import DebouncedInput from 'src/components/form-elements/DebouncedInput'
 import DebouncedTextarea from 'src/components/form-elements/DebouncedTextarea'
 import { FlexRow } from 'src/components/layout/Flex'
 import Space from 'src/components/layout/Space'
 import { ITask } from 'src/types/task.type'
-import styled from 'styled-components'
 import { isTaskTimeSet } from 'src/util/task'
+import styled from 'styled-components'
 
 interface TaskBottomSheetProps {
   task: ITask
@@ -69,27 +70,36 @@ const TaskBottomSheet = ({ task, isOpen, onDismiss }: TaskBottomSheetProps) => {
       initialFocusRef={false}>
       <Container>
         <FlexRow justifySpaceBetween>
+          {!task?.isComplete ? (
+            <FlexRow alignCenter>
+              <TimeContainer>
+                <TimeTextarea
+                  onDebouncedChange={(value) => handleSaveTime(value, 'START')}
+                  placeholder='Start'
+                  initValue={task?.startTime}
+                />
+              </TimeContainer>
+              <StyledLine fontSize='small' />
+              <TimeContainer>
+                <TimeTextarea
+                  onDebouncedChange={(value) => handleSaveTime(value, 'END')}
+                  placeholder='End'
+                  initValue={task?.endTime}
+                />
+              </TimeContainer>
+            </FlexRow>
+          ) : (
+            <div />
+          )}
           <FlexRow alignCenter>
-            <TimeContainer>
-              <TimeTextarea
-                onDebouncedChange={(value) => handleSaveTime(value, 'START')}
-                placeholder='Start'
-                initValue={task?.startTime}
-              />
-            </TimeContainer>
-            <StyledLine fontSize='small' />
-            <TimeContainer>
-              <TimeTextarea
-                onDebouncedChange={(value) => handleSaveTime(value, 'END')}
-                placeholder='End'
-                initValue={task?.endTime}
-              />
-            </TimeContainer>
-          </FlexRow>
-          <FlexRow alignCenter>
-            <TextButton onClick={handleToggleComplete}>
-              {task?.isComplete ? 'Incomplete' : 'Complete'}
-            </TextButton>
+            <ContainedButton
+              onClick={handleToggleComplete}
+              background={
+                task?.isComplete ? theme.danger[400] : theme.brand[400]
+              }
+              color={theme.grey[0]}>
+              {task?.isComplete ? 'Mark as incomplete' : 'Complete'}
+            </ContainedButton>
             <Space padding='0 .5rem' />
             <ButtonedIcon onClick={() => onDismiss()} icon={<CloseIcon />} />
           </FlexRow>

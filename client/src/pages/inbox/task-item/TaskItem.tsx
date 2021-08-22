@@ -5,7 +5,7 @@ import Text from 'src/components/fonts/Text'
 import { FlexRow } from 'src/components/layout/Flex'
 import Space from 'src/components/layout/Space'
 import { ITask } from 'src/types/task.type'
-import { isTaskTimeSet } from 'src/util/task'
+import { isTaskTimeSet, isOneTaskTimeSet } from 'src/util/task'
 import styled from 'styled-components'
 import TaskBottomSheet from './TaskBottomSheet'
 
@@ -119,6 +119,11 @@ const TaskItem = ({ task }: TaskItemProps) => {
           </div>
           <Space padding='0 .2rem' />
           <TaskText onClick={() => setIsBottomSheetOpen(true)}>
+            {isOneTaskTimeSet(task) && (
+              <Text variant='p' color={theme.text.light}>
+                {task?.startTime} - {task?.endTime}
+              </Text>
+            )}
             <Text variant='p'>{task?.name}</Text>
             <Text variant='h5' maxLines={2} color={theme.text.light}>
               {task?.notes}
