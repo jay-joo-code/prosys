@@ -1,6 +1,6 @@
 import React, { memo, useEffect, useState } from 'react'
-import styled from 'styled-components'
 import { useDebounce } from 'use-debounce'
+import Input from './Input'
 
 interface DebouncedInputProps
   extends React.DetailedHTMLProps<
@@ -28,19 +28,12 @@ const DebouncedInput = ({
   }, [debouncedValue])
 
   return (
-    <StyledInput
+    <Input
       {...rest}
       value={value}
       onChange={(event) => setValue(event.target.value)}
     />
   )
 }
-
-const StyledInput = styled.input`
-  background: inherit;
-  font-size: 1rem;
-  font-family: inherit;
-  line-height: 1.5;
-`
 
 export default memo(DebouncedInput)

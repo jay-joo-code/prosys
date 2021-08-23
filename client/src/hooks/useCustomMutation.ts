@@ -12,13 +12,18 @@ interface IUpdateLocal {
 interface IMutationOptions {
   url: string
   method: 'post' | 'put' | 'delete'
-  updateLocal?: IUpdateLocal
+  updateLocal?: IUpdateLocal[]
 }
 
 interface ISnapshot {
   queryKey: any
   previousValues: any
 }
+
+export const queryConfigToKey = (queryConfig: IQueryConfig) => [
+  queryConfig?.url,
+  queryConfig?.variables,
+]
 
 const useCustomMutation = <T>({
   url,
@@ -31,82 +36,84 @@ const useCustomMutation = <T>({
         // When mutate is called:
         onMutate: (newVariables: any) => {
           if (updateLocal) {
-            const snapshots: ISnapshot[] = []
+            updateLocal.forEach((updateLocal) => {
+              const snapshots: ISnapshot[] = []
 
-            updateLocal.queryConfigs.forEach((queryConfig) => {
-              const { url: fetchUrl, variables: fetchVariables } = queryConfig
-              const queryKey = [fetchUrl, fetchVariables]
-              // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
-              queryClient.cancelQueries(queryKey)
+              updateLocal.queryConfigs.forEach((queryConfig) => {
+                const queryKey = queryConfigToKey(queryConfig)
 
-              // Snapshot the previous value
-              const previousValues = queryClient.getQueryData(queryKey)
+                // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
+                queryClient.cancelQueries(queryKey)
 
-              // Optimistically update to the new value
-              queryClient.setQueryData(queryKey, (oldData: any) => {
-                // custom mutationFn
-                if (updateLocal.mutationFn) {
-                  return updateLocal.mutationFn(oldData, newVariables)
-                }
+                // Snapshot the previous value
+                const previousValues = queryClient.getQueryData(queryKey)
 
-                // appendStart
-                if (updateLocal.type === 'appendStart') {
-                  if (oldData) return [newVariables, ...oldData]
-                  return [newVariables]
-                }
-
-                // appendEnd
-                if (updateLocal.type === 'appendEnd') {
-                  if (oldData) return [...oldData, newVariables]
-                  return [newVariables]
-                }
-
-                // update
-                if (updateLocal.type === 'update') {
-                  // update by id
-                  if (newVariables._id) {
-                    const newValues = oldData?.map((value: any) => {
-                      if (value._id === newVariables._id) {
-                        return { ...value, ...newVariables }
-                      }
-                      return value
-                    })
-                    return newValues
-                  } else {
-                    // if newVariables._id not defined, dont update locally
-                    if (oldData) return [...oldData]
-                    return undefined
+                // Optimistically update to the new value
+                queryClient.setQueryData(queryKey, (oldData: any) => {
+                  // custom mutationFn
+                  if (updateLocal.mutationFn) {
+                    return updateLocal.mutationFn(oldData, newVariables)
                   }
-                }
 
-                // delete
-                if (updateLocal.type === 'delete') {
-                  // delete by id
-                  if (newVariables._id) {
-                    const newValues = oldData?.filter(
-                      (value: any) => value._id !== newVariables._id
-                    )
-                    return newValues
-                  } else {
-                    // if newVariables._id not defined, dont delete locally
-                    if (oldData) return [...oldData]
-                    return undefined
+                  // appendStart
+                  if (updateLocal.type === 'appendStart') {
+                    if (oldData) return [newVariables, ...oldData]
+                    return [newVariables]
                   }
-                }
 
-                if (oldData) return [...oldData]
-                return undefined
+                  // appendEnd
+                  if (updateLocal.type === 'appendEnd') {
+                    if (oldData) return [...oldData, newVariables]
+                    return [newVariables]
+                  }
+
+                  // update
+                  if (updateLocal.type === 'update') {
+                    // update by id
+                    if (newVariables._id) {
+                      const newValues = oldData?.map((value: any) => {
+                        if (value._id === newVariables._id) {
+                          return { ...value, ...newVariables }
+                        }
+                        return value
+                      })
+                      return newValues
+                    } else {
+                      // if newVariables._id not defined, dont update locally
+                      if (oldData) return [...oldData]
+                      return undefined
+                    }
+                  }
+
+                  // delete
+                  if (updateLocal.type === 'delete') {
+                    // delete by id
+                    if (newVariables._id) {
+                      const newValues = oldData?.filter(
+                        (value: any) => value._id !== newVariables._id
+                      )
+                      return newValues
+                    } else {
+                      // if newVariables._id not defined, dont delete locally
+                      if (oldData) return [...oldData]
+                      return undefined
+                    }
+                  }
+
+                  if (oldData) return [...oldData]
+                  return undefined
+                })
+
+                snapshots.push({ queryKey, previousValues })
               })
 
-              snapshots.push({ queryKey, previousValues })
+              // Return the snapshotted values
+              return () => {
+                snapshots.forEach(({ queryKey, previousValues }) => {
+                  queryClient.setQueryData(queryKey, previousValues)
+                })
+              }
             })
-
-            // Return the snapshotted values
-            return () => {
-              snapshots.forEach(({ queryKey, previousValues }) => {
-                queryClient.setQueryData(queryKey, previousValues)
-              })
-            }
           }
         },
 
@@ -122,10 +129,14 @@ const useCustomMutation = <T>({
 
         // Always refetch after error or success:
         onSettled: () => {
-          if (updateLocal && !updateLocal.isNotRefetchOnSettle) {
-            updateLocal.queryConfigs.forEach(({ url, variables }) => {
-              const queryKey = [url, variables]
-              queryClient.invalidateQueries(queryKey)
+          if (updateLocal) {
+            updateLocal.forEach((updateLocal) => {
+              if (!updateLocal.isNotRefetchOnSettle) {
+                updateLocal.queryConfigs.forEach(({ url, variables }) => {
+                  const queryKey = [url, variables]
+                  queryClient.invalidateQueries(queryKey)
+                })
+              }
             })
           }
         },

@@ -43,11 +43,7 @@ taskRouter.get('/inbox', async (req, res) => {
     // set overdue task due date as today
 
     const validatedTasks = docs.map((task) => {
-      if (
-        task.due &&
-        isDateBeforeToday(task.due) &&
-        task.provider !== 'google'
-      ) {
+      if (task.due && isDateBeforeToday(task.due) && task.provider !== 'google') {
         // don't reset time if task is recurring
         const updatedFields = task?.isRecur
           ? {
@@ -133,6 +129,13 @@ taskRouter.get('/inbox/prosys', async (req, res) => {
     }
 
     const tasks = await Task.find(query).sort({ createdAt: 1 })
+
+    if (req?.query?.isTimed) {
+      tasks.sort((a, b) => {
+        return Number(a?.startTime) - Number(b?.startTime) || Number(a?.endTime) - Number(b?.endTime)
+      })
+    }
+
     res.send(tasks)
   } catch (e) {
     res.status(500).send(e)
