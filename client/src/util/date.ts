@@ -1,9 +1,7 @@
 import moment from 'moment'
 
 export const isDateTodayOrBefore = (date: Date) => {
-  return (
-    moment(date).isSame(moment(new Date()), 'day') || isDateBeforeToday(date)
-  )
+  return moment(date).isSame(moment(new Date()), 'day') || isDateBeforeToday(date)
 }
 
 export const isDateBeforeToday = (date: Date): boolean => {
@@ -17,7 +15,7 @@ export const getDateStamp = (date: Date | null): string => {
 
 export const getFullDate = (date: Date | null): string => {
   if (!date) return ''
-  return moment(date).format('YYYY-MM-DD')
+  return moment(date).utcOffset('+0400').format('YYYY-MM-DD')
 }
 
 export const getDay = (date: Date) => {
