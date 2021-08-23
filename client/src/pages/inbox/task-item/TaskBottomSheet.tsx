@@ -7,6 +7,7 @@ import { useUpdateInboxTaskById, useUpdateTaskTime } from 'src/api/task'
 import theme from 'src/app/theme'
 import ButtonedIcon from 'src/components/ButtonedIcon'
 import ContainedButton from 'src/components/buttons/ContainedButton'
+import TextButton from 'src/components/buttons/TextButton'
 import Clickable from 'src/components/Clickable'
 import DebouncedTextarea from 'src/components/form-elements/DebouncedTextarea'
 import Input from 'src/components/form-elements/Input'
@@ -68,6 +69,11 @@ const TaskBottomSheet = ({ task, isOpen, onDismiss }: TaskBottomSheetProps) => {
     onDismiss()
   }
 
+  const handleResetTime = () => {
+    setLocalStartTime('0000')
+    setLocalEndTime('0000')
+  }
+
   return (
     <BottomSheet
       open={isOpen}
@@ -102,9 +108,7 @@ const TaskBottomSheet = ({ task, isOpen, onDismiss }: TaskBottomSheetProps) => {
           <FlexRow alignCenter>
             <ContainedButton
               onClick={handleToggleComplete}
-              background={
-                task?.isComplete ? theme.danger[400] : theme.brand[400]
-              }
+              background={task?.isComplete ? theme.danger[400] : theme.brand[400]}
               color={theme.grey[0]}>
               {task?.isComplete ? 'Mark as incomplete' : 'Complete'}
             </ContainedButton>
@@ -112,21 +116,17 @@ const TaskBottomSheet = ({ task, isOpen, onDismiss }: TaskBottomSheetProps) => {
             <ButtonedIcon onClick={handleDismiss} icon={<CloseIcon />} />
           </FlexRow>
         </FlexRow>
-        <Clickable>
-          <NameTextField
-            onDebouncedChange={handleSaveName}
-            placeholder='Task name'
-            initValue={task?.name}
-          />
-        </Clickable>
-        <Clickable>
-          <NotesTextarea
-            onDebouncedChange={handleSaveNotes}
-            placeholder='Notes'
-            initValue={task?.notes}
-            minRows={2}
-          />
-        </Clickable>
+        {isOneTaskTimeSet(task) && (
+          <ResetTimeContainer>
+            <TextButton onClick={handleResetTime}>Reset time</TextButton>
+          </ResetTimeContainer>
+        )}
+        <InputContainer>
+          <NameTextField onDebouncedChange={handleSaveName} placeholder='Task name' initValue={task?.name} />
+        </InputContainer>
+        <InputContainer>
+          <NotesTextarea onDebouncedChange={handleSaveNotes} placeholder='Notes' initValue={task?.notes} minRows={2} />
+        </InputContainer>
       </Container>
     </BottomSheet>
   )
@@ -134,10 +134,10 @@ const TaskBottomSheet = ({ task, isOpen, onDismiss }: TaskBottomSheetProps) => {
 
 const Container = styled.div`
   padding: 1rem;
+`
 
-  & > * {
-    margin-bottom: 1rem;
-  }
+const InputContainer = styled(Clickable)`
+  margin-top: 1rem;
 `
 
 const NameTextField = styled(DebouncedTextarea)`
@@ -159,6 +159,10 @@ const TimeInput = styled(Input)`
 const StyledLine = styled(RemoveIcon)`
   margin: 0 0.3rem;
   fill: ${(props) => props.theme.grey[700]} !important;
+`
+
+const ResetTimeContainer = styled.div`
+  margin-top: 0.2rem;
 `
 
 export default TaskBottomSheet
