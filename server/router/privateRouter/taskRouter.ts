@@ -121,7 +121,6 @@ taskRouter.get('/inbox/prosys', async (req, res) => {
 
     const query = {
       userId: req.user?._id,
-      isComplete: false,
       isArchived: false,
       provider: undefined,
       due,
@@ -132,7 +131,9 @@ taskRouter.get('/inbox/prosys', async (req, res) => {
 
     if (req?.query?.isTimed) {
       tasks.sort((a, b) => {
-        return Number(a?.startTime) - Number(b?.startTime) || Number(a?.endTime) - Number(b?.endTime)
+        return (
+          Number(a?.startTime) - Number(b?.startTime) || Number(a?.endTime) - Number(b?.endTime)
+        )
       })
     }
 

@@ -111,10 +111,7 @@ const TaskItem = ({ task }: TaskItemProps) => {
           <div onClick={handleToggleComplete}>
             <Space padding='.15rem 0' />
             <CheckboxContainer>
-              <IsCompleteCheckbox
-                isComplete={task?.isComplete}
-                isInverted={false}
-              />
+              <IsCompleteCheckbox isComplete={task?.isComplete} isInverted={false} />
             </CheckboxContainer>
           </div>
           <Space padding='0 .2rem' />
@@ -124,7 +121,9 @@ const TaskItem = ({ task }: TaskItemProps) => {
                 {task?.startTime} - {task?.endTime}
               </Text>
             )}
-            <Text variant='p'>{task?.name}</Text>
+            <Text variant='p' color={task?.isComplete ? theme.text.light : theme.text.default}>
+              {task?.name}
+            </Text>
             <Text variant='h5' maxLines={2} color={theme.text.light}>
               {task?.notes}
             </Text>
