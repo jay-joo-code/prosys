@@ -174,6 +174,8 @@ export const useUpdateTaskTime = (_id: string, params: IUseProsysTasksParams) =>
         queryConfigs: [prosysTasksConfig(params)],
         isNotRefetchOnSettle: true,
         mutationFn: (oldData, newVariables) => {
+          if (!oldData) return
+
           const targetQueryKey = queryConfigToKey(
             prosysTasksConfig({
               ...params,
@@ -188,12 +190,14 @@ export const useUpdateTaskTime = (_id: string, params: IUseProsysTasksParams) =>
               // add to untimed at the correct index
               queryClient.setQueryData(targetQueryKey, (oldData: any) => {
                 // prevent duplicates
-                const duplicateIdx = oldData.findIndex((task: ITask) => task?._id === newVariables?._id)
+                const duplicateIdx = oldData?.findIndex(
+                  (task: ITask) => task?._id === newVariables?._id
+                )
 
                 if (duplicateIdx >= 0) return oldData
 
                 // find idx of elemnt that's created at before newVariables
-                const targetIdx = oldData.findIndex(
+                const targetIdx = oldData?.findIndex(
                   (task: ITask) => new Date(task?.createdAt) > new Date(newVariables?.createdAt)
                 )
 
@@ -208,19 +212,19 @@ export const useUpdateTaskTime = (_id: string, params: IUseProsysTasksParams) =>
               })
 
               // remove from current query cache (timed)
-              return oldData.filter((task: ITask) => task?._id !== newVariables?._id)
+              return oldData?.filter((task: ITask) => task?._id !== newVariables?._id)
             } else {
               // move within timed to correct sort order
 
               // find idx of elemnt that has a later startTime than newVariables
-              const targetIdx = oldData.findIndex(
+              const targetIdx = oldData?.findIndex(
                 (task: ITask) =>
                   Number(task?.startTime) > Number(newVariables?.startTime) ||
                   (Number(task?.startTime) === Number(newVariables?.startTime) &&
                     Number(task?.endTime) > Number(newVariables?.endTime))
               )
 
-              const newData = oldData.filter((task: ITask) => task?._id !== newVariables?._id)
+              const newData = oldData?.filter((task: ITask) => task?._id !== newVariables?._id)
 
               if (targetIdx === -1) {
                 newData.push(newVariables)
@@ -236,12 +240,14 @@ export const useUpdateTaskTime = (_id: string, params: IUseProsysTasksParams) =>
               // add to timed at the correct index
               queryClient.setQueryData(targetQueryKey, (oldData: any) => {
                 // prevent duplicates
-                const duplicateIdx = oldData.findIndex((task: ITask) => task?._id === newVariables?._id)
+                const duplicateIdx = oldData?.findIndex(
+                  (task: ITask) => task?._id === newVariables?._id
+                )
 
                 if (duplicateIdx >= 0) return oldData
 
                 // find idx of elemnt that has a later startTime than newVariables
-                const targetIdx = oldData.findIndex(
+                const targetIdx = oldData?.findIndex(
                   (task: ITask) =>
                     Number(task?.startTime) > Number(newVariables?.startTime) ||
                     (Number(task?.startTime) === Number(newVariables?.startTime) &&
@@ -259,7 +265,7 @@ export const useUpdateTaskTime = (_id: string, params: IUseProsysTasksParams) =>
               })
 
               // remove from current query cache (untimed)
-              return oldData.filter((task: ITask) => task?._id !== newVariables?._id)
+              return oldData?.filter((task: ITask) => task?._id !== newVariables?._id)
             }
           }
           return oldData
