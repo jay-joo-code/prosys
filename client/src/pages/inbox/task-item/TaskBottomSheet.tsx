@@ -13,6 +13,7 @@ import DebouncedTextarea from 'src/components/form-elements/DebouncedTextarea'
 import Input from 'src/components/form-elements/Input'
 import { FlexRow } from 'src/components/layout/Flex'
 import Space from 'src/components/layout/Space'
+import useIsDesktop from 'src/hooks/useIsDesktop'
 import { ITask } from 'src/types/task.type'
 import { isOneTaskTimeSet } from 'src/util/task'
 import styled from 'styled-components'
@@ -24,6 +25,14 @@ interface TaskBottomSheetProps {
 }
 
 const TaskBottomSheet = ({ task, isOpen, onDismiss }: TaskBottomSheetProps) => {
+  const isDesktop = useIsDesktop()
+  const isAutoSelect = isDesktop || import.meta.env.NODE_ENV !== 'development'
+  const handleInputFocus = (
+    event: React.FocusEvent<HTMLInputElement> | React.FocusEvent<HTMLTextAreaElement>
+  ) => {
+    if (isAutoSelect) event.target.select()
+  }
+
   const { updateInboxTask } = useUpdateInboxTaskById(task?._id, {
     due: new Date(task?.due as string),
     isTimed: isOneTaskTimeSet(task),
@@ -91,6 +100,7 @@ const TaskBottomSheet = ({ task, isOpen, onDismiss }: TaskBottomSheetProps) => {
                   placeholder='Start'
                   value={localStartTime}
                   onChange={(event) => setLocalStartTime(event.target.value)}
+                  onFocus={handleInputFocus}
                 />
               </TimeContainer>
               <StyledLine fontSize='small' />
@@ -99,6 +109,7 @@ const TaskBottomSheet = ({ task, isOpen, onDismiss }: TaskBottomSheetProps) => {
                   placeholder='End'
                   value={localEndTime}
                   onChange={(event) => setLocalEndTime(event.target.value)}
+                  onFocus={handleInputFocus}
                 />
               </TimeContainer>
             </FlexRow>
@@ -122,10 +133,22 @@ const TaskBottomSheet = ({ task, isOpen, onDismiss }: TaskBottomSheetProps) => {
           </ResetTimeContainer>
         )}
         <InputContainer>
-          <NameTextField onDebouncedChange={handleSaveName} placeholder='Task name' initValue={task?.name} />
+          <NameTextField
+            autoFocus
+            onFocus={handleInputFocus}
+            onDebouncedChange={handleSaveName}
+            placeholder='Task name'
+            initValue={task?.name}
+          />
         </InputContainer>
         <InputContainer>
-          <NotesTextarea onDebouncedChange={handleSaveNotes} placeholder='Notes' initValue={task?.notes} minRows={2} />
+          <NotesTextarea
+            onFocus={handleInputFocus}
+            onDebouncedChange={handleSaveNotes}
+            placeholder='Notes'
+            initValue={task?.notes}
+            minRows={2}
+          />
         </InputContainer>
       </Container>
     </BottomSheet>
