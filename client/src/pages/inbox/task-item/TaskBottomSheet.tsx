@@ -84,76 +84,88 @@ const TaskBottomSheet = ({ task, isOpen, onDismiss }: TaskBottomSheetProps) => {
   }
 
   return (
-    <BottomSheet
-      open={isOpen}
-      defaultSnap={({ maxHeight }) => maxHeight / 2}
-      snapPoints={({ maxHeight }) => [maxHeight * 0.8, maxHeight * 0.4]}
-      onDismiss={handleDismiss}
-      expandOnContentDrag
-      initialFocusRef={false}>
-      <Container>
-        <FlexRow justifySpaceBetween>
-          {!task?.isComplete ? (
+    <OuterContainer>
+      <StyledBottomSheet
+        open={isOpen}
+        defaultSnap={({ maxHeight }) => maxHeight / 2}
+        snapPoints={({ maxHeight }) => [maxHeight * 0.8, maxHeight * 0.4]}
+        onDismiss={handleDismiss}
+        expandOnContentDrag
+        initialFocusRef={false}>
+        <Container>
+          <FlexRow justifySpaceBetween>
+            {!task?.isComplete ? (
+              <FlexRow alignCenter>
+                <TimeContainer>
+                  <TimeInput
+                    placeholder='Start'
+                    value={localStartTime}
+                    onChange={(event) => setLocalStartTime(event.target.value)}
+                    onFocus={handleInputFocus}
+                  />
+                </TimeContainer>
+                <StyledLine fontSize='small' />
+                <TimeContainer>
+                  <TimeInput
+                    placeholder='End'
+                    value={localEndTime}
+                    onChange={(event) => setLocalEndTime(event.target.value)}
+                    onFocus={handleInputFocus}
+                  />
+                </TimeContainer>
+              </FlexRow>
+            ) : (
+              <div />
+            )}
             <FlexRow alignCenter>
-              <TimeContainer>
-                <TimeInput
-                  placeholder='Start'
-                  value={localStartTime}
-                  onChange={(event) => setLocalStartTime(event.target.value)}
-                  onFocus={handleInputFocus}
-                />
-              </TimeContainer>
-              <StyledLine fontSize='small' />
-              <TimeContainer>
-                <TimeInput
-                  placeholder='End'
-                  value={localEndTime}
-                  onChange={(event) => setLocalEndTime(event.target.value)}
-                  onFocus={handleInputFocus}
-                />
-              </TimeContainer>
+              <ContainedButton
+                onClick={handleToggleComplete}
+                background={task?.isComplete ? theme.danger[400] : theme.brand[400]}
+                color={theme.grey[0]}>
+                {task?.isComplete ? 'Mark as incomplete' : 'Complete'}
+              </ContainedButton>
+              <Space padding='0 .5rem' />
+              <ButtonedIcon onClick={handleDismiss} icon={<CloseIcon />} />
             </FlexRow>
-          ) : (
-            <div />
-          )}
-          <FlexRow alignCenter>
-            <ContainedButton
-              onClick={handleToggleComplete}
-              background={task?.isComplete ? theme.danger[400] : theme.brand[400]}
-              color={theme.grey[0]}>
-              {task?.isComplete ? 'Mark as incomplete' : 'Complete'}
-            </ContainedButton>
-            <Space padding='0 .5rem' />
-            <ButtonedIcon onClick={handleDismiss} icon={<CloseIcon />} />
           </FlexRow>
-        </FlexRow>
-        {isOneTaskTimeSet(task) && (
-          <ResetTimeContainer>
-            <TextButton onClick={handleResetTime}>Reset time</TextButton>
-          </ResetTimeContainer>
-        )}
-        <InputContainer>
-          <NameTextField
-            autoFocus
-            onFocus={handleInputFocus}
-            onDebouncedChange={handleSaveName}
-            placeholder='Task name'
-            initValue={task?.name}
-          />
-        </InputContainer>
-        <InputContainer>
-          <NotesTextarea
-            onFocus={handleInputFocus}
-            onDebouncedChange={handleSaveNotes}
-            placeholder='Notes'
-            initValue={task?.notes}
-            minRows={2}
-          />
-        </InputContainer>
-      </Container>
-    </BottomSheet>
+          {isOneTaskTimeSet(task) && (
+            <ResetTimeContainer>
+              <TextButton onClick={handleResetTime}>Reset time</TextButton>
+            </ResetTimeContainer>
+          )}
+          <InputContainer>
+            <NameTextField
+              autoFocus
+              onFocus={handleInputFocus}
+              onDebouncedChange={handleSaveName}
+              placeholder='Task name'
+              initValue={task?.name}
+            />
+          </InputContainer>
+          <InputContainer>
+            <NotesTextarea
+              onFocus={handleInputFocus}
+              onDebouncedChange={handleSaveNotes}
+              placeholder='Notes'
+              initValue={task?.notes}
+              minRows={2}
+            />
+          </InputContainer>
+        </Container>
+      </StyledBottomSheet>
+    </OuterContainer>
   )
 }
+
+const OuterContainer = styled.div``
+
+const StyledBottomSheet = styled(BottomSheet)`
+  & > div:nth-of-type(2) {
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+`
 
 const Container = styled.div`
   padding: 1rem;
