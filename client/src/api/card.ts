@@ -41,11 +41,13 @@ export const useCreateCard = () => {
   const { mutateAsync: createCard, ...rest } = useCustomMutation<ICard>({
     url: '/private/card',
     method: 'post',
-    updateLocal: {
-      queryConfigs: [fetchCards()],
-      type: 'appendStart',
-      isNotRefetchOnSettle: true,
-    },
+    updateLocal: [
+      {
+        queryConfigs: [fetchCards()],
+        type: 'appendStart',
+        isNotRefetchOnSettle: true,
+      },
+    ],
   })
 
   return {
@@ -63,11 +65,13 @@ export const useUpdateCardById = (
     method: 'put',
     updateLocal: options?.isNotUpdateLocal
       ? undefined
-      : {
-          queryConfigs: [fetchCards()],
-          type: 'update',
-          isNotRefetchOnSettle: options?.isNotRefetchOnSettle,
-        },
+      : [
+          {
+            queryConfigs: [fetchCards()],
+            type: 'update',
+            isNotRefetchOnSettle: options?.isNotRefetchOnSettle,
+          },
+        ],
   })
 
   return {
@@ -81,10 +85,12 @@ export const useUpdateAndDequeCardById = (cid: string) => {
     {
       url: `/private/card/${cid}`,
       method: 'put',
-      updateLocal: {
-        queryConfigs: [fetchRepCards()],
-        type: 'delete',
-      },
+      updateLocal: [
+        {
+          queryConfigs: [fetchRepCards()],
+          type: 'delete',
+        },
+      ],
     }
   )
 
@@ -98,10 +104,12 @@ export const useDeleteCardById = (cid: string) => {
   const { mutateAsync: deleteCard, ...rest } = useCustomMutation<ICard>({
     url: `/private/card/${cid}`,
     method: 'put',
-    updateLocal: {
-      queryConfigs: [fetchCards()],
-      type: 'delete',
-    },
+    updateLocal: [
+      {
+        queryConfigs: [fetchCards()],
+        type: 'delete',
+      },
+    ],
   })
 
   return {

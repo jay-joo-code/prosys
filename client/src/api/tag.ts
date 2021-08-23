@@ -22,10 +22,12 @@ export const useCreateTag = () => {
   const { mutateAsync: createTag, ...rest } = useCustomMutation<ITag>({
     url: '/private/tag',
     method: 'post',
-    updateLocal: {
-      queryConfigs: [fetchTags()],
-      type: 'appendEnd',
-    },
+    updateLocal: [
+      {
+        queryConfigs: [fetchTags()],
+        type: 'appendEnd',
+      },
+    ],
   })
 
   return {
@@ -38,9 +40,11 @@ export const useDeleteTagById = () => {
   const { mutateAsync: deleteTagById, ...rest } = useCustomMutation<ITag>({
     url: '/private/tag',
     method: 'delete',
-    updateLocal: {
-      queryConfigs: [fetchTags()],
-    },
+    updateLocal: [
+      {
+        queryConfigs: [fetchTags()],
+      },
+    ],
   })
 
   return {

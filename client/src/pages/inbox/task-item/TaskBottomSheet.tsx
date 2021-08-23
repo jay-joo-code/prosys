@@ -1,19 +1,19 @@
 import CloseIcon from '@material-ui/icons/Close'
 import RemoveIcon from '@material-ui/icons/Remove'
-import React from 'react'
+import React, { useState } from 'react'
 import { BottomSheet } from 'react-spring-bottom-sheet'
 import 'react-spring-bottom-sheet/dist/style.css'
-import { useUpdateInboxTaskById } from 'src/api/task'
+import { useUpdateInboxTaskById, useUpdateTaskTime } from 'src/api/task'
 import theme from 'src/app/theme'
-import ContainedButton from 'src/components/buttons/ContainedButton'
 import ButtonedIcon from 'src/components/ButtonedIcon'
+import ContainedButton from 'src/components/buttons/ContainedButton'
 import Clickable from 'src/components/Clickable'
-import DebouncedInput from 'src/components/form-elements/DebouncedInput'
 import DebouncedTextarea from 'src/components/form-elements/DebouncedTextarea'
+import Input from 'src/components/form-elements/Input'
 import { FlexRow } from 'src/components/layout/Flex'
 import Space from 'src/components/layout/Space'
 import { ITask } from 'src/types/task.type'
-import { isTaskTimeSet } from 'src/util/task'
+import { isOneTaskTimeSet } from 'src/util/task'
 import styled from 'styled-components'
 
 interface TaskBottomSheetProps {
@@ -25,7 +25,12 @@ interface TaskBottomSheetProps {
 const TaskBottomSheet = ({ task, isOpen, onDismiss }: TaskBottomSheetProps) => {
   const { updateInboxTask } = useUpdateInboxTaskById(task?._id, {
     due: new Date(task?.due as string),
-    isTimed: isTaskTimeSet(task),
+    isTimed: isOneTaskTimeSet(task),
+  })
+
+  const { updateTaskTime } = useUpdateTaskTime(task?._id, {
+    due: new Date(task?.due as string),
+    isTimed: isOneTaskTimeSet(task),
   })
 
   const handleSaveName = (value: string) => {
@@ -50,14 +55,17 @@ const TaskBottomSheet = ({ task, isOpen, onDismiss }: TaskBottomSheetProps) => {
     if (!task?.isComplete) onDismiss()
   }
 
-  const handleSaveTime = (value: string, type: 'START' | 'END') => {
-    const updateObj =
-      type === 'START' ? { startTime: value } : { endTime: value }
+  const [localStartTime, setLocalStartTime] = useState<string>(task?.startTime)
+  const [localEndTime, setLocalEndTime] = useState<string>(task?.endTime)
 
-    updateInboxTask({
-      _id: task?._id,
-      ...updateObj,
+  const handleDismiss = () => {
+    updateTaskTime({
+      ...task,
+      startTime: localStartTime,
+      endTime: localEndTime,
     })
+
+    onDismiss()
   }
 
   return (
@@ -65,7 +73,7 @@ const TaskBottomSheet = ({ task, isOpen, onDismiss }: TaskBottomSheetProps) => {
       open={isOpen}
       defaultSnap={({ maxHeight }) => maxHeight / 2}
       snapPoints={({ maxHeight }) => [maxHeight * 0.8, maxHeight * 0.4]}
-      onDismiss={onDismiss}
+      onDismiss={handleDismiss}
       expandOnContentDrag
       initialFocusRef={false}>
       <Container>
@@ -73,18 +81,18 @@ const TaskBottomSheet = ({ task, isOpen, onDismiss }: TaskBottomSheetProps) => {
           {!task?.isComplete ? (
             <FlexRow alignCenter>
               <TimeContainer>
-                <TimeTextarea
-                  onDebouncedChange={(value) => handleSaveTime(value, 'START')}
+                <TimeInput
                   placeholder='Start'
-                  initValue={task?.startTime}
+                  value={localStartTime}
+                  onChange={(event) => setLocalStartTime(event.target.value)}
                 />
               </TimeContainer>
               <StyledLine fontSize='small' />
               <TimeContainer>
-                <TimeTextarea
-                  onDebouncedChange={(value) => handleSaveTime(value, 'END')}
+                <TimeInput
                   placeholder='End'
-                  initValue={task?.endTime}
+                  value={localEndTime}
+                  onChange={(event) => setLocalEndTime(event.target.value)}
                 />
               </TimeContainer>
             </FlexRow>
@@ -101,7 +109,7 @@ const TaskBottomSheet = ({ task, isOpen, onDismiss }: TaskBottomSheetProps) => {
               {task?.isComplete ? 'Mark as incomplete' : 'Complete'}
             </ContainedButton>
             <Space padding='0 .5rem' />
-            <ButtonedIcon onClick={() => onDismiss()} icon={<CloseIcon />} />
+            <ButtonedIcon onClick={handleDismiss} icon={<CloseIcon />} />
           </FlexRow>
         </FlexRow>
         <Clickable>
@@ -143,7 +151,7 @@ const TimeContainer = styled(Clickable)`
   padding: 0.2rem;
 `
 
-const TimeTextarea = styled(DebouncedInput)`
+const TimeInput = styled(Input)`
   width: 3rem;
   text-align: center;
 `
