@@ -211,6 +211,7 @@ export const useUpdateTaskTime = (_id: string, params: IUseProsysTasksParams) =>
               return oldData.filter((task: ITask) => task?._id !== newVariables?._id)
             } else {
               // move within timed to correct sort order
+
               // find idx of elemnt that has a later startTime than newVariables
               const targetIdx = oldData.findIndex(
                 (task: ITask) =>
@@ -224,7 +225,7 @@ export const useUpdateTaskTime = (_id: string, params: IUseProsysTasksParams) =>
               if (targetIdx === -1) {
                 newData.push(newVariables)
               } else {
-                newData.splice(targetIdx, 0, newVariables)
+                newData.splice(targetIdx - 1, 0, newVariables)
               }
               return newData
             }
