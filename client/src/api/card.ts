@@ -11,9 +11,7 @@ export const fetchCards = (selectedTagIds?: string[]) => ({
 })
 
 export const useCards = (selectedTagIds: string[]) => {
-  const { data: cards, ...rest } = useCustomQuery<ICard[]>(
-    fetchCards(selectedTagIds)
-  )
+  const { data: cards, ...rest } = useCustomQuery<ICard[]>(fetchCards(selectedTagIds))
 
   return {
     ...rest,
@@ -41,11 +39,12 @@ export const useCreateCard = () => {
   const { mutateAsync: createCard, ...rest } = useCustomMutation<ICard>({
     url: '/private/card',
     method: 'post',
-    updateLocal: [
+    localUpdates: [
       {
         queryConfigs: [fetchCards()],
-        type: 'appendStart',
-        isNotRefetchOnSettle: true,
+        presetLogic: 'appendStart',
+        // TODO: test this works
+        refetchOnSettle: false,
       },
     ],
   })
@@ -56,20 +55,17 @@ export const useCreateCard = () => {
   }
 }
 
-export const useUpdateCardById = (
-  cid: string,
-  options?: IUseUpdateCardByIdOptions
-) => {
+export const useUpdateCardById = (cid: string, options?: IUseUpdateCardByIdOptions) => {
   const { mutateAsync: updateCard, ...rest } = useCustomMutation<ICard>({
     url: `/private/card/${cid}`,
     method: 'put',
-    updateLocal: options?.isNotUpdateLocal
+    localUpdates: options?.isNotUpdateLocal
       ? undefined
       : [
           {
             queryConfigs: [fetchCards()],
-            type: 'update',
-            isNotRefetchOnSettle: options?.isNotRefetchOnSettle,
+            presetLogic: 'update',
+            refetchOnSettle: options?.refetchOnSettle,
           },
         ],
   })
@@ -81,18 +77,16 @@ export const useUpdateCardById = (
 }
 
 export const useUpdateAndDequeCardById = (cid: string) => {
-  const { mutateAsync: updateAndDequeCard, ...rest } = useCustomMutation<ICard>(
-    {
-      url: `/private/card/${cid}`,
-      method: 'put',
-      updateLocal: [
-        {
-          queryConfigs: [fetchRepCards()],
-          type: 'delete',
-        },
-      ],
-    }
-  )
+  const { mutateAsync: updateAndDequeCard, ...rest } = useCustomMutation<ICard>({
+    url: `/private/card/${cid}`,
+    method: 'put',
+    localUpdates: [
+      {
+        queryConfigs: [fetchRepCards()],
+        presetLogic: 'delete',
+      },
+    ],
+  })
 
   return {
     ...rest,
@@ -104,10 +98,10 @@ export const useDeleteCardById = (cid: string) => {
   const { mutateAsync: deleteCard, ...rest } = useCustomMutation<ICard>({
     url: `/private/card/${cid}`,
     method: 'put',
-    updateLocal: [
+    localUpdates: [
       {
         queryConfigs: [fetchCards()],
-        type: 'delete',
+        presetLogic: 'delete',
       },
     ],
   })

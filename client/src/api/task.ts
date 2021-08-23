@@ -89,10 +89,10 @@ export const useCreateInboxTask = () => {
   const { mutate: createInboxTask, ...rest } = useCustomMutation<ITask>({
     url: '/private/task',
     method: 'post',
-    updateLocal: [
+    localUpdates: [
       {
         queryConfigs: [fetchInboxTasks()],
-        type: 'appendStart',
+        presetLogic: 'appendStart',
       },
     ],
   })
@@ -107,10 +107,10 @@ export const useCreateInboxTaskAtDate = (params: IUseProsysTasksParams) => {
   const { mutate: createInboxTask, ...rest } = useCustomMutation<ITask>({
     url: '/private/task',
     method: 'post',
-    updateLocal: [
+    localUpdates: [
       {
         queryConfigs: [prosysTasksConfig(params)],
-        type: 'appendEnd',
+        presetLogic: 'appendEnd',
       },
     ],
   })
@@ -125,10 +125,10 @@ export const useCreateArchiveTask = () => {
   const { mutate: createArchiveTask, ...rest } = useCustomMutation<ITask>({
     url: '/private/task',
     method: 'post',
-    updateLocal: [
+    localUpdates: [
       {
         queryConfigs: [fetchArchivedTasks()],
-        type: 'appendStart',
+        presetLogic: 'appendStart',
       },
     ],
   })
@@ -143,11 +143,11 @@ export const useUpdateInboxTaskById = (_id: string, params: IUseProsysTasksParam
   const { mutate: updateInboxTask, ...rest } = useCustomMutation<ITask>({
     url: `/private/task/${_id}`,
     method: 'put',
-    updateLocal: [
+    localUpdates: [
       {
         queryConfigs: [prosysTasksConfig(params)],
-        type: 'update',
-        isNotRefetchOnSettle: true,
+        presetLogic: 'update',
+        refetchOnSettle: false,
       },
     ],
   })
@@ -164,15 +164,15 @@ export const useUpdateTaskTime = (_id: string, params: IUseProsysTasksParams) =>
   const { mutate: updateTaskTime, ...rest } = useCustomMutation<ITask>({
     url: `/private/task/${_id}`,
     method: 'put',
-    updateLocal: [
+    localUpdates: [
       {
         queryConfigs: [prosysTasksConfig(params)],
-        type: 'update',
-        isNotRefetchOnSettle: true,
+        presetLogic: 'update',
+        refetchOnSettle: false,
       },
       {
         queryConfigs: [prosysTasksConfig(params)],
-        isNotRefetchOnSettle: true,
+        refetchOnSettle: false,
         mutationFn: (oldData, newVariables) => {
           if (!oldData) return
 
@@ -290,11 +290,11 @@ export const useUpdateArchiveTaskById = (
   const { mutate: updateArchiveTask, ...rest } = useCustomMutation<ITask>({
     url: `/private/task/${_id}`,
     method: 'put',
-    updateLocal: [
+    localUpdates: [
       {
         queryConfigs: [fetchArchivedTasks()],
-        type: 'update',
-        isNotRefetchOnSettle: !options?.refetchOnSettle,
+        presetLogic: 'update',
+        refetchOnSettle: options?.refetchOnSettle,
       },
     ],
   })
@@ -309,10 +309,10 @@ export const useToggleArchive = (_id: string) => {
   const { mutate: toggleArchive, ...rest } = useCustomMutation<ITask>({
     url: `/private/task/${_id}`,
     method: 'put',
-    updateLocal: [
+    localUpdates: [
       {
         queryConfigs: [fetchInboxTasks(), fetchArchivedTasks()],
-        type: 'delete',
+        presetLogic: 'delete',
       },
     ],
   })
@@ -327,7 +327,7 @@ export const useUndoIsComplete = () => {
   const { mutateAsync: undoIsComplete, ...rest } = useCustomMutation<ITask>({
     url: `/private/task/undo`,
     method: 'put',
-    updateLocal: [
+    localUpdates: [
       {
         queryConfigs: [fetchInboxTasks(), fetchArchivedTasks()],
       },

@@ -4,15 +4,15 @@ import { IQueryConfig } from './useCustomQuery'
 
 interface IUpdateLocal {
   queryConfigs: IQueryConfig[]
-  type?: 'appendStart' | 'appendEnd' | 'update' | 'delete'
+  presetLogic?: 'appendStart' | 'appendEnd' | 'update' | 'delete'
   mutationFn?: (oldData: any, newVariables: any) => any
-  isNotRefetchOnSettle?: boolean
+  refetchOnSettle?: boolean
 }
 
 interface IMutationOptions {
   url: string
   method: 'post' | 'put' | 'delete'
-  updateLocal?: IUpdateLocal[]
+  localUpdates?: IUpdateLocal[]
 }
 
 interface ISnapshot {
@@ -28,18 +28,22 @@ export const queryConfigToKey = (queryConfig: IQueryConfig) => [
 const useCustomMutation = <T>({
   url,
   method,
-  updateLocal,
+  localUpdates: localUpdatesProp,
 }: IMutationOptions) => {
   const queryClient = useQueryClient()
-  const updateLocalConfig = updateLocal
+  const localUpdates = localUpdatesProp?.map((localUpdate) => ({
+    refetchOnSettle: true,
+    ...localUpdate,
+  }))
+  const updateLocalConfig = localUpdates
     ? {
         // When mutate is called:
         onMutate: (newVariables: any) => {
-          if (updateLocal) {
-            updateLocal.forEach((updateLocal) => {
+          if (localUpdates) {
+            localUpdates.forEach((localUpdate) => {
               const snapshots: ISnapshot[] = []
 
-              updateLocal.queryConfigs.forEach((queryConfig) => {
+              localUpdate.queryConfigs.forEach((queryConfig) => {
                 const queryKey = queryConfigToKey(queryConfig)
 
                 // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
@@ -51,24 +55,24 @@ const useCustomMutation = <T>({
                 // Optimistically update to the new value
                 queryClient.setQueryData(queryKey, (oldData: any) => {
                   // custom mutationFn
-                  if (updateLocal.mutationFn) {
-                    return updateLocal.mutationFn(oldData, newVariables)
+                  if (localUpdate.mutationFn) {
+                    return localUpdate.mutationFn(oldData, newVariables)
                   }
 
                   // appendStart
-                  if (updateLocal.type === 'appendStart') {
+                  if (localUpdate.presetLogic === 'appendStart') {
                     if (oldData) return [newVariables, ...oldData]
                     return [newVariables]
                   }
 
                   // appendEnd
-                  if (updateLocal.type === 'appendEnd') {
+                  if (localUpdate.presetLogic === 'appendEnd') {
                     if (oldData) return [...oldData, newVariables]
                     return [newVariables]
                   }
 
                   // update
-                  if (updateLocal.type === 'update') {
+                  if (localUpdate.presetLogic === 'update') {
                     // update by id
                     if (newVariables._id) {
                       const newValues = oldData?.map((value: any) => {
@@ -86,7 +90,7 @@ const useCustomMutation = <T>({
                   }
 
                   // delete
-                  if (updateLocal.type === 'delete') {
+                  if (localUpdate.presetLogic === 'delete') {
                     // delete by id
                     if (newVariables._id) {
                       const newValues = oldData?.filter(
@@ -129,10 +133,10 @@ const useCustomMutation = <T>({
 
         // Always refetch after error or success:
         onSettled: () => {
-          if (updateLocal) {
-            updateLocal.forEach((updateLocal) => {
-              if (!updateLocal.isNotRefetchOnSettle) {
-                updateLocal.queryConfigs.forEach(({ url, variables }) => {
+          if (localUpdates) {
+            localUpdates.forEach((localUpdate) => {
+              if (!localUpdate.refetchOnSettle) {
+                localUpdate.queryConfigs.forEach(({ url, variables }) => {
                   const queryKey = [url, variables]
                   queryClient.invalidateQueries(queryKey)
                 })

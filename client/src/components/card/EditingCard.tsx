@@ -16,18 +16,9 @@ interface EditingCardProps {
   refetchCards: () => void
 }
 
-const EditingCard = ({
-  card,
-  status,
-  setStatus,
-  refetchCards,
-}: EditingCardProps) => {
-  const [questionBlocks, setQuestionBlocks] = useState<
-    ICodableTextareaBlock[] | undefined
-  >()
-  const [answerBlocks, setAnswerBlocks] = useState<
-    ICodableTextareaBlock[] | undefined
-  >()
+const EditingCard = ({ card, status, setStatus, refetchCards }: EditingCardProps) => {
+  const [questionBlocks, setQuestionBlocks] = useState<ICodableTextareaBlock[] | undefined>()
+  const [answerBlocks, setAnswerBlocks] = useState<ICodableTextareaBlock[] | undefined>()
 
   useEffect(() => {
     setQuestionBlocks(card?.question)
@@ -35,7 +26,7 @@ const EditingCard = ({
   }, [card])
 
   const { updateCard } = useUpdateCardById(card?._id, {
-    isNotRefetchOnSettle: true,
+    refetchOnSettle: false,
     isNotUpdateLocal: true,
   })
 
@@ -90,10 +81,7 @@ const EditingCard = ({
       <Section>
         <SectionTitle variant='h4'>Question</SectionTitle>
         {questionBlocks && setQuestionBlocks && (
-          <CodableTextarea
-            blocks={questionBlocks}
-            setBlocks={setQuestionBlocks}
-          />
+          <CodableTextarea blocks={questionBlocks} setBlocks={setQuestionBlocks} />
         )}
       </Section>
       <Section>

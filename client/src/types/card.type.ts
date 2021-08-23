@@ -21,6 +21,6 @@ export interface ICard extends Document {
 }
 
 export interface IUseUpdateCardByIdOptions {
-  isNotRefetchOnSettle?: boolean
+  refetchOnSettle?: boolean
   isNotUpdateLocal?: boolean
 }
