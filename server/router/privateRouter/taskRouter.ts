@@ -105,8 +105,8 @@ taskRouter.get('/inbox/prosys', async (req, res) => {
   try {
     const dueDate = new Date(req?.query?.due as string)
     const due = {
-      $gte: moment(dueDate).startOf('day').toDate(),
-      $lte: moment(dueDate).endOf('day').toDate(),
+      $gte: moment(dueDate).utcOffset('+0400').startOf('day').toDate(),
+      $lte: moment(dueDate).utcOffset('+0400').endOf('day').toDate(),
     }
 
     const timeQuery =
