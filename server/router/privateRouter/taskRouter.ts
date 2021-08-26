@@ -1,9 +1,9 @@
 import express from 'express'
 import moment from 'moment'
 import Task from '../../models/Task'
-import { ITaskDocument } from '../../types/task'
+import { ITaskDocument } from '../../types/task.type'
 import { fetchGcalTasks } from '../../util/calendar'
-import { isDateBeforeToday } from '../../util/date'
+import { areSameDates } from '../../util/date'
 
 const taskRouter = express.Router()
 
@@ -15,55 +15,6 @@ taskRouter.post('/', async (req, res) => {
       userId: req.user?._id,
     }).save()
     res.send(doc)
-  } catch (e) {
-    res.status(500).send(e)
-  }
-})
-
-// DEPREC: get user's inbox tasks
-taskRouter.get('/inbox', async (req, res) => {
-  try {
-    // fetch user's inbox tasks
-    const docs = await Task.find({
-      $or: [
-        {
-          userId: req.user?._id,
-          isComplete: false,
-          isArchived: false,
-        },
-        {
-          userId: req.user?._id,
-          isComplete: false,
-          isArchived: undefined,
-        },
-      ],
-    }).sort({ due: 1 })
-
-    // set overdue task due date as today
-    const validatedTasks = docs.map((task) => {
-      if (task.due && isDateBeforeToday(task.due) && task.provider !== 'google') {
-        // don't reset time if task is recurring
-        const updatedFields = task?.isRecur
-          ? {
-              due: new Date(),
-            }
-          : {
-              due: new Date(),
-              startTime: '0000',
-              endTime: '0000',
-            }
-        Task.findByIdAndUpdate(task?._id, updatedFields, {
-          new: true,
-        }).exec()
-        return {
-          ...task.toObject(),
-          ...updatedFields,
-        }
-      }
-      return task
-    })
-
-    res.send(validatedTasks)
   } catch (e) {
     res.status(500).send(e)
   }
@@ -114,6 +65,48 @@ taskRouter.get('/inbox/prosys', async (req, res) => {
     }
 
     const tasks = await Task.find(query).sort({ createdAt: 1 })
+
+    if (
+      req?.query?.isTimed !== 'true' &&
+      req?.query?.due &&
+      areSameDates(new Date(req?.query?.due as string), new Date())
+    ) {
+      // if requesting for today's tasks
+      // rollover tasks due at previous days
+      const previousTasks = await Task.find({
+        userId: req.user?._id,
+        isArchived: false,
+        isComplete: false,
+        provider: undefined,
+        due: {
+          $lte: moment(dueDate).startOf('day').toDate(),
+        },
+      }).sort({ createdAt: 1 })
+
+      previousTasks.forEach((task: ITaskDocument) => {
+        // TODO: don't reset time if task is recurring
+        // const updatedFields = task?.isRecur
+        //   ? {
+        //       due: new Date(),
+        //     }
+        // : {
+        //     due: new Date(),
+        //     startTime: '0000',
+        //     endTime: '0000',
+        //   }
+
+        const updatedFields = {
+          due: new Date(),
+          startTime: '0000',
+          endTime: '0000',
+        }
+        Task.findByIdAndUpdate(task?._id, updatedFields).exec()
+        tasks.unshift({
+          ...task?.toObject(),
+          ...updatedFields,
+        } as ITaskDocument)
+      })
+    }
 
     if (req?.query?.isTimed === 'true' && dueDate) {
       const gcalTasks = await fetchGcalTasks({
