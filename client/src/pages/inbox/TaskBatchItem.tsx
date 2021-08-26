@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import theme from 'src/app/theme'
 import Text from 'src/components/fonts/Text'
 import Space from 'src/components/layout/Space'
@@ -40,4 +40,4 @@ const DateHeader = styled(FlexRow)`
   margin: 1.5rem 0 0.3rem 0;
 `
 
-export default TaskBatchItem
+export default memo(TaskBatchItem)
