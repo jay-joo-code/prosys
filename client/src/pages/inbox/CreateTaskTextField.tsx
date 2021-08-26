@@ -24,7 +24,10 @@ const CreateTaskTextField = ({
   const firstTaskId = useFirstTaskId()
 
   // create task
-  const { createTask } = useCreateTask()
+  const { createTask } = useCreateTask({
+    due: null,
+    isTimed: false,
+  })
   const [name, setName] = useState<string>('')
 
   const handleCreateTask = async () => {

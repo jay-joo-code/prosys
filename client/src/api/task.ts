@@ -87,18 +87,13 @@ export const useArchivedTasks = () => {
   }
 }
 
-export const useCreateTask = () => {
+export const useCreateTask = (params: IUseProsysTasksParams) => {
   const { mutate: createTask, ...rest } = useCustomMutation<ITask>({
     url: '/private/task',
     method: 'post',
     localUpdates: [
       {
-        queryConfigs: [
-          prosysTasksConfig({
-            due: null,
-            isTimed: false,
-          }),
-        ],
+        queryConfigs: [prosysTasksConfig(params)],
         presetLogic: 'appendStart',
       },
     ],

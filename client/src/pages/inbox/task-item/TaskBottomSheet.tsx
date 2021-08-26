@@ -1,23 +1,26 @@
+import AddCircleOutlinedIcon from '@material-ui/icons/AddCircleOutlined'
+import ObjectID from 'bson-objectid'
 import CloseIcon from '@material-ui/icons/Close'
-import TaskDue from './TaskDue'
 import RemoveIcon from '@material-ui/icons/Remove'
 import React, { useState } from 'react'
 import { BottomSheet } from 'react-spring-bottom-sheet'
 import 'react-spring-bottom-sheet/dist/style.css'
-import { useUpdateInboxTaskById, useUpdateAndMoveTask } from 'src/api/task'
+import { useCreateTask, useUpdateAndMoveTask, useUpdateInboxTaskById } from 'src/api/task'
 import theme from 'src/app/theme'
-import IconButton from 'src/components/buttons/IconButton'
 import ContainedButton from 'src/components/buttons/ContainedButton'
+import IconButton from 'src/components/buttons/IconButton'
 import TextButton from 'src/components/buttons/TextButton'
 import Clickable from 'src/components/Clickable'
+import Text from 'src/components/fonts/Text'
 import DebouncedTextarea from 'src/components/form-elements/DebouncedTextarea'
 import Input from 'src/components/form-elements/Input'
 import { FlexRow } from 'src/components/layout/Flex'
 import Space from 'src/components/layout/Space'
 import useIsDesktop from 'src/hooks/useIsDesktop'
 import { ITask } from 'src/types/task.type'
-import { isOneTaskTimeSet } from 'src/util/task'
+import { isOneTaskTimeSet, incrementTimeStamp } from 'src/util/task'
 import styled from 'styled-components'
+import TaskDue from './TaskDue'
 
 interface TaskBottomSheetProps {
   task: ITask
@@ -84,6 +87,24 @@ const TaskBottomSheet = ({ task, isOpen, onDismiss }: TaskBottomSheetProps) => {
   const handleResetTime = () => {
     setLocalStartTime('0000')
     setLocalEndTime('0000')
+  }
+
+  const { createTask } = useCreateTask({
+    due: new Date(task?.due),
+    isTimed: isOneTaskTimeSet(task),
+  })
+
+  const addTaskBelow = () => {
+    const newTaskId = new ObjectID().toHexString()
+    createTask({
+      _id: newTaskId,
+      name: '',
+      due: task?.due,
+      createdAt: new Date(),
+      startTime: task?.endTime,
+      endTime: incrementTimeStamp(task?.endTime),
+    })
+    handleDismiss()
   }
 
   return (
@@ -155,6 +176,16 @@ const TaskBottomSheet = ({ task, isOpen, onDismiss }: TaskBottomSheetProps) => {
               minRows={2}
             />
           </InputContainer>
+          <ActionButtonsContainer>
+            {isOneTaskTimeSet(task) && (
+              <ActionButton onClick={addTaskBelow}>
+                <AddCircleOutlinedIcon />
+                <Text variant='p' color={theme.text.light} fontWeight={700}>
+                  Add task below
+                </Text>
+              </ActionButton>
+            )}
+          </ActionButtonsContainer>
         </Container>
       </StyledBottomSheet>
     </OuterContainer>
@@ -202,6 +233,30 @@ const StyledLine = styled(RemoveIcon)`
 
 const ResetTimeContainer = styled.div`
   margin-top: 0.2rem;
+`
+
+const ActionButtonsContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1rem;
+`
+
+const ActionButton = styled.button`
+  border-radius: 8px;
+  background: ${(props) => props.theme.grey[50]};
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 1rem;
+
+  & > *:first-of-type {
+    margin-right: 0.5rem;
+  }
+
+  & svg {
+    fill: ${(props) => props.theme.text.light} !important;
+  }
 `
 
 export default TaskBottomSheet

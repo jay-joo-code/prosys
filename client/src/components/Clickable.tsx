@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 
 interface ClickableProps extends React.HTMLProps<HTMLDivElement> {
-  children: React.ReactNode
+  children?: React.ReactNode
 }
 
 const Clickable = ({ children, ...rest }: ClickableProps) => {
