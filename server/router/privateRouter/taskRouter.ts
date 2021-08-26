@@ -40,8 +40,8 @@ taskRouter.get('/inbox', async (req, res) => {
         },
       ],
     }).sort({ due: 1 })
-    // set overdue task due date as today
 
+    // set overdue task due date as today
     const validatedTasks = docs.map((task) => {
       if (task.due && isDateBeforeToday(task.due) && task.provider !== 'google') {
         // don't reset time if task is recurring
@@ -105,8 +105,8 @@ taskRouter.get('/inbox/prosys', async (req, res) => {
   try {
     const dueDate = new Date(req?.query?.due as string)
     const due = {
-      $gte: moment(dueDate).utcOffset('+0400').startOf('day').toDate(),
-      $lte: moment(dueDate).utcOffset('+0400').endOf('day').toDate(),
+      $gte: moment(dueDate).startOf('day').toDate(),
+      $lte: moment(dueDate).endOf('day').toDate(),
     }
 
     const timeQuery =
@@ -196,7 +196,7 @@ taskRouter.put('/:id', async (req, res) => {
     //   (updateObj?.startTime !== '0000' && updateObj?.endTime === '0000') ||
     //   (updateObj?.endTime !== '0000' && updateObj?.startTime === '0000')
     // ) {
-    //   console.log('reset times')
+    //   ('reset times')
     //   updateObj.startTime = '0000'
     //   updateObj.endTime = '0000'
     // }

@@ -1,11 +1,12 @@
 import CloseIcon from '@material-ui/icons/Close'
+import TaskDue from './TaskDue'
 import RemoveIcon from '@material-ui/icons/Remove'
 import React, { useState } from 'react'
 import { BottomSheet } from 'react-spring-bottom-sheet'
 import 'react-spring-bottom-sheet/dist/style.css'
-import { useUpdateInboxTaskById, useUpdateTaskTime } from 'src/api/task'
+import { useUpdateInboxTaskById, useUpdateAndMoveTask } from 'src/api/task'
 import theme from 'src/app/theme'
-import ButtonedIcon from 'src/components/ButtonedIcon'
+import IconButton from 'src/components/buttons/IconButton'
 import ContainedButton from 'src/components/buttons/ContainedButton'
 import TextButton from 'src/components/buttons/TextButton'
 import Clickable from 'src/components/Clickable'
@@ -38,7 +39,7 @@ const TaskBottomSheet = ({ task, isOpen, onDismiss }: TaskBottomSheetProps) => {
     isTimed: isOneTaskTimeSet(task),
   })
 
-  const { updateTaskTime } = useUpdateTaskTime(task?._id, {
+  const { updateAndMove } = useUpdateAndMoveTask(task?._id, {
     due: new Date(task?.due as string),
     isTimed: isOneTaskTimeSet(task),
   })
@@ -67,12 +68,14 @@ const TaskBottomSheet = ({ task, isOpen, onDismiss }: TaskBottomSheetProps) => {
 
   const [localStartTime, setLocalStartTime] = useState<string>(task?.startTime)
   const [localEndTime, setLocalEndTime] = useState<string>(task?.endTime)
+  const [localDue, setLocalDue] = useState<Date | null>(task?.due ? new Date(task?.due) : null)
 
   const handleDismiss = () => {
-    updateTaskTime({
+    updateAndMove({
       ...task,
       startTime: localStartTime,
       endTime: localEndTime,
+      due: localDue,
     })
 
     onDismiss()
@@ -125,7 +128,7 @@ const TaskBottomSheet = ({ task, isOpen, onDismiss }: TaskBottomSheetProps) => {
                 {task?.isComplete ? 'Mark as incomplete' : 'Complete'}
               </ContainedButton>
               <Space padding='0 .5rem' />
-              <ButtonedIcon onClick={handleDismiss} icon={<CloseIcon />} />
+              <IconButton onClick={handleDismiss} icon={<CloseIcon />} />
             </FlexRow>
           </FlexRow>
           {isOneTaskTimeSet(task) && (
@@ -142,6 +145,7 @@ const TaskBottomSheet = ({ task, isOpen, onDismiss }: TaskBottomSheetProps) => {
               initValue={task?.name}
             />
           </InputContainer>
+          <TaskDue localDue={localDue} setLocalDue={setLocalDue} />
           <InputContainer>
             <NotesTextarea
               onFocus={handleInputFocus}

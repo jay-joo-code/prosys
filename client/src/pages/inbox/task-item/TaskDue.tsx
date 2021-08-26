@@ -1,48 +1,34 @@
 import DateFnsUtils from '@date-io/date-fns'
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers'
 import React, { useRef, useState } from 'react'
-import { useUpdateInboxTaskById } from 'src/api/task'
-import useKeypress from 'src/hooks/useKeyPress'
-import { IInboxState, ITask } from 'src/types/task.type'
+import IconButton from 'src/components/buttons/IconButton'
 import styled from 'styled-components'
+import CalendarTodayIcon from '@material-ui/icons/CalendarToday'
+import CloseIcon from '@material-ui/icons/Close'
+import { FlexRow } from 'src/components/layout/Flex'
 
 interface TaskDueProps {
-  isFocused: boolean
-  task: ITask
-  inboxState: IInboxState
-  setInboxState: (state: IInboxState) => void
-  focusPrevTask: () => void
+  localDue: Date | null
+  setLocalDue: React.Dispatch<React.SetStateAction<Date | null>>
 }
 
-const TaskDue = ({ isFocused, task, inboxState, setInboxState, focusPrevTask }: TaskDueProps) => {
-  const { updateInboxTask } = useUpdateInboxTaskById(task?._id, {
-    refetchOnSettle: true,
-  })
-  const [tempDate, setTempDate] = useState<Date>(task?.due || new Date())
-
-  useKeypress(['d', 'ㅇ'], (event) => {
-    if (isFocused && inboxState === 'NAVIGATE') {
-      event.stopPropagation()
-      event.stopImmediatePropagation()
-      event.preventDefault()
-      setInboxState('EDIT_DUE')
-    }
-  })
+const TaskDue = ({ localDue, setLocalDue }: TaskDueProps) => {
+  const [isOpen, setIsOpen] = useState<boolean>(false)
 
   const handleChange = (date: Date | null) => {
-    if (date) setTempDate(new Date(date))
+    if (date) {
+      setLocalDue(new Date(date))
+    }
+    setIsOpen(false)
   }
 
-  const handleClose = () => {
-    setInboxState('NAVIGATE')
-    updateInboxTask({
-      _id: task?._id,
-      due: new Date(tempDate),
-    })
-    if (!task?.due) focusPrevTask()
-  }
+  const handleClose = () => setIsOpen(false)
 
   const containerRef = useRef<HTMLDivElement>(null)
+
+  const unsetDue = () => {
+    setLocalDue(null)
+  }
 
   return (
     <Container ref={containerRef}>
@@ -53,11 +39,13 @@ const TaskDue = ({ isFocused, task, inboxState, setInboxState, focusPrevTask }: 
           format='MM/dd/yyyy'
           id='date-picker-inline'
           label='Date picker inline'
-          value={tempDate}
+          value={localDue || new Date()}
           onChange={handleChange}
-          open={isFocused && inboxState === 'EDIT_DUE'}
+          open={isOpen}
           onClose={handleClose}
-          TextFieldComponent={() => null}
+          TextFieldComponent={({ value }) => (
+            <TaskDuePicker value={value as string} setIsOpen={setIsOpen} unsetDue={unsetDue} />
+          )}
           PopoverProps={{
             anchorOrigin: { horizontal: 'center', vertical: 'bottom' },
             transformOrigin: { horizontal: 'center', vertical: 'top' },
@@ -69,12 +57,56 @@ const TaskDue = ({ isFocused, task, inboxState, setInboxState, focusPrevTask }: 
   )
 }
 
+interface ITaskDuePickerProps {
+  value: string
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
+  unsetDue: () => void
+}
+
+const TaskDuePicker = ({ value, setIsOpen, unsetDue }: ITaskDuePickerProps) => {
+  return (
+    <TaskDuePickerContainer>
+      <FlexRow alignCenter>
+        <StyledTaskDuePicker onClick={() => setIsOpen(true)}>
+          <CalendarTodayIcon />
+          {value}
+        </StyledTaskDuePicker>
+        <StyledButtonedIcon icon={<CloseIcon />} onClick={unsetDue} />
+      </FlexRow>
+    </TaskDuePickerContainer>
+  )
+}
+
 const Container = styled.div`
   margin-left: 0.5rem;
   position: relative;
 
   & label {
-    display: none;
+    /* display: none; */
+  }
+`
+
+const TaskDuePickerContainer = styled.div`
+  display: inline-block;
+  cursor: pointer;
+  margin: 1rem 0 0 0;
+`
+
+const StyledButtonedIcon = styled(IconButton)`
+  margin-left: 0.5rem !important;
+`
+
+const StyledTaskDuePicker = styled.div`
+  background: ${(props) => props.theme.grey[50]};
+  font-size: 1rem;
+  font-weight: bold;
+  color: ${(props) => props.theme.text.light};
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 0.7rem;
+
+  & > *:first-of-type {
+    margin-right: 0.5rem;
   }
 `
 

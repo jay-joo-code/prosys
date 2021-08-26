@@ -15,7 +15,7 @@ export const getDateStamp = (date: Date | null): string => {
 
 export const getFullDate = (date: Date | null): string => {
   if (!date) return ''
-  return moment(date).utcOffset('+0400').format('YYYY-MM-DD')
+  return moment(date).format('YYYY-MM-DD')
 }
 
 export const getDay = (date: Date) => {
@@ -36,4 +36,10 @@ export const getDates = (startDate: Date, stopDate: Date) => {
     currentDate = new Date(currentDate.setDate(currentDate.getDate() + 1))
   }
   return dateArray
+}
+
+export const getStartOfDay = (date: Date) => {
+  const startDate = new Date(date)
+  startDate.setHours(0, 0, 0, 0)
+  return startDate
 }

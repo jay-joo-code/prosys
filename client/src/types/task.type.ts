@@ -36,3 +36,8 @@ export interface IUseProsysTasksParams {
   due: Date
   isTimed: boolean
 }
+
+interface IInsertTaskProps {
+  tasks: ITask[]
+  newTask: ITask
+}

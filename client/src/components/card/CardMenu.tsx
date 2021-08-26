@@ -3,7 +3,7 @@ import React, { memo } from 'react'
 import { useDeleteCardById, useUpdateCardById } from 'src/api/card'
 import { ICard, ICardStatus } from 'src/types/card.type'
 import styled from 'styled-components'
-import ButtonedIcon from '../ButtonedIcon'
+import IconButton from '../buttons/IconButton'
 import Menu, { IOption } from '../Menu'
 
 interface CardMenuProps {
@@ -73,7 +73,7 @@ const CardMenu = ({ status, setStatus, card }: CardMenuProps) => {
   return (
     <Container>
       <Menu options={menuOptions} offset={10}>
-        <ButtonedIcon icon={<MoreVertOutlinedIcon />} buttonSize='small' />
+        <IconButton icon={<MoreVertOutlinedIcon />} buttonSize='small' />
       </Menu>
     </Container>
   )

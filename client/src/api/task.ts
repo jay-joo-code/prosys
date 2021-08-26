@@ -1,12 +1,19 @@
 import { useQueryClient } from 'react-query'
 import { useDispatch } from 'react-redux'
+import { isObjShallowEqual } from 'src/util/js'
 import useCustomMutation, { queryConfigToKey } from 'src/hooks/useCustomMutation'
 import useCustomQuery from 'src/hooks/useCustomQuery'
 import useRouter from 'src/hooks/useRouter'
 import { showSnackbar } from 'src/redux/snackbarSlice'
 import { ITask, IUseProsysTasksParams, IUseUpdateInboxTaskByIdOptions } from 'src/types/task.type'
-import { getFullDate } from 'src/util/date'
-import { sortTasks, isOneTaskTimeSet } from 'src/util/task'
+import {
+  insertTimedTask,
+  insertUntimedTask,
+  isOneTaskTimeSet,
+  reinsertTimedTask,
+  sortTasks,
+} from 'src/util/task'
+import { getStartOfDay } from 'src/util/date'
 
 export const fetchInboxTasks = () => ({
   url: '/private/task/inbox',
@@ -54,7 +61,9 @@ export const useGcalTasks = (due: Date) => {
 }
 
 export const prosysTasksConfig = (params: IUseProsysTasksParams) => ({
-  url: `/private/task/inbox/prosys?due=${getFullDate(params?.due)}&isTimed=${params?.isTimed}`,
+  url: `/private/task/inbox/prosys?due=${getStartOfDay(new Date(params?.due))}&isTimed=${
+    params?.isTimed
+  }`,
   options: {
     refetchOnWindowFocus: 'always',
   },
@@ -158,10 +167,10 @@ export const useUpdateInboxTaskById = (_id: string, params: IUseProsysTasksParam
   }
 }
 
-export const useUpdateTaskTime = (_id: string, params: IUseProsysTasksParams) => {
+export const useUpdateAndMoveTask = (_id: string, params: IUseProsysTasksParams) => {
   const queryClient = useQueryClient()
 
-  const { mutate: updateTaskTime, ...rest } = useCustomMutation<ITask>({
+  const { mutate: updateAndMove, ...rest } = useCustomMutation<ITask>({
     url: `/private/task/${_id}`,
     method: 'put',
     localUpdates: [
@@ -174,101 +183,39 @@ export const useUpdateTaskTime = (_id: string, params: IUseProsysTasksParams) =>
         queryConfigs: [prosysTasksConfig(params)],
         refetchOnSettle: false,
         mutationFn: (oldData, newVariables) => {
-          if (!oldData) return
+          // if task doesn't need to move, don't move it
+          if (
+            params?.due.toUTCString() === newVariables?.due.toUTCString() &&
+            params?.isTimed === isOneTaskTimeSet(newVariables)
+          ) {
+            return oldData
+          }
 
+          // add to new query cache
           const targetQueryKey = queryConfigToKey(
             prosysTasksConfig({
-              ...params,
-              isTimed: !params?.isTimed,
+              isTimed: isOneTaskTimeSet(newVariables),
+              due: newVariables?.due,
             })
           )
 
-          if (params?.isTimed) {
-            if (!isOneTaskTimeSet(newVariables)) {
-              // moved from timed to untimed
-
-              // add to untimed at the correct index
-              queryClient.setQueryData(targetQueryKey, (oldData: any) => {
-                // prevent duplicates
-                const duplicateIdx = oldData?.findIndex(
-                  (task: ITask) => task?._id === newVariables?._id
-                )
-
-                if (duplicateIdx >= 0) return oldData
-
-                // find idx of elemnt that's created at before newVariables
-                const targetIdx = oldData?.findIndex(
-                  (task: ITask) => new Date(task?.createdAt) > new Date(newVariables?.createdAt)
-                )
-
-                const newData = [...oldData]
-
-                if (targetIdx === -1) {
-                  newData.push(newVariables)
-                } else {
-                  newData.splice(targetIdx, 0, newVariables)
-                }
-                return newData
+          queryClient.setQueryData(targetQueryKey, (oldData: any) => {
+            // use appropriate logic depending on whether it's timed or not
+            if (params?.isTimed) {
+              return insertTimedTask({
+                tasks: oldData || [],
+                newTask: newVariables,
               })
-
-              // remove from current query cache (timed)
-              return oldData?.filter((task: ITask) => task?._id !== newVariables?._id)
             } else {
-              // move within timed to correct sort order
-
-              // find idx of elemnt that has a later startTime than newVariables
-              const targetIdx = oldData?.findIndex(
-                (task: ITask) =>
-                  Number(task?.startTime) > Number(newVariables?.startTime) ||
-                  (Number(task?.startTime) === Number(newVariables?.startTime) &&
-                    Number(task?.endTime) > Number(newVariables?.endTime))
-              )
-
-              const newData = oldData?.filter((task: ITask) => task?._id !== newVariables?._id)
-
-              if (targetIdx === -1) {
-                newData.push(newVariables)
-              } else {
-                newData.splice(targetIdx - 1, 0, newVariables)
-              }
-              return newData
-            }
-          } else {
-            if (isOneTaskTimeSet(newVariables)) {
-              // move from untimed to timed
-
-              // add to timed at the correct index
-              queryClient.setQueryData(targetQueryKey, (oldData: any) => {
-                // prevent duplicates
-                const duplicateIdx = oldData?.findIndex(
-                  (task: ITask) => task?._id === newVariables?._id
-                )
-
-                if (duplicateIdx >= 0) return oldData
-
-                // find idx of elemnt that has a later startTime than newVariables
-                const targetIdx = oldData?.findIndex(
-                  (task: ITask) =>
-                    Number(task?.startTime) > Number(newVariables?.startTime) ||
-                    (Number(task?.startTime) === Number(newVariables?.startTime) &&
-                      Number(task?.endTime) > Number(newVariables?.endTime))
-                )
-
-                const newData = [...oldData]
-
-                if (targetIdx === -1) {
-                  newData.push(newVariables)
-                } else {
-                  newData.splice(targetIdx, 0, newVariables)
-                }
-                return newData
+              return insertUntimedTask({
+                tasks: oldData || [],
+                newTask: newVariables,
               })
-
-              // remove from current query cache (untimed)
-              return oldData?.filter((task: ITask) => task?._id !== newVariables?._id)
             }
-          }
-          return oldData
+          })
+
+          // remove from current query cache
+          return oldData?.filter((task: ITask) => task?._id !== newVariables?._id)
         },
       },
     ],
@@ -276,7 +223,7 @@ export const useUpdateTaskTime = (_id: string, params: IUseProsysTasksParams) =>
 
   return {
     ...rest,
-    updateTaskTime,
+    updateAndMove,
   }
 }
 
