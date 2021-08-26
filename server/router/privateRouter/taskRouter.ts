@@ -103,11 +103,13 @@ taskRouter.get('/inbox/gcal', async (req, res) => {
 
 taskRouter.get('/inbox/prosys', async (req, res) => {
   try {
-    const dueDate = new Date(req?.query?.due as string)
-    const due = {
-      $gte: moment(dueDate).startOf('day').toDate(),
-      $lte: moment(dueDate).endOf('day').toDate(),
-    }
+    const dueDate = req?.query?.due && new Date(req?.query?.due as string)
+    const due = req?.query?.due
+      ? {
+          $gte: moment(dueDate).startOf('day').toDate(),
+          $lte: moment(dueDate).endOf('day').toDate(),
+        }
+      : null
 
     const timeQuery =
       req?.query?.isTimed === 'true'

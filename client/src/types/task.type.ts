@@ -33,11 +33,11 @@ export interface IUseUpdateInboxTaskByIdOptions {
 }
 
 export interface IUseProsysTasksParams {
-  due: Date
+  due: Date | null
   isTimed: boolean
 }
 
-interface IInsertTaskProps {
+export interface IInsertTaskProps {
   tasks: ITask[]
   newTask: ITask
 }

@@ -39,7 +39,7 @@ const TaskDue = ({ localDue, setLocalDue }: TaskDueProps) => {
           format='MM/dd/yyyy'
           id='date-picker-inline'
           label='Date picker inline'
-          value={localDue || new Date()}
+          value={localDue}
           onChange={handleChange}
           open={isOpen}
           onClose={handleClose}
@@ -69,7 +69,7 @@ const TaskDuePicker = ({ value, setIsOpen, unsetDue }: ITaskDuePickerProps) => {
       <FlexRow alignCenter>
         <StyledTaskDuePicker onClick={() => setIsOpen(true)}>
           <CalendarTodayIcon />
-          {value}
+          {value || 'Backlog'}
         </StyledTaskDuePicker>
         <StyledButtonedIcon icon={<CloseIcon />} onClick={unsetDue} />
       </FlexRow>

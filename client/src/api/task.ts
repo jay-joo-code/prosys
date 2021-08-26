@@ -1,19 +1,12 @@
 import { useQueryClient } from 'react-query'
 import { useDispatch } from 'react-redux'
-import { isObjShallowEqual } from 'src/util/js'
 import useCustomMutation, { queryConfigToKey } from 'src/hooks/useCustomMutation'
 import useCustomQuery from 'src/hooks/useCustomQuery'
 import useRouter from 'src/hooks/useRouter'
 import { showSnackbar } from 'src/redux/snackbarSlice'
 import { ITask, IUseProsysTasksParams, IUseUpdateInboxTaskByIdOptions } from 'src/types/task.type'
-import {
-  insertTimedTask,
-  insertUntimedTask,
-  isOneTaskTimeSet,
-  reinsertTimedTask,
-  sortTasks,
-} from 'src/util/task'
 import { getStartOfDay } from 'src/util/date'
+import { insertTimedTask, insertUntimedTask, isOneTaskTimeSet, sortTasks } from 'src/util/task'
 
 export const fetchInboxTasks = () => ({
   url: '/private/task/inbox',
@@ -61,9 +54,9 @@ export const useGcalTasks = (due: Date) => {
 }
 
 export const prosysTasksConfig = (params: IUseProsysTasksParams) => ({
-  url: `/private/task/inbox/prosys?due=${getStartOfDay(new Date(params?.due))}&isTimed=${
-    params?.isTimed
-  }`,
+  url: `/private/task/inbox/prosys?${
+    params?.due ? `due=${getStartOfDay(new Date(params?.due))}&` : ''
+  }isTimed=${params?.isTimed}`,
   options: {
     refetchOnWindowFocus: 'always',
   },
@@ -94,13 +87,18 @@ export const useArchivedTasks = () => {
   }
 }
 
-export const useCreateInboxTask = () => {
-  const { mutate: createInboxTask, ...rest } = useCustomMutation<ITask>({
+export const useCreateTask = () => {
+  const { mutate: createTask, ...rest } = useCustomMutation<ITask>({
     url: '/private/task',
     method: 'post',
     localUpdates: [
       {
-        queryConfigs: [fetchInboxTasks()],
+        queryConfigs: [
+          prosysTasksConfig({
+            due: null,
+            isTimed: false,
+          }),
+        ],
         presetLogic: 'appendStart',
       },
     ],
@@ -108,12 +106,12 @@ export const useCreateInboxTask = () => {
 
   return {
     ...rest,
-    createInboxTask,
+    createTask,
   }
 }
 
 export const useCreateInboxTaskAtDate = (params: IUseProsysTasksParams) => {
-  const { mutate: createInboxTask, ...rest } = useCustomMutation<ITask>({
+  const { mutate: createTask, ...rest } = useCustomMutation<ITask>({
     url: '/private/task',
     method: 'post',
     localUpdates: [
@@ -126,7 +124,7 @@ export const useCreateInboxTaskAtDate = (params: IUseProsysTasksParams) => {
 
   return {
     ...rest,
-    createInboxTask,
+    createTask,
   }
 }
 
@@ -185,7 +183,7 @@ export const useUpdateAndMoveTask = (_id: string, params: IUseProsysTasksParams)
         mutationFn: (oldData, newVariables) => {
           // if task doesn't need to move, don't move it
           if (
-            params?.due.toUTCString() === newVariables?.due.toUTCString() &&
+            params?.due?.toUTCString() === newVariables?.due?.toUTCString() &&
             params?.isTimed === isOneTaskTimeSet(newVariables)
           ) {
             return oldData

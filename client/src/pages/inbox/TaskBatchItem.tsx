@@ -10,7 +10,7 @@ import UntimedTaskList from './UntimedTaskList'
 import TimedTaskList from './TimedTaskList'
 
 interface TaskBatchItemProps {
-  due: Date
+  due: Date | null
 }
 
 const TaskBatchItem = ({ due }: TaskBatchItemProps) => {
@@ -18,16 +18,18 @@ const TaskBatchItem = ({ due }: TaskBatchItemProps) => {
     <Container>
       <DateHeader>
         <Text variant='h3' color={theme.text.light} fontWeight={700}>
-          {getDateStamp(due)}
+          {due ? getDateStamp(due) : 'Backlog'}
         </Text>
         <Space padding='0 .2rem' />
-        <Text variant='h3' color={theme.text.muted} fontWeight={700}>
-          {getDay(due)}
-        </Text>
+        {due && (
+          <Text variant='h3' color={theme.text.muted} fontWeight={700}>
+            {getDay(due)}
+          </Text>
+        )}
       </DateHeader>
       <UntimedTaskList due={due} />
-      <AddTaskItem due={due} />
-      <TimedTaskList due={due} />
+      {due && <AddTaskItem due={due} />}
+      {due && <TimedTaskList due={due} />}
     </Container>
   )
 }

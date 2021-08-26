@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import TaskItem from './task-item/TaskItem'
 
 interface UntimedTaskListProps {
-  due: Date
+  due: Date | null
 }
 
 const UntimedTaskList = ({ due }: UntimedTaskListProps) => {

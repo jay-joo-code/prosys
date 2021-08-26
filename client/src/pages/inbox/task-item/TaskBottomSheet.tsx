@@ -73,8 +73,8 @@ const TaskBottomSheet = ({ task, isOpen, onDismiss }: TaskBottomSheetProps) => {
   const handleDismiss = () => {
     updateAndMove({
       ...task,
-      startTime: localStartTime,
-      endTime: localEndTime,
+      startTime: localDue ? localStartTime : '0000',
+      endTime: localDue ? localEndTime : '0000',
       due: localDue,
     })
 

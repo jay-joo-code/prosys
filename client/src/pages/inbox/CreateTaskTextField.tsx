@@ -1,6 +1,6 @@
 import ObjectID from 'bson-objectid'
 import React, { useEffect, useRef, useState } from 'react'
-import { useCreateInboxTask } from 'src/api/task'
+import { useCreateTask } from 'src/api/task'
 import TextField from 'src/components/form-elements/TextField'
 import useFirstTaskId from 'src/hooks/useFirstTaskId'
 import useKeyPress from 'src/hooks/useKeyPress'
@@ -24,14 +24,14 @@ const CreateTaskTextField = ({
   const firstTaskId = useFirstTaskId()
 
   // create task
-  const { createInboxTask } = useCreateInboxTask()
+  const { createTask } = useCreateTask()
   const [name, setName] = useState<string>('')
 
   const handleCreateTask = async () => {
     try {
       if (document.activeElement === inputRef?.current && name !== '') {
         const newTaskId = new ObjectID().toHexString()
-        createInboxTask({
+        createTask({
           _id: newTaskId,
           name,
           due: null,

@@ -61,7 +61,7 @@ const TaskItem = ({ task }: TaskItemProps) => {
   //     event.preventDefault()
   //     const newTaskId = new ObjectID().toHexString()
 
-  //     createInboxTask({
+  //     createTask({
   //       _id: newTaskId,
   //       name: '',
   //       due: task?.due,
