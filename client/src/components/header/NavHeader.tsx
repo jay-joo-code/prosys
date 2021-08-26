@@ -1,21 +1,19 @@
-import React, { memo } from 'react'
-import styled from 'styled-components'
-import Text from '../fonts/Text'
-import useRouter from 'src/hooks/useRouter'
-import { Link } from 'react-router-dom'
 import InboxOutlinedIcon from '@material-ui/icons/InboxOutlined'
-import FolderOutlinedIcon from '@material-ui/icons/FolderOutlined'
-import SchoolOutlinedIcon from '@material-ui/icons/SchoolOutlined'
 import LibraryBooksOutlinedIcon from '@material-ui/icons/LibraryBooksOutlined'
-import useKeypress from 'src/hooks/useKeyPress'
-import { IInboxState } from 'src/types/task.type'
+import SchoolOutlinedIcon from '@material-ui/icons/SchoolOutlined'
+import React, { memo } from 'react'
+import { useDispatch } from 'react-redux'
+import { Link } from 'react-router-dom'
+import useIsCreateCard from 'src/hooks/useIsCreateCard'
 import useIsInbox from 'src/hooks/useIsInbox'
-import useIsArchive from 'src/hooks/useIsArchive'
 import useIsSpacedRep from 'src/hooks/useIsSpacedRep'
 import useIsWiki from 'src/hooks/useIsWiki'
-import useIsCreateCard from 'src/hooks/useIsCreateCard'
-import { useDispatch } from 'react-redux'
+import useKeypress from 'src/hooks/useKeyPress'
+import useRouter from 'src/hooks/useRouter'
 import { toggleHide } from 'src/redux/appSlice'
+import { IInboxState } from 'src/types/task.type'
+import styled from 'styled-components'
+import Text from '../fonts/Text'
 
 interface NavHeaderProps {
   inboxState: IInboxState
@@ -24,7 +22,6 @@ interface NavHeaderProps {
 const NavHeader = ({ inboxState }: NavHeaderProps) => {
   const { push } = useRouter()
   const isInbox = useIsInbox()
-  const isArchive = useIsArchive()
   const isSpacedRep = useIsSpacedRep()
   const isWiki = useIsWiki()
   const isCreateCard = useIsCreateCard()
@@ -40,18 +37,14 @@ const NavHeader = ({ inboxState }: NavHeaderProps) => {
         // backward navigation
         if (isInbox) {
           push('/wiki')
-        } else if (isArchive) {
-          push('/inbox')
         } else if (isSpacedRep) {
-          push('/archive')
+          push('/inbox')
         } else if (isWiki) {
           push('/spaced-rep')
         }
       } else {
         // forward navigation
         if (isInbox) {
-          push('/archive')
-        } else if (isArchive) {
           push('/spaced-rep')
         } else if (isSpacedRep) {
           push('/wiki')
@@ -85,14 +78,14 @@ const NavHeader = ({ inboxState }: NavHeaderProps) => {
           </Label>
         </NavItem>
       </Link>
-      <Link to='/archive'>
+      {/* <Link to='/archive'>
         <NavItem isSelected={isArchive}>
           <FolderOutlinedIcon />
           <Label variant='h5' isSelected={isArchive}>
             Archive
           </Label>
         </NavItem>
-      </Link>
+      </Link> */}
       <Link to='/spaced-rep'>
         <NavItem isSelected={isSpacedRep}>
           <SchoolOutlinedIcon />
