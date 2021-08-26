@@ -1,41 +1,9 @@
 import { useQueryClient } from 'react-query'
-import { useDispatch } from 'react-redux'
 import useCustomMutation, { queryConfigToKey } from 'src/hooks/useCustomMutation'
 import useCustomQuery from 'src/hooks/useCustomQuery'
-import useRouter from 'src/hooks/useRouter'
-import { showSnackbar } from 'src/redux/snackbarSlice'
 import { ITask, IUseProsysTasksParams, IUseUpdateInboxTaskByIdOptions } from 'src/types/task.type'
 import { getStartOfDay } from 'src/util/date'
-import { insertTimedTask, insertUntimedTask, isOneTaskTimeSet, sortTasks } from 'src/util/task'
-
-export const fetchInboxTasks = () => ({
-  url: '/private/task/inbox',
-  options: {
-    refetchOnWindowFocus: 'always',
-  },
-})
-
-export const useInboxTasks = () => {
-  const { data: tasks, error, ...rest } = useCustomQuery<ITask[]>(fetchInboxTasks())
-
-  const router = useRouter()
-  const dispatch = useDispatch()
-
-  if ((error as any)?.response?.data === 'Google OAuth error') {
-    dispatch(
-      showSnackbar({
-        variant: 'error',
-        message: 'Google calendar session expired',
-      })
-    )
-    router.push('/logout')
-  }
-
-  return {
-    ...rest,
-    tasks: tasks && sortTasks(tasks),
-  }
-}
+import { insertTimedTask, insertUntimedTask, isOneTaskTimeSet } from 'src/util/task'
 
 export const fetchGcalTasks = (due: Date) => ({
   url: `/private/task/inbox/gcal?due=${due.toISOString()}`,

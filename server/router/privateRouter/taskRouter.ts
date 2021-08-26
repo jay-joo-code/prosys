@@ -1,7 +1,8 @@
 import express from 'express'
 import moment from 'moment'
 import Task from '../../models/Task'
-import { syncCalendar } from '../../util/calendar'
+import { ITaskDocument } from '../../types/task'
+import { fetchGcalTasks } from '../../util/calendar'
 import { isDateBeforeToday } from '../../util/date'
 
 const taskRouter = express.Router()
@@ -19,12 +20,9 @@ taskRouter.post('/', async (req, res) => {
   }
 })
 
-// get user's inbox tasks
+// DEPREC: get user's inbox tasks
 taskRouter.get('/inbox', async (req, res) => {
   try {
-    // async fetch and save google calendar events
-    syncCalendar(req, res)
-
     // fetch user's inbox tasks
     const docs = await Task.find({
       $or: [
@@ -73,8 +71,7 @@ taskRouter.get('/inbox', async (req, res) => {
 
 taskRouter.get('/inbox/gcal', async (req, res) => {
   try {
-    await syncCalendar(req, res)
-
+    // fetchGcalTasks()
     const rootQuery = {
       userId: req.user?._id,
       isComplete: false,
@@ -124,6 +121,7 @@ taskRouter.get('/inbox/prosys', async (req, res) => {
     const query = {
       userId: req.user?._id,
       isArchived: false,
+      isComplete: false,
       provider: undefined,
       due,
       ...timeQuery,
@@ -131,7 +129,15 @@ taskRouter.get('/inbox/prosys', async (req, res) => {
 
     const tasks = await Task.find(query).sort({ createdAt: 1 })
 
-    if (req?.query?.isTimed) {
+    if (req?.query?.isTimed === 'true' && dueDate) {
+      const gcalTasks = await fetchGcalTasks({
+        req,
+        due: dueDate as Date,
+        isTimed: true,
+      })
+
+      gcalTasks.forEach((task) => tasks.push(task as ITaskDocument))
+
       tasks.sort((a, b) => {
         return (
           Number(a?.startTime) - Number(b?.startTime) || Number(a?.endTime) - Number(b?.endTime)

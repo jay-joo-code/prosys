@@ -8,6 +8,7 @@ import { ITask } from 'src/types/task.type'
 import { isTaskTimeSet, isOneTaskTimeSet } from 'src/util/task'
 import styled from 'styled-components'
 import TaskBottomSheet from './TaskBottomSheet'
+import { ReactComponent as GcalIcon } from 'src/assets/services/google-calendar.svg'
 
 interface TaskItemProps {
   task: ITask
@@ -29,10 +30,18 @@ const TaskItem = ({ task }: TaskItemProps) => {
   })
 
   const handleToggleComplete = () => {
-    updateInboxTask({
-      _id: task?._id,
-      isComplete: !task?.isComplete,
-    })
+    if (task?.provider !== 'google') {
+      updateInboxTask({
+        _id: task?._id,
+        isComplete: !task?.isComplete,
+      })
+    }
+  }
+
+  const openBottomSheet = () => {
+    if (task?.provider !== 'google') {
+      setIsBottomSheetOpen(true)
+    }
   }
 
   const scrollToFocused = (instance: HTMLDivElement) => {
@@ -111,11 +120,15 @@ const TaskItem = ({ task }: TaskItemProps) => {
           <div onClick={handleToggleComplete}>
             <Space padding='.15rem 0' />
             <CheckboxContainer>
-              <IsCompleteCheckbox isComplete={task?.isComplete} isInverted={false} />
+              {task?.provider === 'google' ? (
+                <GcalIcon />
+              ) : (
+                <IsCompleteCheckbox isComplete={task?.isComplete} isInverted={false} />
+              )}
             </CheckboxContainer>
           </div>
           <Space padding='0 .2rem' />
-          <TaskText onClick={() => setIsBottomSheetOpen(true)}>
+          <TaskText onClick={openBottomSheet}>
             {isOneTaskTimeSet(task) && (
               <Text variant='p' color={theme.text.light}>
                 {task?.startTime} - {task?.endTime}
@@ -163,6 +176,11 @@ const TaskText = styled.div`
 const CheckboxContainer = styled.div`
   width: 18px;
   height: 18px;
+
+  & > svg {
+    width: 16px;
+    height: 16px;
+  }
 `
 
 interface IIsCompleteCheckboxProps {
