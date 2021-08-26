@@ -10,8 +10,10 @@ interface TimedTaskListProps {
 const TimedTaskList = ({ due }: TimedTaskListProps) => {
   const { tasks } = useProsysTasks({ due, isTimed: true })
 
+  if (!tasks) return null
+
   return (
-    <Container isMarginTop={!!tasks}>
+    <Container>
       {tasks?.map((task) => (
         <TaskItem key={task?._id} task={task} />
       ))}
@@ -19,17 +21,16 @@ const TimedTaskList = ({ due }: TimedTaskListProps) => {
   )
 }
 
-interface IContainerProps {
-  isMarginTop: boolean
-}
+const Container = styled.div`
+  margin-top: 1.5rem;
 
-const Container = styled.div<IContainerProps>`
   & > * {
     border-bottom: 1px solid ${(props) => props.theme.border.default};
   }
 
-  /* isMarginTop */
-  margin-top: ${(props) => props.isMarginTop && `1.5rem`};
+  & > *:last-of-type {
+    border-bottom: none;
+  }
 `
 
 export default TimedTaskList

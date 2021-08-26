@@ -110,7 +110,7 @@ const TaskItem = ({ task }: TaskItemProps) => {
   // })
 
   return (
-    <>
+    <div>
       <Container
         ref={scrollToFocused}
         isFocused={false}
@@ -148,7 +148,7 @@ const TaskItem = ({ task }: TaskItemProps) => {
         isOpen={isBottomSheetOpen}
         onDismiss={() => setIsBottomSheetOpen(false)}
       />
-    </>
+    </div>
   )
 }
 

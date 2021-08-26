@@ -60,7 +60,7 @@ export const fetchGcalTasks = async ({ req, due, isTimed }: IFetchGcalTasksParam
         startTime: '0000',
         endTime: '0000',
       })
-    } else if (event?.start?.dateTime && event?.end?.dateTime) {
+    } else if (isTimed && event?.start?.dateTime && event?.end?.dateTime) {
       // timed
       tasks.push({
         ...commonTaskData,

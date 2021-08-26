@@ -71,26 +71,12 @@ taskRouter.get('/inbox', async (req, res) => {
 
 taskRouter.get('/inbox/gcal', async (req, res) => {
   try {
-    // fetchGcalTasks()
-    const rootQuery = {
-      userId: req.user?._id,
-      isComplete: false,
-      provider: 'google',
-      due: req?.query?.due ? new Date(req?.query?.due as string) : undefined,
-    }
-
-    const gcalTasks = await Task.find({
-      $or: [
-        {
-          ...rootQuery,
-          isArchived: false,
-        },
-        {
-          ...rootQuery,
-          isArchived: undefined,
-        },
-      ],
-    }).sort({ due: 1 })
+    const dueDate = req?.query?.due && new Date(req?.query?.due as string)
+    const gcalTasks = await fetchGcalTasks({
+      req,
+      due: dueDate as Date,
+      isTimed: false,
+    })
 
     res.send(gcalTasks)
   } catch (e) {

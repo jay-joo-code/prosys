@@ -23,6 +23,10 @@ const Container = styled.div`
   & > * {
     border-bottom: 1px solid ${(props) => props.theme.border.default};
   }
+
+  & > *:last-of-type {
+    border-bottom: none;
+  }
 `
 
 export default UntimedTaskList

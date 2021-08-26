@@ -8,6 +8,7 @@ import { FlexRow } from 'src/components/layout/Flex'
 import AddTaskItem from './AddTaskItem'
 import UntimedTaskList from './UntimedTaskList'
 import TimedTaskList from './TimedTaskList'
+import GcalTaskList from './GcalTaskList'
 
 interface TaskBatchItemProps {
   due: Date | null
@@ -27,6 +28,7 @@ const TaskBatchItem = ({ due }: TaskBatchItemProps) => {
           </Text>
         )}
       </DateHeader>
+      {due && <GcalTaskList due={due} />}
       <UntimedTaskList due={due} />
       {due && <AddTaskItem due={due} />}
       {due && <TimedTaskList due={due} />}

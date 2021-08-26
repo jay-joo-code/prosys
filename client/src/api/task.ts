@@ -13,11 +13,11 @@ export const fetchGcalTasks = (due: Date) => ({
 })
 
 export const useGcalTasks = (due: Date) => {
-  const { data: gcalTasks, ...rest } = useCustomQuery<ITask[]>(fetchGcalTasks(due))
+  const { data: tasks, ...rest } = useCustomQuery<ITask[]>(fetchGcalTasks(due))
 
   return {
     ...rest,
-    gcalTasks,
+    tasks,
   }
 }
 
