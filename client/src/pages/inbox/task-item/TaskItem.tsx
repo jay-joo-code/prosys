@@ -137,7 +137,7 @@ const TaskItem = ({ task }: TaskItemProps) => {
             <Text variant='p' color={task?.isComplete ? theme.text.light : theme.text.default}>
               {task?.name}
             </Text>
-            <Text variant='h5' maxLines={2} color={theme.text.light}>
+            <Text variant='h5' maxLines={4} color={theme.text.light}>
               {task?.notes}
             </Text>
           </TaskText>
