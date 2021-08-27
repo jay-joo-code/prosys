@@ -25,7 +25,7 @@ interface TaskItemProps {
 const TaskItem = ({ task }: TaskItemProps) => {
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState<boolean>(false)
   const { updateInboxTask } = useUpdateInboxTaskById(task?._id, {
-    due: new Date(task?.due as string),
+    due: task?.due ? new Date(task?.due) : null,
     isTimed: isTaskTimeSet(task),
   })
 

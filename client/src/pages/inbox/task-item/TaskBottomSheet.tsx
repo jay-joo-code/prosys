@@ -38,12 +38,12 @@ const TaskBottomSheet = ({ task, isOpen, onDismiss }: TaskBottomSheetProps) => {
   }
 
   const { updateInboxTask } = useUpdateInboxTaskById(task?._id, {
-    due: new Date(task?.due as string),
+    due: task?.due ? new Date(task?.due) : null,
     isTimed: isOneTaskTimeSet(task),
   })
 
   const { updateAndMove } = useUpdateAndMoveTask(task?._id, {
-    due: new Date(task?.due as string),
+    due: task?.due ? new Date(task?.due) : null,
     isTimed: isOneTaskTimeSet(task),
   })
 
@@ -90,7 +90,7 @@ const TaskBottomSheet = ({ task, isOpen, onDismiss }: TaskBottomSheetProps) => {
   }
 
   const { createTask } = useCreateTask({
-    due: new Date(task?.due),
+    due: task?.due ? new Date(task?.due) : null,
     isTimed: isOneTaskTimeSet(task),
   })
 

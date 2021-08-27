@@ -64,7 +64,7 @@ taskRouter.get('/inbox/prosys', async (req, res) => {
       ...timeQuery,
     }
 
-    const tasks = await Task.find(query).sort({ createdAt: 1 })
+    const tasks = await Task.find(query).sort({ createdAt: req?.query?.due ? 1 : -1 })
 
     if (
       req?.query?.isTimed !== 'true' &&

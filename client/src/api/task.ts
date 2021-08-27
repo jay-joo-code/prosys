@@ -4,6 +4,7 @@ import useCustomQuery from 'src/hooks/useCustomQuery'
 import { ITask, IUseProsysTasksParams, IUseUpdateInboxTaskByIdOptions } from 'src/types/task.type'
 import { getStartOfDay } from 'src/util/date'
 import { insertTimedTask, insertUntimedTask, isOneTaskTimeSet } from 'src/util/task'
+import { stringify } from 'query-string'
 
 export const fetchGcalTasks = (due: Date) => ({
   url: `/private/task/inbox/gcal?due=${due.toISOString()}`,
@@ -21,14 +22,20 @@ export const useGcalTasks = (due: Date) => {
   }
 }
 
-export const prosysTasksConfig = (params: IUseProsysTasksParams) => ({
-  url: `/private/task/inbox/prosys?${
-    params?.due ? `due=${getStartOfDay(new Date(params?.due))}&` : ''
-  }isTimed=${params?.isTimed}`,
-  options: {
-    refetchOnWindowFocus: 'always',
-  },
-})
+export const prosysTasksConfig = (params: IUseProsysTasksParams) => {
+  return {
+    url: `/private/task/inbox/prosys?${stringify(
+      {
+        due: params?.due ? getStartOfDay(new Date(params?.due)) : null,
+        isTimed: params?.isTimed,
+      },
+      { skipNull: true }
+    )}`,
+    options: {
+      refetchOnWindowFocus: 'always',
+    },
+  }
+}
 
 export const useProsysTasks = (params: IUseProsysTasksParams) => {
   const { data: tasks, ...rest } = useCustomQuery<ITask[]>(prosysTasksConfig(params))
@@ -146,6 +153,7 @@ export const useUpdateAndMoveTask = (_id: string, params: IUseProsysTasksParams)
         mutationFn: (oldData, newVariables) => {
           // if task doesn't need to move, don't move it
           if (
+            params?.due &&
             params?.due?.toUTCString() === newVariables?.due?.toUTCString() &&
             params?.isTimed === isOneTaskTimeSet(newVariables)
           ) {
