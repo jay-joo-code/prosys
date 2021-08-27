@@ -9,7 +9,7 @@ import { stringify } from 'query-string'
 export const fetchGcalTasks = (due: Date) => ({
   url: `/private/task/inbox/gcal?due=${due.toISOString()}`,
   options: {
-    refetchOnWindowFocus: 'always',
+    refetchOnWindowFocus: false,
   },
 })
 
@@ -32,7 +32,7 @@ export const prosysTasksConfig = (params: IUseProsysTasksParams) => {
       { skipNull: true }
     )}`,
     options: {
-      refetchOnWindowFocus: 'always',
+      refetchOnWindowFocus: false,
     },
   }
 }
