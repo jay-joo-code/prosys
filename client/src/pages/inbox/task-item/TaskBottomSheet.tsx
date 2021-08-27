@@ -112,7 +112,7 @@ const TaskBottomSheet = ({ task, isOpen, onDismiss }: TaskBottomSheetProps) => {
       <StyledBottomSheet
         open={isOpen}
         defaultSnap={({ maxHeight }) => maxHeight / 2}
-        snapPoints={({ maxHeight }) => [maxHeight * 0.8, maxHeight * 0.4]}
+        snapPoints={({ maxHeight }) => [maxHeight * 0.8]}
         onDismiss={handleDismiss}
         expandOnContentDrag
         initialFocusRef={false}>
@@ -159,8 +159,6 @@ const TaskBottomSheet = ({ task, isOpen, onDismiss }: TaskBottomSheetProps) => {
           )}
           <InputContainer>
             <NameTextField
-              autoFocus
-              onFocus={handleInputFocus}
               onDebouncedChange={handleSaveName}
               placeholder='Task name'
               initValue={task?.name}
@@ -169,7 +167,6 @@ const TaskBottomSheet = ({ task, isOpen, onDismiss }: TaskBottomSheetProps) => {
           <TaskDue localDue={localDue} setLocalDue={setLocalDue} />
           <InputContainer>
             <NotesTextarea
-              onFocus={handleInputFocus}
               onDebouncedChange={handleSaveNotes}
               placeholder='Notes'
               initValue={task?.notes}
@@ -196,7 +193,7 @@ const OuterContainer = styled.div``
 
 const StyledBottomSheet = styled(BottomSheet)`
   & > div:nth-of-type(2) {
-    max-width: 500px;
+    max-width: 700px;
     margin-left: auto;
     margin-right: auto;
   }
