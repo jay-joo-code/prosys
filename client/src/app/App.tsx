@@ -1,4 +1,5 @@
 import React from 'react'
+import PerfectScrollbar from 'react-perfect-scrollbar'
 import { QueryCache, QueryClient, QueryClientProvider } from 'react-query'
 import { Provider } from 'react-redux'
 import { Router } from 'react-router-dom'
@@ -16,6 +17,7 @@ import Header from '../components/header/Header'
 import './normalise.less'
 import Routes from './Routes'
 import theme from './theme'
+import 'react-perfect-scrollbar/dist/css/styles.css'
 
 const persistor = persistStore(store)
 
@@ -32,11 +34,11 @@ const App = () => {
             <Router history={history}>
               <ToggledBlur>
                 <Container>
-                  <Header />
-                  <FillHeight>
+                  <PerfectScrollbar>
+                    <Header />
                     <Routes />
-                  </FillHeight>
-                  <Footer />
+                    <Footer />
+                  </PerfectScrollbar>
                 </Container>
               </ToggledBlur>
               <ToastWrapper />
@@ -53,26 +55,11 @@ const App = () => {
 const Container = styled.div`
   width: 100vw;
   max-width: 100vw;
-  overflow-x: hidden;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  background: ${(props) => props.theme.bg};
+  overflow: hidden;
+  background: ${(props) => props.theme.bg.default};
 
   @media (min-width: ${(props) => props.theme.tablet}) {
     width: initial;
-    max-width: initial;
-    overflow-x: initial;
-  }
-`
-
-const FillHeight = styled.div`
-  flex: 2;
-  display: flex;
-  flex-direction: column;
-
-  & > div {
-    flex: 2;
   }
 `
 
