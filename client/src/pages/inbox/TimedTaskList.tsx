@@ -22,7 +22,7 @@ const TimedTaskList = ({ due }: TimedTaskListProps) => {
 }
 
 const Container = styled.div`
-  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
 
   & > * {
     border-bottom: 1px solid ${(props) => props.theme.border.default};

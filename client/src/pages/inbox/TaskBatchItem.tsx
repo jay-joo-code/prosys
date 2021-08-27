@@ -29,9 +29,9 @@ const TaskBatchItem = ({ due }: TaskBatchItemProps) => {
         )}
       </DateHeader>
       {due && <GcalTaskList due={due} />}
+      {due && <TimedTaskList due={due} />}
       <UntimedTaskList due={due} />
       {due && <AddTaskItem due={due} />}
-      {due && <TimedTaskList due={due} />}
     </Container>
   )
 }
