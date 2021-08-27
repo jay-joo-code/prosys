@@ -153,9 +153,9 @@ export const useUpdateAndMoveTask = (_id: string, params: IUseProsysTasksParams)
         mutationFn: (oldData, newVariables) => {
           // if task doesn't need to move, don't move it
           if (
-            params?.due &&
-            params?.due?.toUTCString() === newVariables?.due?.toUTCString() &&
-            params?.isTimed === isOneTaskTimeSet(newVariables)
+            (!params?.due && !newVariables?.due) ||
+            (params?.due?.toUTCString() === newVariables?.due?.toUTCString() &&
+              params?.isTimed === isOneTaskTimeSet(newVariables))
           ) {
             return oldData
           }

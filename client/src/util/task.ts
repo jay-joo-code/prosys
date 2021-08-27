@@ -78,8 +78,10 @@ export const insertUntimedTask = ({ tasks, newTask }: IInsertTaskProps) => {
   if (duplicateIdx >= 0) return tasks
 
   // find idx of element that's created at before newTask
-  const targetIdx = tasks?.findIndex(
-    (task: ITask) => new Date(task?.createdAt) > new Date(newTask?.createdAt)
+  const targetIdx = tasks?.findIndex((task: ITask) =>
+    newTask?.due
+      ? new Date(task?.createdAt) > new Date(newTask?.createdAt)
+      : new Date(task?.createdAt) < new Date(newTask?.createdAt)
   )
 
   const newTasks = [...tasks]
