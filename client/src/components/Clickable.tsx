@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 
-interface ClickableProps extends React.HTMLProps<HTMLDivElement> {
+interface ClickableProps extends React.HTMLAttributes<HTMLDivElement> {
   children?: React.ReactNode
 }
 

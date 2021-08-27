@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "vite --port 4000",
-    "build": "tsc && vite build",
+    "build": "npx tsc && npx vite build",
     "serve": "npx vite preview"
   },
   "dependencies": {

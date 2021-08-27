@@ -221,37 +221,37 @@ export const useUpdateArchiveTaskById = (
   }
 }
 
-export const useToggleArchive = (_id: string) => {
-  const { mutate: toggleArchive, ...rest } = useCustomMutation<ITask>({
-    url: `/private/task/${_id}`,
-    method: 'put',
-    localUpdates: [
-      {
-        queryConfigs: [fetchInboxTasks(), fetchArchivedTasks()],
-        presetLogic: 'delete',
-      },
-    ],
-  })
+// export const useToggleArchive = (_id: string) => {
+//   const { mutate: toggleArchive, ...rest } = useCustomMutation<ITask>({
+//     url: `/private/task/${_id}`,
+//     method: 'put',
+//     localUpdates: [
+//       {
+//         queryConfigs: [fetchInboxTasks(), fetchArchivedTasks()],
+//         presetLogic: 'delete',
+//       },
+//     ],
+//   })
 
-  return {
-    ...rest,
-    toggleArchive,
-  }
-}
+//   return {
+//     ...rest,
+//     toggleArchive,
+//   }
+// }
 
-export const useUndoIsComplete = () => {
-  const { mutateAsync: undoIsComplete, ...rest } = useCustomMutation<ITask>({
-    url: `/private/task/undo`,
-    method: 'put',
-    localUpdates: [
-      {
-        queryConfigs: [fetchInboxTasks(), fetchArchivedTasks()],
-      },
-    ],
-  })
+// export const useUndoIsComplete = () => {
+//   const { mutateAsync: undoIsComplete, ...rest } = useCustomMutation<ITask>({
+//     url: `/private/task/undo`,
+//     method: 'put',
+//     localUpdates: [
+//       {
+//         queryConfigs: [fetchInboxTasks(), fetchArchivedTasks()],
+//       },
+//     ],
+//   })
 
-  return {
-    ...rest,
-    undoIsComplete,
-  }
-}
+//   return {
+//     ...rest,
+//     undoIsComplete,
+//   }
+// }
