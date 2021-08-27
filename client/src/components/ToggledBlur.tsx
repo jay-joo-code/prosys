@@ -31,12 +31,7 @@ const ToggledBlur = ({ children }: ToggleBlurProps) => {
 
   return (
     <Container
-      isHide={
-        import.meta.env.VITE_NODE_ENV !== 'development' &&
-        !isSpacedRep &&
-        !isWiki &&
-        isHide
-      }>
+      isHide={import.meta.env.VITE_NODE_ENV !== 'development' && !isSpacedRep && !isWiki && isHide}>
       {children}
     </Container>
   )
@@ -49,7 +44,8 @@ interface ContainerProps {
 const Container = styled.div<ContainerProps>`
   @media (min-width: ${(props) => props.theme.tablet}) {
     // isHide
-    filter: ${(props) => props.isHide && 'blur(4px)'};
+    /* disabled temporarily */
+    /* filter: ${(props) => props.isHide && 'blur(4px)'}; */
   }
 `
 
