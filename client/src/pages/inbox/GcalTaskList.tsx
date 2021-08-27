@@ -10,6 +10,8 @@ interface GcalTaskListProps {
 const GcalTaskList = ({ due }: GcalTaskListProps) => {
   const { tasks } = useGcalTasks(due)
 
+  if (!tasks || tasks?.length === 0) return null
+
   return (
     <Container>
       {tasks?.map((task) => (

@@ -10,7 +10,7 @@ interface TimedTaskListProps {
 const TimedTaskList = ({ due }: TimedTaskListProps) => {
   const { tasks } = useProsysTasks({ due, isTimed: true })
 
-  if (!tasks) return null
+  if (!tasks || tasks?.length === 0) return null
 
   return (
     <Container>
