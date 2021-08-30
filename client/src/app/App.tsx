@@ -55,7 +55,7 @@ const App = () => {
 const Container = styled.div`
   width: 100vw;
   max-width: 100vw;
-  overflow: hidden;
+  height: 100vh;
   background: ${(props) => props.theme.bg.default};
 
   @media (min-width: ${(props) => props.theme.tablet}) {
