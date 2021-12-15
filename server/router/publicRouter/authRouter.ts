@@ -64,6 +64,7 @@ authRouter.get(
       'https://www.googleapis.com/auth/plus.login',
       'https://www.googleapis.com/auth/calendar.events',
       'https://www.googleapis.com/auth/calendar.readonly',
+      'https://www.googleapis.com/auth/photoslibrary.readonly',
     ],
     accessType: 'offline',
     prompt: 'consent',

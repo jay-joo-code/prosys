@@ -9,7 +9,9 @@ const MobileBlock = React.lazy(() => import('src/pages/mobile-block/MobileBlock'
 const AuthCallback = React.lazy(() => import('src/pages/auth-callback/AuthCallback'))
 const Login = React.lazy(() => import('src/pages/login/Login'))
 const Logout = React.lazy(() => import('src/pages/logout/Logout'))
-const InboxPage = React.lazy(() => import('src/pages/inbox/InboxPage'))
+const JournalPage = React.lazy(() => import('src/pages/journal/JournalPage'))
+const OverviewPage = React.lazy(() => import('src/pages/overview/OverviewPage'))
+// const InboxPage = React.lazy(() => import('src/pages/inbox/InboxPage'))
 // const ArchivePage = React.lazy(() => import('src/pages/archive/ArchivePage'))
 const SpacedRepPage = React.lazy(() => import('src/pages/spaced-rep/SpacedRepPage'))
 const WikiPage = React.lazy(() => import('src/pages/wiki/WikiPage'))
@@ -64,10 +66,28 @@ export const routes: IRoute[] = [
     isPrivateRoute: false,
     isDesktopOnly: false,
   },
+  // {
+  //   path: '/inbox',
+  //   component: InboxPage,
+  //   label: 'Inbox',
+  //   isPublicNav: false,
+  //   isPrivateNav: false,
+  //   isPrivateRoute: true,
+  //   isDesktopOnly: false,
+  // },
   {
-    path: '/inbox',
-    component: InboxPage,
-    label: 'Inbox',
+    path: '/journal',
+    component: JournalPage,
+    label: 'Journal',
+    isPublicNav: false,
+    isPrivateNav: false,
+    isPrivateRoute: true,
+    isDesktopOnly: false,
+  },
+  {
+    path: '/overview',
+    component: OverviewPage,
+    label: 'Overview',
     isPublicNav: false,
     isPrivateNav: false,
     isPrivateRoute: true,

@@ -7,17 +7,11 @@ const Home = () => {
   const { currentUser } = useCurrentUser()
   const router = useRouter()
 
-  if (currentUser) router.push('/inbox')
+  if (currentUser) router.push('/journal')
 
-  return (
-    <Container>
-      Home
-    </Container>
-  )
+  return <Container>Home</Container>
 }
 
-const Container = styled.div`
-  
-`
+const Container = styled.div``
 
 export default Home

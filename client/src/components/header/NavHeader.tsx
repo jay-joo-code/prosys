@@ -1,107 +1,39 @@
-import InboxOutlinedIcon from '@material-ui/icons/InboxOutlined'
-import LibraryBooksOutlinedIcon from '@material-ui/icons/LibraryBooksOutlined'
-import SchoolOutlinedIcon from '@material-ui/icons/SchoolOutlined'
+import JournalIcon from '@material-ui/icons/EventNoteOutlined'
+import OverviewIcon from '@material-ui/icons/AssessmentOutlined'
 import React, { memo } from 'react'
-import { useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
-import useIsCreateCard from 'src/hooks/useIsCreateCard'
-import useIsInbox from 'src/hooks/useIsInbox'
-import useIsSpacedRep from 'src/hooks/useIsSpacedRep'
-import useIsWiki from 'src/hooks/useIsWiki'
-import useKeypress from 'src/hooks/useKeyPress'
 import useRouter from 'src/hooks/useRouter'
-import { toggleHide } from 'src/redux/appSlice'
-import { IInboxState } from 'src/types/task.type'
 import styled from 'styled-components'
 import Text from '../fonts/Text'
 
-interface NavHeaderProps {
-  inboxState: IInboxState
-}
+const NavHeader = () => {
+  const router = useRouter()
 
-const NavHeader = ({ inboxState }: NavHeaderProps) => {
-  const { push } = useRouter()
-  const isInbox = useIsInbox()
-  const isSpacedRep = useIsSpacedRep()
-  const isWiki = useIsWiki()
-  const isCreateCard = useIsCreateCard()
-  const dispatch = useDispatch()
-
-  useKeypress('Tab', (event) => {
-    if (['NAVIGATE', 'CREATE'].includes(inboxState)) {
-      event.stopPropagation()
-      event.stopImmediatePropagation()
-      event.preventDefault()
-
-      if (event.shiftKey) {
-        // backward navigation
-        if (isInbox) {
-          push('/wiki')
-        } else if (isSpacedRep) {
-          push('/inbox')
-        } else if (isWiki) {
-          push('/spaced-rep')
-        }
-      } else {
-        // forward navigation
-        if (isInbox) {
-          push('/spaced-rep')
-        } else if (isSpacedRep) {
-          push('/wiki')
-        } else if (isWiki) {
-          push('/inbox')
-        }
-      }
-    }
-  })
-
-  // hide screen
-  useKeypress(['h', 'ㅗ'], (event) => {
-    if (
-      document.activeElement?.tagName !== 'TEXTAREA' &&
-      document.activeElement?.tagName !== 'INPUT'
-    ) {
-      event.stopPropagation()
-      event.stopImmediatePropagation()
-      event.preventDefault()
-      dispatch(toggleHide())
-    }
-  })
+  const navs = [
+    {
+      label: 'Journal',
+      route: '/journal',
+      icon: <JournalIcon />,
+    },
+    {
+      label: 'Overview',
+      route: '/overview',
+      icon: <OverviewIcon />,
+    },
+  ]
 
   return (
     <Container>
-      <Link to='/inbox'>
-        <NavItem isSelected={isInbox}>
-          <InboxOutlinedIcon />
-          <Label variant='h5' isSelected={isInbox}>
-            Inbox
-          </Label>
-        </NavItem>
-      </Link>
-      {/* <Link to='/archive'>
-        <NavItem isSelected={isArchive}>
-          <FolderOutlinedIcon />
-          <Label variant='h5' isSelected={isArchive}>
-            Archive
-          </Label>
-        </NavItem>
-      </Link> */}
-      <Link to='/spaced-rep'>
-        <NavItem isSelected={isSpacedRep}>
-          <SchoolOutlinedIcon />
-          <Label variant='h5' isSelected={isSpacedRep}>
-            Spaced Repetition
-          </Label>
-        </NavItem>
-      </Link>
-      <Link to='/wiki'>
-        <NavItem isSelected={isWiki || isCreateCard}>
-          <LibraryBooksOutlinedIcon />
-          <Label variant='h5' isSelected={isWiki || isCreateCard}>
-            Wiki
-          </Label>
-        </NavItem>
-      </Link>
+      {navs.map(({ label, route, icon }) => (
+        <Link key={route} to={route}>
+          <NavItem isSelected={router.pathname === route}>
+            {icon}
+            <Label variant='h5' isSelected={router.pathname === route}>
+              {label}
+            </Label>
+          </NavItem>
+        </Link>
+      ))}
     </Container>
   )
 }
